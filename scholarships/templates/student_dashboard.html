@@ -1,0 +1,218 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | ELEVATE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+     <link rel="stylesheet" href="{% static 'st.css' %}">
+    <style>
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <h2>ELEVATE</h2>
+        <p>Scholarship Portal</p>
+    </div>
+
+    <div class="sidebar-user">
+        <div class="user-avatar">M</div>
+        <div class="user-info">
+            <p>Mahisa</p>
+            <span>Student</span>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <p class="nav-label">Main</p>
+        <a href="student_dashboard.html" class="nav-item active">
+            <span class="nav-icon">⊞</span> Dashboard
+        </a>
+        <a href="browse_scholarships.html" class="nav-item">
+            <span class="nav-icon">✦</span> Browse Scholarships
+        </a>
+        <a href="my_applications.html" class="nav-item">
+            <span class="nav-icon">◈</span> My Applications
+        </a>
+        <p class="nav-label">Account</p>
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">○</span> Profile
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <a href="{% url 'logout' %}" class="logout-btn">
+            <span class="nav-icon">→</span> Sign Out
+        </a>
+    </div>
+</aside>
+
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <h3>Student Dashboard</h3>
+        </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="page-content">
+
+        <!-- WELCOME BANNER -->
+        <div class="welcome-banner">
+            <div class="welcome-text">
+                <p class="eyebrow">Welcome back</p>
+                <h1>Good afternoon, Mahisa.</h1>
+                <p class="sub">You have 2 upcoming deadlines this month. Stay on track.</p>
+            </div>
+            <div class="welcome-badge">
+                <p class="badge-label">Active Applications</p>
+                <p class="badge-value">2</p>
+                <p class="badge-sub">In progress</p>
+            </div>
+        </div>
+
+        <!-- STATS ROW -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon">✦</div>
+                <div class="stat-info">
+                    <p class="stat-val">4</p>
+                    <p class="stat-lbl">Available Scholarships</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">◈</div>
+                <div class="stat-info">
+                    <p class="stat-val">2</p>
+                    <p class="stat-lbl">Applications Submitted</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">○</div>
+                <div class="stat-info">
+                    <p class="stat-val">20 Jul</p>
+                    <p class="stat-lbl">Next Deadline</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TWO COLUMN -->
+        <div class="two-col">
+
+            <!-- LATEST SCHOLARSHIPS -->
+            <div class="section-card">
+                <div class="section-card-header">
+                    <h2>Latest Scholarships</h2>
+                    <a href="browse_scholarships.html" class="view-all-btn">View All</a>
+                </div>
+                <div class="scholarship-list">
+                    <div class="scholarship-item">
+                        <div class="sch-info">
+                            <h4>Need-Based Scholarship</h4>
+                            <p>Financial support for eligible students</p>
+                        </div>
+                        <span class="sch-arrow">→</span>
+                    </div>
+                    <div class="scholarship-item">
+                        <div class="sch-info">
+                            <h4>Merit Scholarship</h4>
+                            <p>For outstanding academic performance</p>
+                        </div>
+                        <span class="sch-arrow">→</span>
+                    </div>
+                    <div class="scholarship-item">
+                        <div class="sch-info">
+                            <h4>Sibling Waiver</h4>
+                            <p>Tuition benefits for enrolled siblings</p>
+                        </div>
+                        <span class="sch-arrow">→</span>
+                    </div>
+                    <div class="scholarship-item">
+                        <div class="sch-info">
+                            <h4>Entrance Scholarship</h4>
+                            <p>Based on SSC and HSC achievements</p>
+                        </div>
+                        <span class="sch-arrow">→</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UPCOMING DEADLINES -->
+            <div class="section-card">
+                <div class="section-card-header">
+                    <h2>Upcoming Deadlines</h2>
+                </div>
+                <div class="deadline-list">
+                    <div class="deadline-item">
+                        <div class="deadline-left">
+                            <span class="deadline-dot"></span>
+                            <span class="deadline-name">Need-Based Scholarship</span>
+                        </div>
+                        <span class="deadline-date deadline-urgent">20 July 2026</span>
+                    </div>
+                    <div class="deadline-item">
+                        <div class="deadline-left">
+                            <span class="deadline-dot"></span>
+                            <span class="deadline-name">Merit Scholarship</span>
+                        </div>
+                        <span class="deadline-date">25 July 2026</span>
+                    </div>
+                    <div class="deadline-item">
+                        <div class="deadline-left">
+                            <span class="deadline-dot"></span>
+                            <span class="deadline-name">Sibling Waiver</span>
+                        </div>
+                        <span class="deadline-date">30 July 2026</span>
+                    </div>
+                    <div class="deadline-item">
+                        <div class="deadline-left">
+                            <span class="deadline-dot"></span>
+                            <span class="deadline-name">Entrance Scholarship</span>
+                        </div>
+                        <span class="deadline-date">5 August 2026</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MY APPLICATIONS -->
+        <div class="applications-section">
+            <div class="section-card-header">
+                <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--dark);font-weight:600;">My Applications</h2>
+                <a href="#" class="view-all-btn">View All</a>
+            </div>
+            <table class="app-table">
+                <thead>
+                    <tr>
+                        <th>Scholarship</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Need-Based Scholarship</td>
+                        <td>1 June 2026</td>
+                        <td><span class="status-badge status-review">Under Review</span></td>
+                    </tr>
+                    <tr>
+                        <td>Merit Scholarship</td>
+                        <td>3 June 2026</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div><!-- end page-content -->
+</div><!-- end main -->
+
+</body>
+</html>

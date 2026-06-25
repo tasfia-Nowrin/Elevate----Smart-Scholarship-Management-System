@@ -1,487 +1,871 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Scholarships - ELEVATE Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <title>Manage Scholarships | ELEVATE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <style>
-        /* COLOR UTILITIES MATRICES FROM LR.CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --primary: #2F6F6F;
             --dark: #244B52;
             --gold: #C2A878;
             --cream: #F8F6F1;
             --grey: #ECEAE4;
+            --white: #FFFFFF;
+            --text: #2B2B2B;
+            --muted: #7a8a8c;
             --sidebar-width: 260px;
         }
 
         body {
             font-family: 'DM Sans', sans-serif;
             background: var(--cream);
-            color: var(--dark);
-            margin: 0;
-            padding: 0;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
         }
 
-        /* FIXED SIDEBAR WITH LOGIN-PAGE CIRCLE EFFECTS */
         .sidebar {
-            background: linear-gradient(180deg, #244B52 0%, #1a3840 100%);
             width: var(--sidebar-width);
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 1000;
+            min-height: 100vh;
+            background: linear-gradient(170deg, #2a5a60 0%, #244B52 60%, #1a3840 100%);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 40px 0 30px 0;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.05);
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
             overflow: hidden;
         }
 
-        /* Top-Right Circle Background Effect */
         .sidebar::before {
             content: '';
             position: absolute;
-            width: 260px;
-            height: 260px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.03);
-            top: -60px;
+            top: -80px;
             right: -80px;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* Bottom-Left Circle Background Effect */
-        .sidebar::after {
-            content: '';
-            position: absolute;
-            width: 180px;
-            height: 180px;
+            width: 250px;
+            height: 250px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.02);
-            bottom: -40px;
-            left: -60px;
+            background: rgba(194, 168, 120, 0.07);
             pointer-events: none;
-            z-index: 1;
-        }
-        
-        .sidebar > div {
-            position: relative;
-            z-index: 2;
-        }
-        .sidebar-footer {
-            position: relative;
-            z-index: 2;
-            padding: 0 20px;
-        }
-        
-        .sidebar-brand {
-            padding: 0 24px;
-            margin-bottom: 40px;
         }
 
-        .brand-title {
+        .sidebar-logo {
+            padding: 36px 28px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo h2 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.8rem;
-            letter-spacing: 2px;
+            font-size: 1.9rem;
+            letter-spacing: 6px;
+            color: var(--gold);
             font-weight: 600;
-            color: white;
-            line-height: 1.2;
         }
 
-        .brand-subtitle {
-            font-size: 0.72rem;
-            text-transform: uppercase;
+        .sidebar-logo p {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
             letter-spacing: 1.5px;
-            color: var(--gold);
-            font-weight: 700;
-            display: block;
-            margin-top: 5px;
-            opacity: 0.9;
+            text-transform: uppercase;
+            margin-top: 2px;
         }
 
-        .sidebar-menu {
-            flex-grow: 1;
+        .sidebar-user {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .sidebar a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            padding: 14px 24px;
-            display: block;
-            font-size: 0.95rem;
-            font-weight: 400;
-            transition: 0.2s ease-in-out;
-            letter-spacing: 0.3px;
-        }
-
-        .sidebar a i {
-            width: 24px;
-        }
-
-        .sidebar a:hover {
-            background: rgba(194, 168, 120, 0.08);
-            color: var(--gold);
-        }
-
-        .sidebar a.active {
-            background: rgba(194, 168, 120, 0.15);
-            color: var(--gold);
-            font-weight: 500;
-            border-left: 4px solid var(--gold);
-        }
-
-        .btn-logout {
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            background: rgba(198, 40, 40, 0.1);
-            color: #ff8a80 !important;
-            border: 1px solid rgba(198, 40, 40, 0.2);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-info p {
+            font-size: 0.85rem;
+            color: white;
             font-weight: 500;
-            transition: 0.2s;
-            width: 100%;
+        }
+
+        .user-info span {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 16px;
+        }
+
+        .nav-label {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            padding: 0 12px;
+            margin: 16px 0 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: .2s;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.88rem;
+            font-weight: 400;
+            text-decoration: none;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--gold);
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-bottom {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.88rem;
+            transition: .2s;
             text-decoration: none;
         }
 
-        .btn-logout:hover {
-            background: #C62828;
-            color: white !important;
-            box-shadow: 0 4px 12px rgba(198, 40, 40, 0.2);
+        .logout-btn:hover {
+            color: #e07070;
+            background: rgba(255, 255, 255, 0.04);
         }
 
-        /* SCROLLABLE MAIN CONTENT AREA */
-        .main-content {
+        .main {
             margin-left: var(--sidebar-width);
-            padding: 50px;
+            flex: 1;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* COMPONENTS STYLING */
-        .text-theme {
+        .page-content {
+            padding: 34px;
+            flex: 1;
+        }
+
+        .page-heading {
+            margin-bottom: 32px;
+        }
+
+        .page-heading p.eyebrow {
+            font-size: 0.72rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .page-heading h1 {
             font-family: 'Cormorant Garamond', serif;
+            font-size: 2.1rem;
             color: var(--dark);
             font-weight: 600;
         }
 
-        h2.text-theme {
-            font-size: 2.4rem;
-            letter-spacing: 0.5px;
-        }
-
-        h5.text-theme {
-            font-size: 1.3rem;
-            letter-spacing: 0.3px;
-            border-bottom: 1px solid var(--grey);
-            padding-bottom: 10px;
-        }
-
-        .form-card, .table-container {
-            border: 1px solid var(--grey);
-            border-radius: 12px;
+        .section-card {
             background: white;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(36, 75, 82, 0.02);
-        }
-
-        .form-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            color: var(--dark);
-            opacity: 0.8;
-            margin-bottom: 6px;
-        }
-
-        .form-control, .form-select {
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 28px;
             border: 1px solid var(--grey);
-            font-size: 0.9rem;
-            padding: 11px 14px;
-            color: var(--dark);
-            border-radius: 6px;
         }
 
-        .form-control:focus, .form-select:focus {
+        /* --- Manage Deadlines Style Match --- */
+        .form-deadline-style {
+            border-left: 4px solid var(--gold) !important;
+        }
+
+        .section-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .section-card-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--dark);
+            opacity: .75;
+            font-weight: 500;
+        }
+
+        .form-control {
+            border: 1px solid var(--grey);
+            background: var(--cream);
+            font-size: 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            padding: 12px 14px;
+            color: var(--dark);
+            border-radius: 8px;
+            outline: none;
+            transition: .2s;
+            width: 100%;
+        }
+
+        .form-control:focus {
             border-color: var(--primary);
+            background: white;
             box-shadow: 0 0 0 3px rgba(47, 111, 111, 0.1);
         }
 
         textarea.form-control {
             resize: vertical;
             min-height: 100px;
+            font-family: 'DM Sans', sans-serif;
         }
 
-        /* Input Group Addon Custom Styling */
-        .input-group-text {
+        .slabs-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-slab-btn {
+            background: none;
             border: 1px solid var(--grey);
-            font-size: 0.85rem;
-            color: var(--dark);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: .2s;
         }
 
-        .btn-theme {
+        .add-slab-btn:hover {
             background: var(--primary);
-            color: white !important;
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .slab-row {
+            display: grid;
+            grid-template-columns: 200px 200px 200px 44px;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .slab-input-wrap {
+            position: relative;
+        }
+
+        .slab-input-wrap span.unit {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .remove-slab-btn {
+            width: 44px;
+            border: 1px solid rgba(198, 40, 40, 0.15);
+            background: rgba(198, 40, 40, 0.06);
+            color: #C62828;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: .2s;
+        }
+
+        .remove-slab-btn:hover:not(:disabled) {
+            background: #C62828;
+            color: white;
+            border-color: #C62828;
+        }
+
+        .remove-slab-btn:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+        }
+
+        .form-actions {
+            margin-top: 26px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
             border: none;
+            font-family: 'DM Sans', sans-serif;
             font-size: 0.9rem;
             font-weight: 500;
-            padding: 12px 24px;
-            border-radius: 6px;
-            transition: 0.2s;
+            padding: 13px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
         }
 
-        .btn-theme:hover {
+        .btn-primary:hover {
             background: var(--dark);
         }
 
-        .table th {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: rgba(36, 75, 82, 0.6);
-            padding: 14px 16px;
-            border-bottom: 1.5px solid var(--grey) !important;
-        }
-
-        .table td {
-            padding: 16px;
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--grey);
+            font-family: 'DM Sans', sans-serif;
             font-size: 0.9rem;
-            border-bottom: 1px solid var(--cream);
+            font-weight: 500;
+            padding: 13px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
         }
 
-        .btn-action-edit {
+        .btn-secondary:hover {
+            background: var(--grey);
+        }
+
+        .app-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .app-table th {
+            text-align: left;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0 16px 14px;
+            border-bottom: 1px solid var(--grey);
+            font-weight: 500;
+        }
+
+        .app-table td {
+            padding: 16px;
+            font-size: 0.88rem;
+            color: var(--text);
+            border-bottom: 1px solid var(--grey);
+            vertical-align: middle;
+        }
+
+        .app-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .app-table tr:hover td {
+            background: var(--cream);
+        }
+
+        .sch-name {
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .sch-id {
+            font-size: 0.78rem;
+            color: var(--gold);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .sch-desc {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .type-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .type-badge.tuition {
+            background: rgba(47, 111, 111, 0.1);
             color: var(--primary);
-            background: rgba(47, 111, 111, 0.06);
-            border: 1px solid rgba(47, 111, 111, 0.2);
-            font-size: 0.8rem;
-            padding: 6px 12px;
-            border-radius: 4px;
-            transition: 0.2s;
         }
 
-        .btn-action-edit:hover { background: var(--primary); color: white; }
+        .type-badge.admission {
+            background: rgba(194, 168, 120, 0.15);
+            color: #917543;
+        }
 
-        .btn-action-delete {
+        .slab-badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .slab-badge {
+            background: var(--grey);
+            color: var(--dark);
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--grey);
+            background: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: .2s;
+        }
+
+        .icon-btn.edit {
+            color: var(--primary);
+        }
+
+        .icon-btn.edit:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .icon-btn.delete {
             color: #C62828;
-            background: rgba(198, 40, 40, 0.06);
-            border: 1px solid rgba(198, 40, 40, 0.15);
-            font-size: 0.8rem;
-            padding: 6px 12px;
-            border-radius: 4px;
-            transition: 0.2s;
         }
 
-        .btn-action-delete:hover { background: #C62828; color: white; }
+        .icon-btn.delete:hover {
+            background: #C62828;
+            color: white;
+            border-color: #C62828;
+        }
+
+        @media (max-width: 720px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .slab-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .slab-row .remove-slab-btn {
+                grid-column: span 2;
+                width: 100%;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<div class="sidebar">
-    <div>
-        <div class="sidebar-brand">
-            <div class="brand-title">
-                <i class="fa-solid fa-graduation-cap me-2" style="color: var(--gold);"></i> ELEVATE
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+                <p>Admin</p>
+                <span>Administrator</span>
             </div>
-            <span class="brand-subtitle">ADMIN PANEL</span>
         </div>
-        
-        <div class="sidebar-menu">
-            <a href="admin_dashboard.html"><i class="fa-solid fa-chart-pie me-2"></i> Dashboard</a>
-            <a href="manage_scholarships.html" class="active"><i class="fa-solid fa-award me-2"></i> Manage Scholarships</a>
-            <a href="view_applications.html"><i class="fa-solid fa-file-invoice me-2"></i> View Applications</a>
-            <a href="manage_deadlines.html"><i class="fa-solid fa-calendar-days me-2"></i> Manage Deadlines</a>
+
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="admin_dashboard.html" class="nav-item">
+                <span class="nav-icon">⊞</span> Dashboard
+            </a>
+            <a href="manage_scholarships.html" class="nav-item active">
+                <span class="nav-icon">✦</span> Manage Scholarships
+            </a>
+            <a href="view_applications.html" class="nav-item">
+                <span class="nav-icon">◈</span> View Applications
+            </a>
+            <a href="manage_deadlines.html" class="nav-item">
+                <span class="nav-icon">○</span> Manage Deadlines
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="login.html" class="logout-btn">
+                <span class="nav-icon">→</span> Sign Out
+            </a>
         </div>
-    </div>
-    
-    <div class="sidebar-footer">
-        <a href="login.html" class="btn-logout">
-            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
-        </a>
-    </div>
-</div>
+    </aside>
 
-<main class="main-content">
-    
-    <h2 class="text-theme mb-4"><i class="fa-solid fa-award me-2" style="color: var(--gold); font-size: 2rem;"></i> Scholarship Management</h2>
+    <div class="main">
 
-    <div class="form-card mb-5">
-        <h5 class="text-theme mb-4">Add New Scholarship Scheme</h5>
-        <form>
-            <div class="row g-4">
-                <div class="col-12">
-                    <label class="form-label fw-bold">Scholarship Name</label>
-                    <input type="text" class="form-control" placeholder="e.g., Academic or Merit Scholarship" required>
+        <div class="page-content">
+
+            <div class="page-heading">
+                <p class="eyebrow">Scholarship Programs</p>
+                <h1>Create and manage scholarship schemes.</h1>
+            </div>
+
+            <div class="section-card form-deadline-style">
+                <div class="section-card-header">
+                    <h2 id="formTitle">Add New Scholarship Scheme</h2>
                 </div>
-                <div class="col-12">
-                    <label class="form-label fw-bold">Scholarship Type</label>
-                    <select class="form-select" id="scholarship-type-select" required>
-                        <option value="" disabled selected>Select Category</option>
-                        <option value="Merit">Admission Fee</option>
-                        <option value="Need">Tution Fee</option>
-                    </select>
-                </div>
+                <form id="scholarshipForm">
+                    <input type="hidden" id="editSchId" value="">
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label for="schName">Scholarship Name</label>
+                            <input type="text" id="schName" class="form-control"
+                                placeholder="e.g., Academic or Merit Scholarship" required>
+                        </div>
 
-                <div class="col-12">
-                    <label class="form-label fw-bold d-flex justify-content-between align-items-center">
-                        <span>CGPA & Waiver Percentage Criteria (Slabs)</span>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="add-slab-btn" style="font-size: 0.75rem; padding: 2px 8px;">
-                            <i class="fa-solid fa-plus me-1"></i> Add More Slab
-                        </button>
-                    </label>
-                    
-                    <div id="slabs-container">
-                        <div class="row g-2 align-items-center slab-row mb-2">
-                            <div class="col-5">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white">Min CGPA</span>
-                                    <input type="number" step="0.01" class="form-control" placeholder="e.g., 3.75" required>
-                                </div>
+                        <div class="form-group full">
+                            <label for="schType">Scholarship Waiver Type</label>
+                            <select id="schType" class="form-control" required>
+                                <option value="" disabled selected>Select fee coverage type</option>
+                                <option value="Tuition">Tuition Fee Waiver</option>
+                                <option value="Admission">Admission Fee Waiver</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full">
+                            <div class="slabs-label-row">
+                                <label>CGPA Criteria Range &amp; Waiver Percentage (Slabs)</label>
+                                <button type="button" class="add-slab-btn" id="addSlabBtn">+ Add More Slab</button>
                             </div>
-                            <div class="col-5">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white">Waiver</span>
-                                    <input type="number" class="form-control" placeholder="e.g., 50" required>
-                                    <span class="input-group-text bg-white">%</span>
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <button type="button" class="btn btn-action-delete w-100 remove-slab-btn" style="padding: 11px 0;" disabled>
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+
+                            <div id="slabsContainer">
                             </div>
                         </div>
+
+                        <div class="form-group full">
+                            <label for="schDesc">Scholarship Description / Guidelines</label>
+                            <textarea id="schDesc" class="form-control" rows="4"
+                                placeholder="Enter frequency, baseline eligibility requirements, terms and conditions..."
+                                required></textarea>
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-12">
-                    <label class="form-label fw-bold">Scholarship Description / Guidelines</label>
-                    <textarea class="form-control" rows="4" placeholder="Enter frequency, baseline eligibility requirements, terms and conditions..." required></textarea>
-                </div>
-                
-                <div class="col-12 pt-2">
-                    <button type="submit" class="btn btn-theme px-4"><i class="fa-solid fa-plus me-2"></i>Create Scholarship Scheme</button>
-                </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelEditBtn" style="display: none;">Cancel
+                            Edit</button>
+                        <button type="submit" class="btn-primary" id="submitFormBtn">+ Create Scholarship
+                            Scheme</button>
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
 
-    <div class="table-container">
-        <h5 class="text-theme mb-4">Active Provided Scholarship Programs</h5>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th style="width: 10%">ID</th>
-                        <th style="width: 30%">Scholarship Name</th>
-                        <th style="width: 45%">Frequency & Base Guideline</th>
-                        <th style="width: 15%; text-align: right;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>SCH-01</strong></td>
-                        <td><span style="font-weight: 500;">Academic / Merit Scholarship</span></td>
-                        <td class="text-muted">Awarded every semester based on students' CGPA targets.</td>
-                        <td style="text-align: right;">
-                            <button class="btn btn-action-edit me-1"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button class="btn btn-action-delete"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>SCH-02</strong></td>
-                        <td><span style="font-weight: 500;">Need-Based Scholarship</span></td>
-                        <td class="text-muted">Provided every semester to financially disadvantaged students safely.</td>
-                        <td style="text-align: right;">
-                            <button class="btn btn-action-edit me-1"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button class="btn btn-action-delete"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>SCH-03</strong></td>
-                        <td><span style="font-weight: 500;">Sibling Scholarship</span></td>
-                        <td class="text-muted">Offered every semester to students whose siblings study at the institute.</td>
-                        <td style="text-align: right;">
-                            <button class="btn btn-action-edit me-1"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button class="btn btn-action-delete"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>SCH-04</strong></td>
-                        <td><span style="font-weight: 500;">Entrance Scholarship</span></td>
-                        <td class="text-muted">Awarded once during admission to students with GPA 5.00 in both SSC & HSC boards.</td>
-                        <td style="text-align: right;">
-                            <button class="btn btn-action-edit me-1"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button class="btn btn-action-delete"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="section-card">
+                <div class="section-card-header">
+                    <h2>Active Provided Scholarship Programs</h2>
+                </div>
+                <table class="app-table">
+                    <thead>
+                        <tr>
+                            <th style="width:10%">ID</th>
+                            <th style="width:20%">Scholarship Name</th>
+                            <th style="width:15%">Coverage Type</th>
+                            <th style="width:25%">Slab Ranges (CGPA)</th>
+                            <th style="width:20%">Base Guideline</th>
+                            <th style="width:10%; text-align:right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scholarshipTableBody">
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
-</main>
+    <script>
+        let scholarships = [
+            {
+                id: "SCH-01",
+                name: "Academic / Merit Scholarship",
+                type: "Tuition",
+                desc: "Awarded every semester based on students' CGPA targets.",
+                slabs: [
+                    { minCgpa: "3.75", maxCgpa: "3.89", waiver: "50" },
+                    { minCgpa: "3.90", maxCgpa: "4.00", waiver: "100" }
+                ]
+            },
+            {
+                id: "SCH-02",
+                name: "Need-Based Scholarship",
+                type: "Tuition",
+                desc: "Provided every semester to financially disadvantaged students.",
+                slabs: [
+                    { minCgpa: "3.00", maxCgpa: "4.00", waiver: "40" }
+                ]
+            },
+            {
+                id: "SCH-03",
+                name: "Entrance Scholarship",
+                type: "Admission",
+                desc: "Awarded once during admission to students with GPA 5.00 in both SSC & HSC boards.",
+                slabs: [
+                    { minCgpa: "4.00", maxCgpa: "4.00", waiver: "100" }
+                ]
+            }
+        ];
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        let isEditing = false;
 
-<script>
-    document.getElementById('add-slab-btn').addEventListener('click', function() {
-        const container = document.getElementById('slabs-container');
-        
-        const newRow = document.createElement('div');
-        newRow.className = 'row g-2 align-items-center slab-row mb-2';
-        newRow.innerHTML = `
-            <div class="col-5">
-                <div class="input-group">
-                    <span class="input-group-text bg-white">Min CGPA</span>
-                    <input type="number" step="0.01" class="form-control" placeholder="e.g., 3.85" required>
-                </div>
+        const slabsContainer = document.getElementById('slabsContainer');
+        const scholarshipForm = document.getElementById('scholarshipForm');
+        const formTitle = document.getElementById('formTitle');
+        const submitFormBtn = document.getElementById('submitFormBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const editSchIdInput = document.getElementById('editSchId');
+        const tableBody = document.getElementById('scholarshipTableBody');
+
+        // Bootstrap Initialize Execution Page Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+            addSlabRow();
+        });
+
+        // Generate Dynamic Field Layout Elements
+        function addSlabRow(minCgpa = '', maxCgpa = '', waiver = '') {
+            const row = document.createElement('div');
+            row.className = 'slab-row';
+            row.innerHTML = `
+            <div class="slab-input-wrap">
+                <input type="number" step="0.01" min="0" max="4" class="form-control min-cgpa" placeholder="Min CGPA" value="${minCgpa}" required>
             </div>
-            <div class="col-5">
-                <div class="input-group">
-                    <span class="input-group-text bg-white">Waiver</span>
-                    <input type="number" class="form-control" placeholder="e.g., 75" required>
-                    <span class="input-group-text bg-white">%</span>
-                </div>
+            <div class="slab-input-wrap">
+                <input type="number" step="0.01" min="0" max="4" class="form-control max-cgpa" placeholder="Max CGPA" value="${maxCgpa}" required>
             </div>
-            <div class="col-2">
-                <button type="button" class="btn btn-action-delete w-100 remove-slab-btn" style="padding: 11px 0;">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+            <div class="slab-input-wrap">
+                <input type="number" min="1" max="100" class="form-control slab-waiver" placeholder="Waiver" value="${waiver}" required>
+                <span class="unit">%</span>
             </div>
+            <button type="button" class="remove-slab-btn">✕</button>
         `;
-        
-        container.appendChild(newRow);
-        updateDeleteButtons();
-    });
-
-    document.getElementById('slabs-container').addEventListener('click', function(e) {
-        if (e.target.classList.contains('remove-slab-btn') || e.target.closest('.remove-slab-btn')) {
-            const row = e.target.closest('.slab-row');
-            row.remove();
-            updateDeleteButtons();
+            slabsContainer.appendChild(row);
+            updateRemoveButtons();
         }
-    });
 
-    function updateDeleteButtons() {
-        const rows = document.querySelectorAll('.slab-row');
-        rows.forEach((row) => {
-            const btn = row.querySelector('.remove-slab-btn');
-            if (rows.length === 1) {
-                btn.setAttribute('disabled', 'true');
-            } else {
-                btn.removeAttribute('disabled');
+        document.getElementById('addSlabBtn').addEventListener('click', () => addSlabRow());
+
+        slabsContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-slab-btn')) {
+                e.target.closest('.slab-row').remove();
+                updateRemoveButtons();
             }
         });
-    }
-</script>
+
+        function updateRemoveButtons() {
+            const rows = document.querySelectorAll('.slab-row');
+            rows.forEach((row) => {
+                const btn = row.querySelector('.remove-slab-btn');
+                btn.disabled = rows.length === 1;
+            });
+        }
+
+        function renderTable() {
+            tableBody.innerHTML = '';
+            scholarships.forEach(sch => {
+                let slabBadges = sch.slabs.map(s =>
+                    `<span class="slab-badge">${s.minCgpa}-${s.maxCgpa} CGPA → <b>${s.waiver}%</b></span>`
+                ).join(' ');
+
+                // UI Label formatting configuration mapping logic
+                let badgeClass = sch.type === 'Tuition' ? 'tuition' : 'admission';
+                let badgeText = sch.type === 'Tuition' ? 'Tuition Fee' : 'Admission Fee';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <td><span class="sch-id">${sch.id}</span></td>
+                <td><span class="sch-name">${sch.name}</span></td>
+                <td><span class="type-badge ${badgeClass}">${badgeText}</span></td>
+                <td><div class="slab-badge-container">${slabBadges || 'No Slabs Set'}</div></td>
+                <td><div class="sch-desc">${sch.desc}</div></td>
+                <td>
+                    <div class="action-group">
+                        <button class="icon-btn edit" onclick="editScholarship('${sch.id}')" title="Edit">✎</button>
+                        <button class="icon-btn delete" onclick="deleteScholarship('${sch.id}')" title="Delete">🗑</button>
+                    </div>
+                </td>
+            `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        window.editScholarship = function (id) {
+            const item = scholarships.find(s => s.id === id);
+            if (!item) return;
+
+            isEditing = true;
+            formTitle.textContent = "Edit Scholarship Scheme";
+            submitFormBtn.textContent = "Update Scholarship Scheme";
+            cancelEditBtn.style.display = 'inline-block';
+            editSchIdInput.value = item.id;
+
+            document.getElementById('schName').value = item.name;
+            document.getElementById('schType').value = item.type;
+            document.getElementById('schDesc').value = item.desc;
+
+            slabsContainer.innerHTML = '';
+            item.slabs.forEach(slab => {
+                addSlabRow(slab.minCgpa, slab.maxCgpa, slab.waiver);
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        cancelEditBtn.addEventListener('click', resetFormState);
+
+        function resetFormState() {
+            isEditing = false;
+            formTitle.textContent = "Add New Scholarship Scheme";
+            submitFormBtn.textContent = "+ Create Scholarship Scheme";
+            cancelEditBtn.style.display = 'none';
+            editSchIdInput.value = '';
+            scholarshipForm.reset();
+            slabsContainer.innerHTML = '';
+            addSlabRow();
+        }
+
+        scholarshipForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const currentSlabRows = document.querySelectorAll('.slab-row');
+            let extractedSlabs = [];
+            currentSlabRows.forEach(row => {
+                extractedSlabs.push({
+                    minCgpa: parseFloat(row.querySelector('.min-cgpa').value).toFixed(2),
+                    maxCgpa: parseFloat(row.querySelector('.max-cgpa').value).toFixed(2),
+                    waiver: row.querySelector('.slab-waiver').value
+                });
+            });
+
+            if (isEditing) {
+                const id = editSchIdInput.value;
+                const index = scholarships.findIndex(s => s.id === id);
+                if (index !== -1) {
+                    scholarships[index].name = document.getElementById('schName').value;
+                    scholarships[index].type = document.getElementById('schType').value;
+                    scholarships[index].desc = document.getElementById('schDesc').value;
+                    scholarships[index].slabs = extractedSlabs;
+                }
+                alert('Scholarship criteria configurations updated smoothly.');
+            } else {
+                const nextIdNum = scholarships.length ? Math.max(...scholarships.map(s => parseInt(s.id.split('-')[1]))) + 1 : 1;
+                const nextIdStr = `SCH-${String(nextIdNum).padStart(2, '0')}`;
+
+                const newScheme = {
+                    id: nextIdStr,
+                    name: document.getElementById('schName').value,
+                    type: document.getElementById('schType').value,
+                    desc: document.getElementById('schDesc').value,
+                    slabs: extractedSlabs
+                };
+                scholarships.push(newScheme);
+                alert('New Scholarship program registered.');
+            }
+
+            renderTable();
+            resetFormState();
+        });
+
+        window.deleteScholarship = function (id) {
+            if (confirm(`Are you sure you want to drop dataset index profile ${id}?`)) {
+                scholarships = scholarships.filter(s => s.id !== id);
+                renderTable();
+                if (isEditing && editSchIdInput.value === id) {
+                    resetFormState();
+                }
+            }
+        };
+    </script>
 </body>
+
 </html>

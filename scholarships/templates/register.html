@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | ELEVATE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'auth.css' %}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="left-panel">
+        <a href="index.html" class="back-home">← Back to Home</a>
+        <p class="welcome-text">Welcome to</p>
+        <h1 class="brand-name">ELEVATE</h1>
+        <p class="tagline">
+            Create your account.<br>
+            Unlock opportunities.<br>
+            Begin your journey.
+        </p>
+        <div class="divider"></div>
+        <div class="features">
+            <p>Auto eligibility check</p>
+            <p>Monitor your application status anytime</p>
+            <p>Get notified on final decisions instantly</p>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div class="form-container">
+
+            <h2>Create Your Account</h2>
+            <p class="form-subtitle">Join ELEVATE and start your journey</p>
+
+            <form method="POST" action="{% url 'register' %}">
+              {% csrf_token %}
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" placeholder="Your full name" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Student ID</label>
+                    <input type="text" name="university_id" placeholder="Your student ID" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Email address</label>
+                    <input type="email" name="email" placeholder="your@email.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <div style="position:relative;">
+                        <input type="password" name="password" id="password2" placeholder="Create a password"
+                               required style="width:100%; padding-right:45px;">
+                        <span onclick="let i=document.getElementById('password2');i.type=i.type==='password'?'text':'password'"
+                              style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#aaa;font-size:1rem;">
+                            👁
+                        </span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Confirm Password</label>
+                    <div style="position:relative;">
+                        <input type="password" name="confirm_password" id="password3" placeholder="Repeat your password"
+                               required style="width:100%; padding-right:45px;">
+                        <span onclick="let i=document.getElementById('password3');i.type=i.type==='password'?'text':'password'"
+                              style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#aaa;font-size:1rem;">
+                            👁
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit">Create Account →</button>
+            </form >
+
+            <p class="auth-link">
+                Already have an account? <a href="{% url 'login' %}">Sign in</a>
+            </p>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

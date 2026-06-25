@@ -3,249 +3,679 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Deadlines - ELEVATE Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet">
-    
+    <title>Manage Deadlines | ELEVATE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --primary: #2F6F6F;
             --dark: #244B52;
             --gold: #C2A878;
             --cream: #F8F6F1;
             --grey: #ECEAE4;
+            --white: #FFFFFF;
+            --text: #2B2B2B;
+            --muted: #7a8a8c;
             --sidebar-width: 260px;
         }
 
         body {
             font-family: 'DM Sans', sans-serif;
             background: var(--cream);
-            color: var(--dark);
-            margin: 0;
-            padding: 0;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
         }
 
-        /* FIXED SIDEBAR COMPONENT DESIGN */
         .sidebar {
-            background: linear-gradient(180deg, #244B52 0%, #1a3840 100%);
             width: var(--sidebar-width);
-            position: fixed;
-            top: 0; bottom: 0; left: 0;
-            z-index: 1000;
+            min-height: 100vh;
+            background: linear-gradient(170deg, #2a5a60 0%, #244B52 60%, #1a3840 100%);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 40px 0 30px 0;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.05);
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
             overflow: hidden;
         }
 
-        /* DECORATIVE BACKGROUND GLOW */
         .sidebar::before {
-            content: ''; position: absolute; width: 260px; height: 260px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.03); top: -60px; right: -80px; pointer-events: none; z-index: 1;
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: rgba(194, 168, 120, 0.07);
+            pointer-events: none;
         }
-        .sidebar::after {
-            content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.02); bottom: -40px; left: -60px; pointer-events: none; z-index: 1;
-        }
-        
-        .sidebar > div { position: relative; z-index: 2; }
-        .sidebar-footer { position: relative; z-index: 2; padding: 0 20px; }
-        .sidebar-brand { padding: 0 24px; margin-bottom: 40px; }
 
-        .brand-title {
+        .sidebar-logo {
+            padding: 36px 28px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo h2 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.8rem; letter-spacing: 2px; font-weight: 600;
-            color: white; line-height: 1.2;
+            font-size: 1.9rem;
+            letter-spacing: 6px;
+            color: var(--gold);
+            font-weight: 600;
         }
 
-        .brand-subtitle {
-            font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.5px;
-            color: var(--gold); font-weight: 700; display: block; margin-top: 5px; opacity: 0.9;
+        .sidebar-logo p {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 2px;
         }
 
-        .sidebar-menu { flex-grow: 1; }
-        .sidebar a {
-            color: rgba(255, 255, 255, 0.7); text-decoration: none; padding: 14px 24px;
-            display: block; font-size: 0.95rem; font-weight: 400; transition: 0.2s ease-in-out; letter-spacing: 0.3px;
-        }
-        .sidebar a i { width: 24px; }
-        .sidebar a:hover { background: rgba(194, 168, 120, 0.08); color: var(--gold); }
-        .sidebar a.active {
-            background: rgba(194, 168, 120, 0.15); color: var(--gold);
-            font-weight: 500; border-left: 4px solid var(--gold);
+        .sidebar-user {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .btn-logout {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            background: rgba(198, 40, 40, 0.1); color: #ff8a80 !important; border: 1px solid rgba(198, 40, 40, 0.2);
-            padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; transition: 0.2s; width: 100%; text-decoration: none;
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
         }
-        .btn-logout:hover { background: #C62828; color: white !important; }
 
-        /* MAIN CONTENT AREA - PUSHED BY SIDEBAR WIDTH */
-        .main-content {
+        .user-info p {
+            font-size: 0.85rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-info span {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 16px;
+        }
+
+        .nav-label {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            padding: 0 12px;
+            margin: 16px 0 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: .2s;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.88rem;
+            font-weight: 400;
+            text-decoration: none;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--gold);
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-bottom {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.88rem;
+            transition: .2s;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            color: #e07070;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .main {
             margin-left: var(--sidebar-width);
-            padding: 50px;
+            flex: 1;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .text-theme { font-family: 'Cormorant Garamond', serif; color: var(--dark); font-weight: 600; }
-        h2.text-theme { font-size: 2.4rem; letter-spacing: 0.5px; }
-        h5.text-theme { font-size: 1.3rem; border-bottom: 1px solid var(--grey); padding-bottom: 10px; }
-        
-        .form-card, .table-container { 
-            border: 1px solid var(--grey); border-radius: 12px; 
-            background: white; padding: 30px; box-shadow: 0 4px 20px rgba(36, 75, 82, 0.02); 
+        .page-content {
+            padding: 40px 48px;
+            flex: 1;
         }
 
-        .form-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--dark); opacity: 0.8; margin-bottom: 6px; }
-        .form-control, .form-select { border: 1px solid var(--grey); font-size: 0.9rem; padding: 11px 14px; color: var(--dark); border-radius: 6px; }
-        .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(47, 111, 111, 0.1); }
-        
-        .btn-theme { background: var(--primary); color: white !important; border: none; font-size: 0.9rem; font-weight: 500; padding: 12px 24px; border-radius: 6px; transition: 0.2s; }
-        .btn-theme:hover { background: var(--dark); }
-
-        /* DATA TABLE CUSTOM FORMATTING */
-        .table th {
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px;
-            color: rgba(36, 75, 82, 0.6); padding: 14px 16px; border-bottom: 1.5px solid var(--grey) !important;
+        .page-heading {
+            margin-bottom: 32px;
         }
-        .table td { padding: 16px; font-size: 0.9rem; border-bottom: 1px solid var(--cream); }
 
-        .badge-active { background: rgba(46, 125, 50, 0.08); color: #2E7D32; font-size: 0.8rem; padding: 5px 10px; border-radius: 4px; font-weight: 500; }
-        .badge-expired { background: rgba(198, 40, 40, 0.06); color: #C62828; font-size: 0.8rem; padding: 5px 10px; border-radius: 4px; font-weight: 500; }
-
-        /* Action Buttons Grid Layout */
-        .action-btn-group { display: flex; gap: 8px; justify-content: center; }
-
-        .btn-action-edit {
-            background: rgba(47, 111, 111, 0.05); color: var(--primary); border: 1px solid rgba(47, 111, 111, 0.1);
-            padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; transition: 0.2s; text-decoration: none;
+        .page-heading p.eyebrow {
+            font-size: 0.72rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 6px;
         }
-        .btn-action-edit:hover { background: var(--primary); color: white !important; }
 
-        .btn-action-delete {
-            background: rgba(198, 40, 40, 0.05); color: #C62828; border: 1px solid rgba(198, 40, 40, 0.1);
-            padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; transition: 0.2s; text-decoration: none;
+        .page-heading h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.1rem;
+            color: var(--dark);
+            font-weight: 600;
         }
-        .btn-action-delete:hover { background: #C62828; color: white !important; }
+
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 28px;
+            border-left: 5px solid var(--gold); 
+            box-shadow: 0 4px 24px rgba(194, 168, 120, 0.06); 
+        }
+
+        .form-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--grey);
+            padding-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-card label {
+            display: block;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-card input[type="text"],
+        .form-card input[type="date"],
+        .form-card select {
+            width: 100%;
+            border: 1px solid var(--grey);
+            background: var(--cream);
+            font-size: 0.88rem;
+            font-family: 'DM Sans', sans-serif;
+            padding: 11px 14px;
+            color: var(--dark);
+            border-radius: 8px;
+            outline: none;
+            transition: .2s;
+        }
+
+        .form-card input:focus,
+        .form-card select:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(47, 111, 111, 0.1);
+        }
+
+        .form-actions {
+            grid-column: span 2;
+            text-align: right;
+            margin-top: 4px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 11px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-submit:hover {
+            background: var(--dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--grey);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 11px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--grey);
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .section-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--grey);
+            padding-bottom: 10px;
+        }
+
+        .deadline-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .deadline-table th {
+            text-align: left;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0 16px 14px;
+            border-bottom: 1px solid var(--grey);
+            font-weight: 500;
+        }
+
+        .deadline-table td {
+            padding: 16px;
+            font-size: 0.88rem;
+            color: var(--text);
+            border-bottom: 1px solid var(--grey);
+            vertical-align: middle;
+        }
+
+        .deadline-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .deadline-table tr:hover td {
+            background: var(--cream);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-open {
+            background: rgba(40, 160, 100, 0.12);
+            color: #1e7a50;
+        }
+
+        .status-expired {
+            background: rgba(198, 40, 40, 0.1);
+            color: #C62828;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 20px;
+            transition: .2s;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .action-btn.edit {
+            background: transparent;
+            color: var(--dark);
+            border: 1px solid var(--grey);
+        }
+
+        .action-btn.edit:hover {
+            background: var(--cream);
+            border-color: var(--gold);
+        }
+
+        .action-btn.delete {
+            background: rgba(198, 40, 40, 0.05);
+            color: #C62828;
+            border: 1px solid rgba(198, 40, 40, 0.1);
+        }
+
+        .action-btn.delete:hover {
+            background: #C62828;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width, .form-actions { grid-column: span 1; }
+        }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <div>
-        <div class="sidebar-brand">
-            <div class="brand-title"><i class="fa-solid fa-graduation-cap me-2" style="color: var(--gold);"></i> ELEVATE</div>
-            <span class="brand-subtitle">ADMIN PANEL</span>
-        </div>
-        
-        <div class="sidebar-menu">
-            <a href="admin_dashboard.html"><i class="fa-solid fa-chart-pie me-2"></i> Dashboard</a>
-            <a href="manage_scholarships.html"><i class="fa-solid fa-award me-2"></i> Manage Scholarships</a>
-            <a href="view_applications.html"><i class="fa-solid fa-file-invoice me-2"></i> View Applications</a>
-            <a href="manage_deadlines.html" class="active"><i class="fa-solid fa-calendar-days me-2"></i> Manage Deadlines</a>
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <h2>ELEVATE</h2>
+        <p>Scholarship Portal</p>
+    </div>
+
+    <div class="sidebar-user">
+        <div class="user-avatar">A</div>
+        <div class="user-info">
+            <p>Admin</p>
+            <span>Administrator</span>
         </div>
     </div>
-    
-    <div class="sidebar-footer">
-        <a href="login.html" class="btn-logout">
-            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+
+    <nav class="sidebar-nav">
+        <p class="nav-label">Main</p>
+        <a href="admin_dashboard.html" class="nav-item">
+            <span class="nav-icon">⊞</span> Dashboard
+        </a>
+        <a href="manage_scholarships.html" class="nav-item">
+            <span class="nav-icon">✦</span> Manage Scholarships
+        </a>
+        <a href="view_applications.html" class="nav-item">
+            <span class="nav-icon">◈</span> View Applications
+        </a>
+        <a href="manage_deadlines.html" class="nav-item active">
+            <span class="nav-icon">○</span> Manage Deadlines
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <a href="login.html" class="logout-btn">
+            <span class="nav-icon">→</span> Sign Out
         </a>
     </div>
-</div>
+</aside>
 
-<main class="main-content">
-    
-    <h2 class="text-theme mb-4"><i class="fa-solid fa-calendar-days me-2" style="color: var(--gold); font-size: 2rem;"></i> Manage Deadlines</h2>
+<div class="main">
 
-    <div class="form-card mb-5">
-        <h5 class="text-theme mb-4">Set Scholarship Application Timeline</h5>
-        <form>
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Select Scholarship Program</label>
-                    <select class="form-select" required>
-                        <option value="" disabled selected>Choose a scheme...</option>
-                        <option value="1">Academic / Merit Scholarship</option>
-                        <option value="2">Need-Based Scholarship</option>
-                        <option value="3">Sibling Scholarship</option>
-                        <option value="4">Entrance Scholarship</option>
-                    </select>
-                </div>
+    <div class="page-content">
 
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Academic Term</label>
-                    <input type="text" class="form-control" placeholder="e.g., Autumn 2026" required>
-                </div>
+        <div class="page-heading">
+            <p class="eyebrow">Application Timelines</p>
+            <h1>Manage System Deadlines</h1>
+        </div>
 
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Start Date</label>
-                    <input type="date" class="form-control" required>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">End Date (Deadline)</label>
-                    <input type="date" class="form-control" required>
-                </div>
+        <div class="form-card">
+            <h3 id="formTitle">Set Scholarship Application Timeline</h3>
+            <form id="deadlineForm">
+                <input type="hidden" id="editDeadlineId" value="">
                 
-                <div class="col-12 text-end">
-                    <button type="submit" class="btn btn-theme px-4"><i class="fa-solid fa-clock me-2"></i>Publish Timeline</button>
-                </div>
-            </div>
-        </form>
-    </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Select Scholarship Program</label>
+                        <select id="schSelect" required>
+                            <option value="" disabled selected>Choose a scheme...</option>
+                            <option value="Academic / Merit Scholarship">Academic / Merit Scholarship</option>
+                            <option value="Need-Based Scholarship">Need-Based Scholarship</option>
+                            <option value="Sibling Scholarship">Sibling Scholarship</option>
+                            <option value="Entrance Scholarship">Entrance Scholarship</option>
+                        </select>
+                    </div>
 
-    <div class="table-container">
-        <h5 class="text-theme mb-4">Active & Configured Timelines</h5>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
+                    <div class="form-group">
+                        <label>Academic Term</label>
+                        <input type="text" id="termInput" placeholder="e.g., Autumn 2026" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="startDateInput" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>End Date (Deadline)</label>
+                        <input type="date" id="endDateInput" required>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelEditBtn" style="display: none;">Cancel Edit</button>
+                        <button type="submit" class="btn-submit" id="submitFormBtn">Publish Timeline</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="section-card">
+            <h3>Active & Configured Timelines</h3>
+            <table class="deadline-table">
                 <thead>
                     <tr>
-                        <th style="width: 30%">Scholarship</th>
-                        <th style="width: 15%">Academic Term</th>
-                        <th style="width: 15%">Start Date</th>
-                        <th style="width: 15%">End Date</th>
-                        <th style="width: 10%; text-align: center;">Status</th>
-                        <th style="width: 15%; text-align: center;">Action</th>
+                        <th>Scholarship</th>
+                        <th>Academic Term</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th style="text-align:right;">Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Academic / Merit Scholarship</strong></td>
-                        <td>Autumn 2026</td>
-                        <td>June 01, 2026</td>
-                        <td>July 15, 2026</td>
-                        <td style="text-align: center;"><span class="badge-active">Open</span></td>
-                        <td style="text-align: center;">
-                            <div class="action-btn-group">
-                                <a href="#" class="btn-action-edit" title="Edit Timeline"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="#" class="btn-action-delete" title="Delete Timeline"><i class="fa-solid fa-trash-can"></i></a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Need-Based Scholarship</strong></td>
-                        <td>Summer 2026</td>
-                        <td>May 10, 2026</td>
-                        <td>June 05, 2026</td>
-                        <td style="text-align: center;"><span class="badge-expired">Expired</span></td>
-                        <td style="text-align: center;">
-                            <div class="action-btn-group">
-                                <a href="#" class="btn-action-edit" title="Edit Timeline"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="#" class="btn-action-delete" title="Delete Timeline"><i class="fa-solid fa-trash-can"></i></a>
-                            </div>
-                        </td>
-                    </tr>
+                <tbody id="deadlineTableBody">
                 </tbody>
             </table>
         </div>
-    </div>
-</main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+</div>
+
+<script>
+    let timelines = [
+        {
+            id: "DL-01",
+            scholarshipName: "Academic / Merit Scholarship",
+            term: "Autumn 2026",
+            startDate: "2026-06-01",
+            endDate: "2026-07-15"
+        },
+        {
+            id: "DL-02",
+            scholarshipName: "Need-Based Scholarship",
+            term: "Summer 2026",
+            startDate: "2026-05-10",
+            endDate: "2026-06-05"
+        }
+    ];
+
+    let isEditing = false;
+
+    const deadlineForm = document.getElementById('deadlineForm');
+    const formTitle = document.getElementById('formTitle');
+    const submitFormBtn = document.getElementById('submitFormBtn');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const editDeadlineIdInput = document.getElementById('editDeadlineId');
+    const tableBody = document.getElementById('deadlineTableBody');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderTable();
+    });
+
+    function formatDateDisplay(dateString) {
+        const options = { year: 'numeric', month: 'long', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+    }
+
+    function renderTable() {
+        tableBody.innerHTML = '';
+        const today = new Date().toISOString().split('T')[0];
+
+        timelines.forEach(tl => {
+            const isExpired = today > tl.endDate;
+            const statusClass = isExpired ? 'status-expired' : 'status-open';
+            const statusText = isExpired ? 'Expired' : 'Open';
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${tl.scholarshipName}</strong></td>
+                <td>${tl.term}</td>
+                <td>${formatDateDisplay(tl.startDate)}</td>
+                <td>${formatDateDisplay(tl.endDate)}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>
+                    <div class="action-btns">
+                        <a class="action-btn edit" onclick="editTimeline('${tl.id}')">Edit</a>
+                        <a class="action-btn delete" onclick="deleteTimeline('${tl.id}')">Delete</a>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    window.editTimeline = function(id) {
+        const item = timelines.find(t => t.id === id);
+        if (!item) return;
+
+        isEditing = true;
+        formTitle.textContent = "Edit Scholarship Application Timeline";
+        submitFormBtn.textContent = "Update Timeline";
+        cancelEditBtn.style.display = 'inline-block';
+        editDeadlineIdInput.value = item.id;
+
+        document.getElementById('schSelect').value = item.scholarshipName;
+        document.getElementById('termInput').value = item.term;
+        document.getElementById('startDateInput').value = item.startDate;
+        document.getElementById('endDateInput').value = item.endDate;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    cancelEditBtn.addEventListener('click', resetFormState);
+
+    function resetFormState() {
+        isEditing = false;
+        formTitle.textContent = "Set Scholarship Application Timeline";
+        submitFormBtn.textContent = "Publish Timeline";
+        cancelEditBtn.style.display = 'none';
+        editDeadlineIdInput.value = '';
+        deadlineForm.reset();
+    }
+
+    deadlineForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const schName = document.getElementById('schSelect').value;
+        const term = document.getElementById('termInput').value;
+        const startDate = document.getElementById('startDateInput').value;
+        const endDate = document.getElementById('endDateInput').value;
+
+        if (isEditing) {
+            const id = editDeadlineIdInput.value;
+            const index = timelines.findIndex(t => t.id === id);
+            if (index !== -1) {
+                timelines[index].scholarshipName = schName;
+                timelines[index].term = term;
+                timelines[index].startDate = startDate;
+                timelines[index].endDate = endDate;
+            }
+            alert('Timeline criteria configurations updated smoothly.');
+        } else {
+            const nextIdNum = timelines.length ? Math.max(...timelines.map(t => parseInt(t.id.split('-')[1]))) + 1 : 1;
+            const nextIdStr = `DL-${String(nextIdNum).padStart(2, '0')}`;
+
+            const newTimeline = {
+                id: nextIdStr,
+                scholarshipName: schName,
+                term: term,
+                startDate: startDate,
+                endDate: endDate
+            };
+            timelines.push(newTimeline);
+            alert('New active timeline published successfully.');
+        }
+
+        renderTable();
+        resetFormState();
+    });
+
+    window.deleteTimeline = function(id) {
+        if (confirm(`Are you sure you want to drop deadline track profile ${id}?`)) {
+            timelines = timelines.filter(t => t.id !== id);
+            renderTable();
+            if (isEditing && editDeadlineIdInput.value === id) {
+                resetFormState();
+            }
+        }
+    };
+</script>
 </body>
 </html>
