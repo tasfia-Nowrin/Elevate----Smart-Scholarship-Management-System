@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Deadlines - ELEVATE Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2F6F6F;
+            --dark: #244B52;
+            --gold: #C2A878;
+            --cream: #F8F6F1;
+            --grey: #ECEAE4;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* FIXED SIDEBAR COMPONENT DESIGN */
+        .sidebar {
+            background: linear-gradient(180deg, #244B52 0%, #1a3840 100%);
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 0 30px 0;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        /* DECORATIVE BACKGROUND GLOW */
+        .sidebar::before {
+            content: ''; position: absolute; width: 260px; height: 260px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03); top: -60px; right: -80px; pointer-events: none; z-index: 1;
+        }
+        .sidebar::after {
+            content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.02); bottom: -40px; left: -60px; pointer-events: none; z-index: 1;
+        }
+        
+        .sidebar > div { position: relative; z-index: 2; }
+        .sidebar-footer { position: relative; z-index: 2; padding: 0 20px; }
+        .sidebar-brand { padding: 0 24px; margin-bottom: 40px; }
+
+        .brand-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem; letter-spacing: 2px; font-weight: 600;
+            color: white; line-height: 1.2;
+        }
+
+        .brand-subtitle {
+            font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--gold); font-weight: 700; display: block; margin-top: 5px; opacity: 0.9;
+        }
+
+        .sidebar-menu { flex-grow: 1; }
+        .sidebar a {
+            color: rgba(255, 255, 255, 0.7); text-decoration: none; padding: 14px 24px;
+            display: block; font-size: 0.95rem; font-weight: 400; transition: 0.2s ease-in-out; letter-spacing: 0.3px;
+        }
+        .sidebar a i { width: 24px; }
+        .sidebar a:hover { background: rgba(194, 168, 120, 0.08); color: var(--gold); }
+        .sidebar a.active {
+            background: rgba(194, 168, 120, 0.15); color: var(--gold);
+            font-weight: 500; border-left: 4px solid var(--gold);
+        }
+
+        .btn-logout {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: rgba(198, 40, 40, 0.1); color: #ff8a80 !important; border: 1px solid rgba(198, 40, 40, 0.2);
+            padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; transition: 0.2s; width: 100%; text-decoration: none;
+        }
+        .btn-logout:hover { background: #C62828; color: white !important; }
+
+        /* MAIN CONTENT AREA - PUSHED BY SIDEBAR WIDTH */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 50px;
+            min-height: 100vh;
+        }
+
+        .text-theme { font-family: 'Cormorant Garamond', serif; color: var(--dark); font-weight: 600; }
+        h2.text-theme { font-size: 2.4rem; letter-spacing: 0.5px; }
+        h5.text-theme { font-size: 1.3rem; border-bottom: 1px solid var(--grey); padding-bottom: 10px; }
+        
+        .form-card, .table-container { 
+            border: 1px solid var(--grey); border-radius: 12px; 
+            background: white; padding: 30px; box-shadow: 0 4px 20px rgba(36, 75, 82, 0.02); 
+        }
+
+        .form-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--dark); opacity: 0.8; margin-bottom: 6px; }
+        .form-control, .form-select { border: 1px solid var(--grey); font-size: 0.9rem; padding: 11px 14px; color: var(--dark); border-radius: 6px; }
+        .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(47, 111, 111, 0.1); }
+        
+        .btn-theme { background: var(--primary); color: white !important; border: none; font-size: 0.9rem; font-weight: 500; padding: 12px 24px; border-radius: 6px; transition: 0.2s; }
+        .btn-theme:hover { background: var(--dark); }
+
+        /* DATA TABLE CUSTOM FORMATTING */
+        .table th {
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px;
+            color: rgba(36, 75, 82, 0.6); padding: 14px 16px; border-bottom: 1.5px solid var(--grey) !important;
+        }
+        .table td { padding: 16px; font-size: 0.9rem; border-bottom: 1px solid var(--cream); }
+
+        .badge-active { background: rgba(46, 125, 50, 0.08); color: #2E7D32; font-size: 0.8rem; padding: 5px 10px; border-radius: 4px; font-weight: 500; }
+        .badge-expired { background: rgba(198, 40, 40, 0.06); color: #C62828; font-size: 0.8rem; padding: 5px 10px; border-radius: 4px; font-weight: 500; }
+
+        /* Action Buttons Grid Layout */
+        .action-btn-group { display: flex; gap: 8px; justify-content: center; }
+
+        .btn-action-edit {
+            background: rgba(47, 111, 111, 0.05); color: var(--primary); border: 1px solid rgba(47, 111, 111, 0.1);
+            padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; transition: 0.2s; text-decoration: none;
+        }
+        .btn-action-edit:hover { background: var(--primary); color: white !important; }
+
+        .btn-action-delete {
+            background: rgba(198, 40, 40, 0.05); color: #C62828; border: 1px solid rgba(198, 40, 40, 0.1);
+            padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; transition: 0.2s; text-decoration: none;
+        }
+        .btn-action-delete:hover { background: #C62828; color: white !important; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div>
+        <div class="sidebar-brand">
+            <div class="brand-title"><i class="fa-solid fa-graduation-cap me-2" style="color: var(--gold);"></i> ELEVATE</div>
+            <span class="brand-subtitle">ADMIN PANEL</span>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="admin_dashboard.html"><i class="fa-solid fa-chart-pie me-2"></i> Dashboard</a>
+            <a href="manage_scholarships.html"><i class="fa-solid fa-award me-2"></i> Manage Scholarships</a>
+            <a href="view_applications.html"><i class="fa-solid fa-file-invoice me-2"></i> View Applications</a>
+            <a href="manage_deadlines.html" class="active"><i class="fa-solid fa-calendar-days me-2"></i> Manage Deadlines</a>
+        </div>
+    </div>
+    
+    <div class="sidebar-footer">
+        <a href="login.html" class="btn-logout">
+            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </a>
+    </div>
+</div>
+
+<main class="main-content">
+    
+    <h2 class="text-theme mb-4"><i class="fa-solid fa-calendar-days me-2" style="color: var(--gold); font-size: 2rem;"></i> Manage Deadlines</h2>
+
+    <div class="form-card mb-5">
+        <h5 class="text-theme mb-4">Set Scholarship Application Timeline</h5>
+        <form>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Select Scholarship Program</label>
+                    <select class="form-select" required>
+                        <option value="" disabled selected>Choose a scheme...</option>
+                        <option value="1">Academic / Merit Scholarship</option>
+                        <option value="2">Need-Based Scholarship</option>
+                        <option value="3">Sibling Scholarship</option>
+                        <option value="4">Entrance Scholarship</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Academic Term</label>
+                    <input type="text" class="form-control" placeholder="e.g., Autumn 2026" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Start Date</label>
+                    <input type="date" class="form-control" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">End Date (Deadline)</label>
+                    <input type="date" class="form-control" required>
+                </div>
+                
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-theme px-4"><i class="fa-solid fa-clock me-2"></i>Publish Timeline</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <h5 class="text-theme mb-4">Active & Configured Timelines</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 30%">Scholarship</th>
+                        <th style="width: 15%">Academic Term</th>
+                        <th style="width: 15%">Start Date</th>
+                        <th style="width: 15%">End Date</th>
+                        <th style="width: 10%; text-align: center;">Status</th>
+                        <th style="width: 15%; text-align: center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Academic / Merit Scholarship</strong></td>
+                        <td>Autumn 2026</td>
+                        <td>June 01, 2026</td>
+                        <td>July 15, 2026</td>
+                        <td style="text-align: center;"><span class="badge-active">Open</span></td>
+                        <td style="text-align: center;">
+                            <div class="action-btn-group">
+                                <a href="#" class="btn-action-edit" title="Edit Timeline"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="#" class="btn-action-delete" title="Delete Timeline"><i class="fa-solid fa-trash-can"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Need-Based Scholarship</strong></td>
+                        <td>Summer 2026</td>
+                        <td>May 10, 2026</td>
+                        <td>June 05, 2026</td>
+                        <td style="text-align: center;"><span class="badge-expired">Expired</span></td>
+                        <td style="text-align: center;">
+                            <div class="action-btn-group">
+                                <a href="#" class="btn-action-edit" title="Edit Timeline"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="#" class="btn-action-delete" title="Delete Timeline"><i class="fa-solid fa-trash-can"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | ELEVATE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="left-panel">
+        <a href="index.html" class="back-home">← Back to Home</a>
+        <p class="welcome-text">Welcome back to</p>
+        <h1 class="brand-name">ELEVATE</h1>
+        <p class="tagline">
+            Discover opportunities.<br>
+            Apply with confidence.<br>
+            Achieve your goals.
+        </p>
+        <div class="divider"></div>
+        <div class="features">
+            <p>Explore Opportunities</p>
+            <p>Submit Applications</p>
+            <p>Track Your Progress</p>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div class="form-container">
+
+            <h2>Sign In</h2>
+            <p class="form-subtitle">Enter your credentials to continue</p>
+
+            <form action="student_dashboard.html">
+                <div class="input-group">
+                    <label>Email address</label>
+                    <input type="email" placeholder="your@email.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <div style="position:relative;">
+                        <input type="password" id="password" placeholder="Enter your password"
+                               required style="width:100%; padding-right:45px;">
+                        <span onclick="let i=document.getElementById('password');i.type=i.type==='password'?'text':'password'"
+                              style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#aaa;font-size:1rem;">
+                            👁
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label><input type="checkbox" style="width:auto;padding:0;border:none;box-shadow:none;"> Remember me</label>
+                    <a href="#">Forgot password?</a>
+                </div>
+
+                <button type="submit">Sign in →</button>
+            </form>
+
+            <p class="auth-link">
+                Don't have an account? <a href="register.html">Create one</a>
+            </p>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Applications - ELEVATE Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet">   
+    <style>
+        :root {
+            --primary: #2F6F6F;
+            --dark: #244B52;
+            --gold: #C2A878;
+            --cream: #F8F6F1;
+            --grey: #ECEAE4;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+        }
+        .sidebar {
+            background: linear-gradient(180deg, #244B52 0%, #1a3840 100%);
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 0 30px 0;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: ''; position: absolute; width: 260px; height: 260px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03); top: -60px; right: -80px; pointer-events: none; z-index: 1;
+        }
+        .sidebar::after {
+            content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.02); bottom: -40px; left: -60px; pointer-events: none; z-index: 1;
+        }
+        
+        .sidebar > div { position: relative; z-index: 2; }
+        .sidebar-footer { position: relative; z-index: 2; padding: 0 20px; }
+        .sidebar-brand { padding: 0 24px; margin-bottom: 40px; }
+
+        .brand-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem; letter-spacing: 2px; font-weight: 600;
+            color: white; line-height: 1.2;
+        }
+
+        .brand-subtitle {
+            font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--gold); font-weight: 700; display: block; margin-top: 5px; opacity: 0.9;
+        }
+
+        .sidebar-menu { flex-grow: 1; }
+        
+        .sidebar a {
+            color: rgba(255, 255, 255, 0.7); text-decoration: none; padding: 14px 24px;
+            display: block; font-size: 0.95rem; font-weight: 400; transition: 0.2s ease-in-out; letter-spacing: 0.3px;
+        }
+
+        .sidebar a i { width: 24px; }
+        .sidebar a:hover { background: rgba(194, 168, 120, 0.08); color: var(--gold); }
+        
+        .sidebar a.active {
+            background: rgba(194, 168, 120, 0.15); color: var(--gold);
+            font-weight: 500; border-left: 4px solid var(--gold);
+        }
+
+        .btn-logout {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: rgba(198, 40, 40, 0.1); color: #ff8a80 !important; border: 1px solid rgba(198, 40, 40, 0.2);
+            padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; transition: 0.2s; width: 100%; text-decoration: none;
+        }
+        .btn-logout:hover { background: #C62828; color: white !important; }
+
+        /* MAIN CONTENT AREA - PUSHED BY SIDEBAR WIDTH */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 50px;
+            min-height: 100vh;
+        }
+
+        .text-theme { font-family: 'Cormorant Garamond', serif; color: var(--dark); font-weight: 600; }
+        h2.text-theme { font-size: 2.4rem; letter-spacing: 0.5px; }
+        
+        .filter-card, .table-container { 
+            border: 1px solid var(--grey); border-radius: 12px; 
+            background: white; padding: 26px; box-shadow: 0 4px 20px rgba(36, 75, 82, 0.02); 
+        }
+
+        .form-control, .form-select { border: 1px solid var(--grey); font-size: 0.9rem; padding: 11px 14px; color: var(--dark); border-radius: 6px; }
+        .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(47, 111, 111, 0.1); }
+        
+        /* THEME BUTTONS */
+        .btn-theme { background: var(--primary); color: white !important; border: none; font-size: 0.9rem; padding: 11px 16px; border-radius: 6px; transition: 0.2s; }
+        .btn-theme:hover { background: var(--dark); }
+        
+        .btn-secondary-custom { 
+            background: transparent; color: var(--dark) !important; 
+            border: 1px solid var(--grey); font-size: 0.85rem; 
+            padding: 8px 16px; border-radius: 6px; transition: 0.2s; 
+            text-decoration: none; display: inline-block;
+        }
+        .btn-secondary-custom:hover { background: var(--cream); border-color: var(--gold); }
+
+        /* DATA TABLE CUSTOM FORMATTING */
+        .table th {
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px;
+            color: rgba(36, 75, 82, 0.6); padding: 14px 16px; border-bottom: 1.5px solid var(--grey) !important;
+        }
+        .table td { padding: 16px; font-size: 0.9rem; border-bottom: 1px solid var(--cream); }
+
+        /* STATUS BADGES */
+        .badge-pending { background: rgba(194, 168, 120, 0.15); color: #9E7D3B; font-size: 0.8rem; padding: 5px 10px; border-radius: 4px; font-weight: 500; display: inline-block; }
+        .badge-approved { background: rgba(46, 125, 50, 0.08); color: #2E7D32; font-size: 0.8rem; padding: 5px 10px; border-radius: 4px; font-weight: 500; display: inline-block; }
+        .badge-rejected { background: rgba(198, 40, 40, 0.06); color: #C62828; font-size: 0.8rem; padding: 5px 10px; border-radius: 4px; font-weight: 500; display: inline-block; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div>
+        <div class="sidebar-brand">
+            <div class="brand-title"><i class="fa-solid fa-graduation-cap me-2" style="color: var(--gold);"></i> ELEVATE</div>
+            <span class="brand-subtitle">ADMIN PANEL</span>
+        </div>
+        <div class="sidebar-menu">
+            <a href="admin_dashboard.html"><i class="fa-solid fa-chart-pie me-2"></i> Dashboard</a>
+            <a href="manage_scholarships.html"><i class="fa-solid fa-award me-2"></i> Manage Scholarships</a>
+            <a href="view_applications.html" class="active"><i class="fa-solid fa-file-invoice me-2"></i> View Applications</a>
+            <a href="manage_deadlines.html"><i class="fa-solid fa-calendar-days me-2"></i> Manage Deadlines</a>
+        </div>
+    </div>
+    <div class="sidebar-footer">
+        <a href="login.html" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+    </div>
+</div>
+<main class="main-content">
+    <h2 class="text-theme mb-4"><i class="fa-solid fa-folder-open me-2" style="color: var(--gold); font-size: 2rem;"></i> Student Applications</h2>
+    <div class="filter-card mb-4">
+        <form id="filterForm" class="row g-3 align-items-center" onsubmit="event.preventDefault(); filterTable();">
+            <div class="col-md-4">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by Student Name or ID...">
+            </div>
+            <div class="col-md-4">
+                <select id="schemeSelect" class="form-select" onchange="filterTable()">
+                    <option selected value="">All Scholarships</option>
+                    <option value="Academic / Merit Scholarship">Academic / Merit Scholarship</option>
+                    <option value="Need-Based Scholarship">Need-Based Scholarship</option>
+                    <option value="Sibling Scholarship">Sibling Scholarship</option>
+                    <option value="Entrance Scholarship">Entrance Scholarship</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="statusSelect" class="form-select" onchange="filterTable()">
+                    <option selected value="">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-theme w-100"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="applicationsTable">
+                <thead>
+                    <tr>
+                        <th>App ID</th>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Scholarship Program</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                        <th style="text-align: center;">Action</th> </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>#APP-1024</strong></td>
+                        <td>C231045</td>
+                        <td>Sara Khan</td>
+                        <td>Academic / Merit Scholarship</td>
+                        <td>June 04, 2026</td>
+                        <td><span class="badge-pending">Pending</span></td>
+                        <td style="text-align: center;"><a href="application_details.html?id=1024" class="btn btn-theme px-3">Review Details</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>#APP-1023</strong></td>
+                        <td>C221089</td>
+                        <td>Nusrat Jahan</td>
+                        <td>Need-Based Scholarship</td>
+                        <td>June 02, 2026</td>
+                        <td><span class="badge-approved">Approved</span></td>
+                        <td style="text-align: center;"><a href="application_details.html?id=1023" class="btn btn-secondary-custom">View Details</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>#APP-1022</strong></td>
+                        <td>B243402</td>
+                        <td>Afra Iqbal</td>
+                        <td>Sibling Scholarship</td>
+                        <td>May 28, 2026</td>
+                        <td><span class="badge-rejected">Rejected</span></td>
+                        <td style="text-align: center;"><a href="application_details.html?id=1022" class="btn btn-secondary-custom">View Details</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>#APP-1021</strong></td>
+                        <td>C261012</td>
+                        <td>Fariha Sultana</td>
+                        <td>Entrance Scholarship</td>
+                        <td>May 25, 2026</td>
+                        <td><span class="badge-approved">Approved</span></td>
+                        <td style="text-align: center;"><a href="application_details.html?id=1021" class="btn btn-secondary-custom">View Details</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function filterTable() {
+    const searchText = document.getElementById('searchInput').value.toLowerCase();
+    const selectedScheme = document.getElementById('schemeSelect').value;
+    const selectedStatus = document.getElementById('statusSelect').value;
+    
+    const table = document.getElementById('applicationsTable');
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        
+        const appId = row.cells[0].textContent.toLowerCase();
+        const studentId = row.cells[1].textContent.toLowerCase();
+        const studentName = row.cells[2].textContent.toLowerCase();
+        const scheme = row.cells[3].textContent;
+        const status = row.cells[5].textContent.trim();
+
+        const matchesSearch = appId.includes(searchText) || 
+                              studentId.includes(searchText) || 
+                              studentName.includes(searchText);
+                              
+        const matchesScheme = selectedScheme === "" || scheme === selectedScheme;
+        const matchesStatus = selectedStatus === "" || status === selectedStatus;
+
+        if (matchesSearch && matchesScheme && matchesStatus) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    }
+}
+
+document.getElementById('searchInput').addEventListener('keyup', filterTable);
+</script>
+
+</body>
+</html>

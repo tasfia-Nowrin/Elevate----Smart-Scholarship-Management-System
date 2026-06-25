@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications | ELEVATE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="st.css">
+    <style>
+        .page-hero{background:linear-gradient(135deg,#2a5a60 0%,#244B52 100%);border-radius:18px;padding:40px 44px;margin-bottom:32px;position:relative;overflow:hidden}
+        .page-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;background:rgba(194,168,120,0.07)}
+        .page-hero .eyebrow{font-size:0.72rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+        .page-hero h1{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:white;font-weight:600;margin-bottom:8px;position:relative;z-index:1}
+        .page-hero p{color:rgba(255,255,255,0.6);font-size:0.9rem;font-weight:300;position:relative;z-index:1}
+        .app-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+        .app-stat-card{background:white;border-radius:12px;padding:18px 20px;border-left:3px solid var(--gold);display:flex;align-items:center;gap:14px}
+        .app-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--dark);font-weight:600;line-height:1;margin-bottom:2px}
+        .app-stat-lbl{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+        .filter-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+        .tab{padding:8px 20px;border-radius:30px;font-size:0.82rem;font-weight:500;cursor:pointer;border:1.5px solid var(--grey);background:transparent;color:var(--muted);transition:.2s;font-family:'DM Sans',sans-serif}
+        .tab:hover,.tab.active{background:var(--primary);color:white;border-color:var(--primary)}
+        .app-card{background:white;border-radius:14px;padding:24px 28px;margin-bottom:16px;display:flex;align-items:center;gap:24px;transition:.2s;cursor:pointer}
+        .app-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.07);transform:translateY(-2px)}
+        .app-card-icon{width:44px;height:44px;border-radius:10px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+        .app-card-main{flex:1}
+        .app-card-main h3{font-size:0.95rem;color:var(--dark);font-weight:600;margin-bottom:4px}
+        .app-card-meta{display:flex;gap:20px;font-size:0.78rem;color:var(--muted)}
+        .app-card-meta span{display:flex;align-items:center;gap:4px}
+        .status-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:0.75rem;font-weight:600;white-space:nowrap}
+        .status-pending{background:rgba(194,168,120,0.15);color:#9a7a45}
+        .status-review{background:rgba(47,111,111,0.12);color:var(--primary)}
+        .status-approved{background:rgba(40,160,100,0.12);color:#1e7a50}
+        .status-rejected{background:rgba(200,60,60,0.1);color:#a03030}
+        .app-card-actions{display:flex;gap:10px;align-items:center}
+        .btn-view{padding:8px 16px;border-radius:8px;font-size:0.8rem;font-weight:500;text-decoration:none;border:1.5px solid var(--grey);color:var(--dark);transition:.2s;font-family:'DM Sans',sans-serif;cursor:pointer;background:transparent}
+        .btn-view:hover{border-color:var(--primary);color:var(--primary)}
+        .btn-withdraw{padding:8px 16px;border-radius:8px;font-size:0.8rem;font-weight:500;border:1.5px solid rgba(200,60,60,0.3);color:#a03030;transition:.2s;background:transparent;font-family:'DM Sans',sans-serif;cursor:pointer}
+        .btn-withdraw:hover{background:rgba(200,60,60,0.06)}
+        .timeline-card{background:white;border-radius:14px;padding:24px 28px;margin-top:28px}
+        .timeline-card h2{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--dark);font-weight:600;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--grey)}
+        .timeline{display:flex;flex-direction:column;gap:0}
+        .timeline-item{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--grey)}
+        .timeline-item:last-child{border-bottom:none}
+        .tl-dot-col{display:flex;flex-direction:column;align-items:center;gap:0;width:20px;flex-shrink:0;margin-top:4px}
+        .tl-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0}
+        .tl-dot.grey{background:var(--grey)}
+        .tl-line{width:1px;flex:1;background:var(--grey);min-height:20px}
+        .tl-content{flex:1}
+        .tl-content h4{font-size:0.88rem;color:var(--dark);font-weight:500;margin-bottom:3px}
+        .tl-content p{font-size:0.78rem;color:var(--muted)}
+        .empty-state{text-align:center;padding:60px 20px;background:white;border-radius:14px}
+        .empty-state h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--dark);font-weight:600;margin-bottom:8px}
+        .empty-state p{font-size:0.88rem;color:var(--muted);margin-bottom:20px}
+        .empty-state a{display:inline-block;background:var(--primary);color:white;padding:11px 24px;border-radius:8px;text-decoration:none;font-size:0.88rem;font-weight:500;transition:.2s}
+        .empty-state a:hover{background:var(--dark)}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-logo"><h2>ELEVATE</h2><p>Scholarship Portal</p></div>
+    <div class="sidebar-user">
+        <div class="user-avatar">M</div>
+        <div class="user-info"><p>Mahisa</p><span>Student</span></div>
+    </div>
+    <nav class="sidebar-nav">
+        <p class="nav-label">Main</p>
+        <a href="student_dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+        <a href="browse_scholarships.html" class="nav-item"><span class="nav-icon">✦</span> Browse Scholarships</a>
+        <a href="my_applications.html" class="nav-item active"><span class="nav-icon">◈</span> My Applications</a>
+        <p class="nav-label">Account</p>
+        <a href="profile.html" class="nav-item"><span class="nav-icon">○</span> Profile</a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="login.html" class="logout-btn"><span class="nav-icon">→</span> Sign Out</a>
+    </div>
+</aside>
+ 
+<div class="main">
+    <div class="topbar"><div class="topbar-left"><h3>My Applications</h3></div></div>
+    <div class="page-content">
+ 
+        <div class="page-hero">
+            <p class="eyebrow">Application Tracker</p>
+            <h1>My Applications</h1>
+            <p>Track the status of all your scholarship applications in one place.</p>
+        </div>
+ 
+        <div class="app-stats">
+            <div class="app-stat-card">
+                <div>
+                    <p class="app-stat-val">2</p>
+                    <p class="app-stat-lbl">Total Submitted</p>
+                </div>
+            </div>
+            <div class="app-stat-card" style="border-color:rgba(47,111,111,0.4)">
+                <div>
+                    <p class="app-stat-val">1</p>
+                    <p class="app-stat-lbl">Under Review</p>
+                </div>
+            </div>
+            <div class="app-stat-card" style="border-color:rgba(40,160,100,0.4)">
+                <div>
+                    <p class="app-stat-val">0</p>
+                    <p class="app-stat-lbl">Approved</p>
+                </div>
+            </div>
+            <div class="app-stat-card" style="border-color:rgba(200,60,60,0.4)">
+                <div>
+                    <p class="app-stat-val">0</p>
+                    <p class="app-stat-lbl">Rejected</p>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="filter-tabs">
+            <button class="tab active" onclick="filterApps('all',this)">All Applications</button>
+            <button class="tab" onclick="filterApps('review',this)">Under Review</button>
+            <button class="tab" onclick="filterApps('pending',this)">Pending</button>
+            <button class="tab" onclick="filterApps('approved',this)">Approved</button>
+        </div>
+ 
+        <div id="appList">
+            <div class="app-card" data-status="review">
+                <div class="app-card-icon">✦</div>
+                <div class="app-card-main">
+                    <h3>Need-Based Scholarship</h3>
+                    <div class="app-card-meta">
+                        <span>📅 Submitted: 1 June 2026</span>
+                        <span>📌 Application ID: ELV-2026-001</span>
+                        <span>⏰ Decision by: 20 Aug 2026</span>
+                    </div>
+                </div>
+                <span class="status-badge status-review">Under Review</span>
+                <div class="app-card-actions">
+                    <button class="btn-view" onclick="toggleDetails('det1')">Details</button>
+                    <button class="btn-withdraw">Withdraw</button>
+                </div>
+            </div>
+            <div id="det1" style="display:none;background:white;border-radius:0 0 14px 14px;margin-top:-16px;padding:20px 28px;border-top:1px solid var(--grey);margin-bottom:16px">
+                <p style="font-size:0.85rem;color:#666;line-height:1.7;">Your application for the Need-Based Scholarship is currently under review by the scholarship committee. You will be notified via email and your ELEVATE dashboard once a decision has been reached. Expected decision date: <strong>20 August 2026</strong>.</p>
+                <div style="display:flex;gap:16px;margin-top:14px;font-size:0.8rem;color:var(--muted);">
+                    <span>Scholarship: Need-Based (up to 75%)</span>
+                    <span>·</span>
+                    <span>Semester: Spring 2026</span>
+                    <span>·</span>
+                    <span>Documents: 4/4 Submitted</span>
+                </div>
+            </div>
+ 
+            <div class="app-card" data-status="pending">
+                <div class="app-card-icon">◈</div>
+                <div class="app-card-main">
+                    <h3>Merit Scholarship</h3>
+                    <div class="app-card-meta">
+                        <span>📅 Submitted: 3 June 2026</span>
+                        <span>📌 Application ID: ELV-2026-002</span>
+                        <span>⏰ Decision by: 15 Aug 2026</span>
+                    </div>
+                </div>
+                <span class="status-badge status-pending">Pending</span>
+                <div class="app-card-actions">
+                    <button class="btn-view" onclick="toggleDetails('det2')">Details</button>
+                    <button class="btn-withdraw">Withdraw</button>
+                </div>
+            </div>
+            <div id="det2" style="display:none;background:white;border-radius:0 0 14px 14px;margin-top:-16px;padding:20px 28px;border-top:1px solid var(--grey);margin-bottom:16px">
+                <p style="font-size:0.85rem;color:#666;line-height:1.7;">Your application for the Merit Scholarship has been received and is pending initial review. The committee will begin reviewing applications after the 25 July 2026 deadline.</p>
+                <div style="display:flex;gap:16px;margin-top:14px;font-size:0.8rem;color:var(--muted);">
+                    <span>Scholarship: Merit (up to 50%)</span>
+                    <span>·</span>
+                    <span>Semester: Spring 2026</span>
+                    <span>·</span>
+                    <span>Documents: 5/5 Submitted</span>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- Application Timeline -->
+        <div class="timeline-card">
+            <h2>Application Timeline — Need-Based Scholarship</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                    <div class="tl-content"><h4>Application Submitted</h4><p>1 June 2026 · All documents uploaded successfully</p></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                    <div class="tl-content"><h4>Acknowledgement Received</h4><p>2 June 2026 · Confirmation email sent to mahisa@email.com</p></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                    <div class="tl-content"><h4>Under Committee Review</h4><p>Since 10 June 2026 · Scholarship committee is reviewing your application</p></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-dot-col"><div class="tl-dot grey"></div><div class="tl-line"></div></div>
+                    <div class="tl-content"><h4 style="color:var(--muted)">Decision Pending</h4><p>Expected by 20 August 2026</p></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-dot-col"><div class="tl-dot grey"></div></div>
+                    <div class="tl-content"><h4 style="color:var(--muted)">Award / Rejection Notification</h4><p>Will be communicated via email and ELEVATE dashboard</p></div>
+                </div>
+            </div>
+        </div>
+ 
+    </div>
+</div>
+ 
+<script>
+function filterApps(status, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.app-card').forEach(card => {
+        card.style.display = (status === 'all' || card.dataset.status === status) ? '' : 'none';
+    });
+}
+function toggleDetails(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+</body>
+</html>

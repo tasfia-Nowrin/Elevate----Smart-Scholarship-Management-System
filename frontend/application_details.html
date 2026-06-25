@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Details - ELEVATE Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-teal: #244B52;
+            --accent-gold: #C2A878;
+            --bg-cream: #F8F6F1;
+            --text-dark: #244B52;
+            --border-color: #ECEAE4;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling matching image */
+        .sidebar {
+            background-color: var(--primary-teal);
+            min-height: 100vh;
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .sidebar .brand-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar .brand-subtitle {
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--accent-gold);
+        }
+
+        /* Main Content & Card Styling */
+        .main-content {
+            padding: 40px;
+        }
+
+        .back-btn {
+            color: rgba(36, 75, 82, 0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: var(--primary-teal);
+        }
+
+        .text-theme {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            color: var(--primary-teal);
+        }
+
+        .details-card {
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 4px 24px rgba(36, 75, 82, 0.02);
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            color: #2F6F6F;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(36, 75, 82, 0.55);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            color: var(--primary-teal);
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .statement-box {
+            font-size: 0.95rem;
+            text-align: justify;
+            background: #FDFDFD;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary-teal);
+            padding: 20px;
+            border-radius: 6px;
+            color: var(--primary-teal);
+            line-height: 1.6;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .status-pending { background: #FFF9E6; color: #9E7D3B; }
+        .status-approved { background: #E6F4F0; color: #2F6F6F; }
+        .status-rejected { background: #FCE8E6; color: #C62828; }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid p-0 d-flex">
+    
+    <div class="sidebar col-md-2 d-none d-md-block">
+        <div class="brand-title">ELEVATE</div>
+        <div class="brand-subtitle">Admin Panel</div>
+        
+        <div class="nav-section-title">Main</div>
+        <a href="#" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="#" class="nav-link"><i class="fa-solid fa-graduation-cap"></i> Manage Scholarships</a>
+        <a href="view_applications.html" class="nav-link active"><i class="fa-solid fa-file-invoice"></i> View Applications</a>
+        <a href="#" class="nav-link"><i class="fa-solid fa-calendar-days"></i> Manage Deadlines</a>
+        
+        <div class="nav-section-title">Account</div>
+        <a href="#" class="nav-link mt-5 text-danger"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+    </div>
+
+    <div class="main-content col-md-10 col-12">
+        
+        <a href="view_applications.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> Back to View Applications
+        </a>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <h2 class="text-theme mb-0">Application Review</h2>
+                <span id="app-id-tag" style="background: var(--primary-teal); color: var(--accent-gold); padding: 6px 18px; border-radius: 20px; font-weight: 600; border: 1px solid var(--accent-gold);">ID: --</span>
+            </div>
+            <div>
+                <span id="status-tag" class="status-badge status-pending"><i class="fa-solid fa-clock me-1"></i> Loading...</span>
+            </div>
+        </div>
+
+        <div class="details-card">
+            
+            <div class="section-title">Scholarship </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="info-label">Scholarship Type</div>
+                    <div id="val-scholarship-type" class="info-value">--</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-label">Academic Semester</div>
+                    <div id="val-academic-semester" class="info-value">--</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-label">Student ID</div>
+                    <div id="val-student-id" class="info-value">--</div>
+                </div>
+                <div class="col-md-12">
+                    <div class="info-label">Student Name</div>
+                    <div id="val-student-name" class="info-value fw-bold" style="font-size: 1.05rem;">--</div>
+                </div>
+            </div>
+
+            <div class="section-title mt-2">Personal Information</div>
+            <div class="row">
+                <div class="col-md-4"><div class="info-label">Date of Birth</div><div id="val-dob" class="info-value">--</div></div>
+                <div class="col-md-4"><div class="info-label">Gender</div><div id="val-gender" class="info-value">--</div></div>
+                <div class="col-md-4"><div class="info-label">National ID Number (NID)</div><div id="val-nid" class="info-value">--</div></div>
+                <div class="col-md-4"><div class="info-label">Email Address</div><div id="val-email" class="info-value">--</div></div>
+                <div class="col-md-4"><div class="info-label">Phone Number</div><div id="val-phone" class="info-value">--</div></div>
+                <div class="col-md-4"><div class="info-label">Programme / Department</div><div id="val-dept" class="info-value">--</div></div>
+                <div class="col-12"><div class="info-label">Permanent Address</div><div id="val-address" class="info-value">--</div></div>
+            </div>
+
+            <div class="section-title mt-2">Academic Information</div>
+            <div class="row">
+                <div class="col-md-3"><div class="info-label">Current CGPA</div><div id="val-cgpa" class="info-value">--</div></div>
+                <div class="col-md-3"><div class="info-label">Current Semester / Year</div><div id="val-semester" class="info-value">--</div></div>
+                <div class="col-md-3"><div class="info-label">SSC GPA</div><div id="val-ssc" class="info-value">--</div></div>
+                <div class="col-md-3"><div class="info-label">HSC GPA</div><div id="val-hsc" class="info-value">--</div></div>
+                <div class="col-12"><div class="info-label">Academic Achievements / Honours</div><div id="val-achievements" class="info-value">--</div></div>
+            </div>
+
+            <div class="section-title mt-2"> Financial Information</div>
+            <div class="row">
+                <div class="col-md-4"><div class="info-label">Guardian's Occupation</div><div id="val-occupation" class="info-value">--</div></div>
+                <div class="col-md-4"><div class="info-label">Annual Family Income</div><div id="val-income" class="info-value">--</div></div>
+                <div class="col-md-4"><div class="info-label">Receiving Other Scholarship?</div><div id="val-other-scholarship" class="info-value">--</div></div>
+            </div>
+
+            <div class="section-title mt-2">Step 5: Personal Statement</div>
+            <div id="val-statement" class="statement-box">--</div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const applicationDataset = {
+        "1024": {
+            "id": "#APP-1024",
+            "name": "Sara Khan",
+            "student_id": "C231045",
+            "program": "Academic / Merit Scholarship",
+            "status": "pending",
+            "dob": "14/08/2003",
+            "gender": "Female",
+            "nid": "8834567890122",
+            "email": "sara.khan@email.com",
+            "phone": "+880 1819 123 456",
+            "dept": "B.Sc. in CSE",
+            "address": "Flat 4B, Shonalu Apartments, Nasirabad, Chattogram",
+            "cgpa": "3.96 / 4.00",
+            "semester": "5th Semester / 3rd Year",
+            "ssc": "5.00",
+            "hsc": "5.00",
+            "achievements": "Highest CGPA holder in the batch, Board Talentpool Scholarship recipient (HSC).",
+            "occupation": "Retired Banker",
+            "income": "4,80,000 BDT",
+            "other_scholarship": "No",
+            "statement": "Maintaining academic excellence has always been my primary driving factor. With my father now retired, this merit scholarship would help significantly in managing my semester overheads and research toolkit acquisitions for my data science projects."
+        },
+        "1023": {
+            "id": "#APP-1023",
+            "name": "Nusrat Jahan",
+            "student_id": "C221089",
+            "program": "Need-Based Scholarship",
+            "status": "approved",
+            "dob": "03/11/2004",
+            "gender": "Female",
+            "nid": "4456789012341",
+            "email": "nusrat.jahan@email.com",
+            "phone": "+880 1755 234 567",
+            "dept": "B.Sc. in CSE",
+            "address": "Ghatfar, Halishahar, Chattogram",
+            "cgpa": "3.72 / 4.00",
+            "semester": "7th Semester / 4th Year",
+            "ssc": "4.95",
+            "hsc": "5.00",
+            "achievements": "Organizer of National Girls Programming Contest 2025.",
+            "occupation": "Day Laborer",
+            "income": "1,60,000 BDT",
+            "other_scholarship": "No",
+            "statement": "Coming from a marginalized economic background, reaching the final year of engineering has been an uphill struggle. This financial tracking support is absolutely essential for completing my final registration fees."
+        },
+        "1022": {
+            "id": "#APP-1022",
+            "name": "Afra Iqbal",
+            "student_id": "B243402",
+            "program": "Sibling Scholarship",
+            "status": "rejected",
+            "dob": "19/02/2005",
+            "gender": "Female",
+            "nid": "2245678901235",
+            "email": "afra.iqbal@email.com",
+            "phone": "+880 1512 987 654",
+            "dept": "B.Sc. in CSE",
+            "address": "Khulshi Residential Area, Road 2, Chattogram",
+            "cgpa": "3.42 / 4.00",
+            "semester": "3rd Semester / 2nd Year",
+            "ssc": "4.80",
+            "hsc": "4.90",
+            "achievements": "None specified.",
+            "occupation": "Business",
+            "income": "6,00,000 BDT",
+            "other_scholarship": "No",
+            "statement": "My sibling is currently studying at this university in the BBA department. The concurrent educational overheads are creating a steep peak constraint for my family budget."
+        }
+    };
+
+    function loadApplicationDetails() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let appId = urlParams.get('id');
+        
+        if (!appId || !applicationDataset[appId]) {
+            appId = "1024"; 
+        }
+
+        const data = applicationDataset[appId];
+
+        document.getElementById('app-id-tag').innerText = "ID: " + data.id;
+        document.getElementById('val-scholarship-type').innerText = data.program;
+        document.getElementById('val-academic-semester').innerText = "Autumn 2026";
+        document.getElementById('val-student-id').innerText = data.student_id;
+        document.getElementById('val-student-name').innerText = data.name;
+        
+        document.getElementById('val-dob').innerText = data.dob;
+        document.getElementById('val-gender').innerText = data.gender;
+        document.getElementById('val-nid').innerText = data.nid;
+        document.getElementById('val-email').innerText = data.email;
+        document.getElementById('val-phone').innerText = data.phone;
+        document.getElementById('val-dept').innerText = data.dept;
+        document.getElementById('val-address').innerText = data.address;
+
+        document.getElementById('val-cgpa').innerText = data.cgpa;
+        document.getElementById('val-semester').innerText = data.semester;
+        document.getElementById('val-ssc').innerText = data.ssc;
+        document.getElementById('val-hsc').innerText = data.hsc;
+        document.getElementById('val-achievements').innerText = data.achievements;
+
+        document.getElementById('val-occupation').innerText = data.occupation;
+        document.getElementById('val-income').innerText = data.income;
+        document.getElementById('val-other-scholarship').innerText = data.other_scholarship;
+        document.getElementById('val-statement').innerText = `"${data.statement}"`;
+
+        const statusTag = document.getElementById('status-tag');
+        if(data.status === 'approved') {
+            statusTag.className = "status-badge status-approved";
+            statusTag.innerHTML = `<i class="fa-solid fa-circle-check me-1"></i> Approved`;
+        } else if(data.status === 'rejected') {
+            statusTag.className = "status-badge status-rejected";
+            statusTag.innerHTML = `<i class="fa-solid fa-circle-xmark me-1"></i> Rejected`;
+        } else {
+            statusTag.className = "status-badge status-pending";
+            statusTag.innerHTML = `<i class="fa-solid fa-clock me-1"></i> Pending Review`;
+        }
+    }
+
+    window.onload = loadApplicationDetails;
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
