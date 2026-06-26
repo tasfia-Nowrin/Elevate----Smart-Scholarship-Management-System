@@ -20,25 +20,25 @@
     </div>
 
     <div class="sidebar-user">
-        <div class="user-avatar">M</div>
+        <div class="user-avatar">{{ student.name|first }}</div>
         <div class="user-info">
-            <p>Mahisa</p>
+            <p>{{ student.name }}</p>
             <span>Student</span>
         </div>
     </div>
     <nav class="sidebar-nav">
         <p class="nav-label">Main</p>
-        <a href="student_dashboard.html" class="nav-item active">
+        <a href="{% url 'student_dashboard' %}" class="nav-item active">
             <span class="nav-icon">⊞</span> Dashboard
         </a>
-        <a href="browse_scholarships.html" class="nav-item">
+        <a href="{% url 'browse_scholarships' %}" class="nav-item">
             <span class="nav-icon">✦</span> Browse Scholarships
         </a>
-        <a href="my_applications.html" class="nav-item">
+        <a href="{% url 'my_applications' %}" class="nav-item">
             <span class="nav-icon">◈</span> My Applications
         </a>
         <p class="nav-label">Account</p>
-        <a href="profile.html" class="nav-item">
+        <a href="{% url 'profile' %}" class="nav-item">
             <span class="nav-icon">○</span> Profile
         </a>
     </nav>
@@ -68,12 +68,12 @@
         <div class="welcome-banner">
             <div class="welcome-text">
                 <p class="eyebrow">Welcome back</p>
-                <h1>Good afternoon, Mahisa.</h1>
-                <p class="sub">You have 2 upcoming deadlines this month. Stay on track.</p>
+                <h1>Good afternoon, {{ student.name }}.</h1>
+                <p class="sub">You have {{ upcoming_deadlines|length }} upcoming deadlines this month. Stay on track.</p>
             </div>
             <div class="welcome-badge">
                 <p class="badge-label">Active Applications</p>
-                <p class="badge-value">2</p>
+                <p class="badge-value">{{ pending_count }}</p>
                 <p class="badge-sub">In progress</p>
             </div>
         </div>
@@ -83,21 +83,21 @@
             <div class="stat-card">
                 <div class="stat-icon">✦</div>
                 <div class="stat-info">
-                    <p class="stat-val">4</p>
+                    <p class="stat-val">{{ available_scholarships }}</p>
                     <p class="stat-lbl">Available Scholarships</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">◈</div>
                 <div class="stat-info">
-                    <p class="stat-val">2</p>
+                    <p class="stat-val">{{ total_applications }}</p>
                     <p class="stat-lbl">Applications Submitted</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">○</div>
                 <div class="stat-info">
-                    <p class="stat-val">20 Jul</p>
+                    <p class="stat-val">{{ next_deadline }}</p>
                     <p class="stat-lbl">Next Deadline</p>
                 </div>
             </div>
@@ -110,37 +110,20 @@
             <div class="section-card">
                 <div class="section-card-header">
                     <h2>Latest Scholarships</h2>
-                    <a href="browse_scholarships.html" class="view-all-btn">View All</a>
+                    <a href="{% url 'browse_scholarships' %}" class="view-all-btn">View All</a>
                 </div>
                 <div class="scholarship-list">
+                    {% for sch in latest_scholarships %}
                     <div class="scholarship-item">
                         <div class="sch-info">
-                            <h4>Need-Based Scholarship</h4>
-                            <p>Financial support for eligible students</p>
+                            <h4>{{ sch.name }}</h4>
+                            <p>{{ sch.description|truncatechars:50 }}</p>
                         </div>
                         <span class="sch-arrow">→</span>
                     </div>
-                    <div class="scholarship-item">
-                        <div class="sch-info">
-                            <h4>Merit Scholarship</h4>
-                            <p>For outstanding academic performance</p>
-                        </div>
-                        <span class="sch-arrow">→</span>
-                    </div>
-                    <div class="scholarship-item">
-                        <div class="sch-info">
-                            <h4>Sibling Waiver</h4>
-                            <p>Tuition benefits for enrolled siblings</p>
-                        </div>
-                        <span class="sch-arrow">→</span>
-                    </div>
-                    <div class="scholarship-item">
-                        <div class="sch-info">
-                            <h4>Entrance Scholarship</h4>
-                            <p>Based on SSC and HSC achievements</p>
-                        </div>
-                        <span class="sch-arrow">→</span>
-                    </div>
+                    {% empty %}
+                    <p style="color:#7a8a8c;font-size:0.9rem;">No scholarships available</p>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -150,34 +133,17 @@
                     <h2>Upcoming Deadlines</h2>
                 </div>
                 <div class="deadline-list">
+                    {% for d in upcoming_deadlines %}
                     <div class="deadline-item">
                         <div class="deadline-left">
                             <span class="deadline-dot"></span>
-                            <span class="deadline-name">Need-Based Scholarship</span>
+                            <span class="deadline-name">{{ d.scholarship_name }}</span>
                         </div>
-                        <span class="deadline-date deadline-urgent">20 July 2026</span>
+                        <span class="deadline-date {% if d.days_remaining <= 7 %}deadline-urgent{% endif %}">{{ d.end_date }}</span>
                     </div>
-                    <div class="deadline-item">
-                        <div class="deadline-left">
-                            <span class="deadline-dot"></span>
-                            <span class="deadline-name">Merit Scholarship</span>
-                        </div>
-                        <span class="deadline-date">25 July 2026</span>
-                    </div>
-                    <div class="deadline-item">
-                        <div class="deadline-left">
-                            <span class="deadline-dot"></span>
-                            <span class="deadline-name">Sibling Waiver</span>
-                        </div>
-                        <span class="deadline-date">30 July 2026</span>
-                    </div>
-                    <div class="deadline-item">
-                        <div class="deadline-left">
-                            <span class="deadline-dot"></span>
-                            <span class="deadline-name">Entrance Scholarship</span>
-                        </div>
-                        <span class="deadline-date">5 August 2026</span>
-                    </div>
+                    {% empty %}
+                    <p style="color:#7a8a8c;font-size:0.9rem;">No upcoming deadlines</p>
+                   {% endfor %}
                 </div>
             </div>
         </div>
@@ -186,7 +152,7 @@
         <div class="applications-section">
             <div class="section-card-header">
                 <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--dark);font-weight:600;">My Applications</h2>
-                <a href="#" class="view-all-btn">View All</a>
+                <a href="{% url 'my_applications' %}" class="view-all-btn">View All</a>
             </div>
             <table class="app-table">
                 <thead>
@@ -197,16 +163,18 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for app in my_applications %}
                     <tr>
-                        <td>Need-Based Scholarship</td>
-                        <td>1 June 2026</td>
-                        <td><span class="status-badge status-review">Under Review</span></td>
+                        <td>{{ app.scholarship_name }}</td>
+                        <td>{{ app.scholarship_date }}</td>
+                        <td><span class="status-badge {% if app.application_status == 'Approved' %}status-approved
+            {% elif app.application_status == 'Rejected' %}status-rejected
+            {% else %}status-review{% endif %}">
+            {{ app.application_status }}</span></td>
                     </tr>
-                    <tr>
-                        <td>Merit Scholarship</td>
-                        <td>3 June 2026</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                    </tr>
+                    {% empty%}
+                    <tr><td colspan="3" style="text-align:center;color:#7a8a8c;padding:20px;">No applications yet</td></tr>
+                   {% endfor %}
                 </tbody>
             </table>
         </div>

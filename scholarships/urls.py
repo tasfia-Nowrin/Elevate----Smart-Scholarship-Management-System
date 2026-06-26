@@ -2,9 +2,20 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('', views.index, name='index'),
     path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
-       path('portal/dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('portal/dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('student/browse/', views.browse_scholarships, name='browse_scholarships'),
+    path('student/applications/', views.my_applications, name='my_applications'),
+    path('student/profile/', views.profile, name='profile'),
+    path('portal/dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin/disbursements/', views.manage_disbursements, name='manage_disbursements'),
+    path('admin/disbursements/update/', views.update_disbursement, name='update_disbursement'),
+    path('admin/disbursements/create/', views.create_disbursement, name='create_disbursement'),
+    path('admin/scholarships/', views.manage_scholarships, name='manage_scholarships'),
+    path('admin/applications/', views.view_applications, name='view_applications'),
+    path('admin/deadlines/', views.manage_deadlines, name='manage_deadlines'),
 ]
