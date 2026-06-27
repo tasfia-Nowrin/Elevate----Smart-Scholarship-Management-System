@@ -165,7 +165,6 @@ def student_dashboard(request):
             FROM deadline d
             JOIN scholarship s ON d.scholarship_id = s.scholarship_id
             WHERE s.status = 'Active'
-              AND d.end_date >= CURDATE()
             ORDER BY d.end_date ASC
             LIMIT 4
         """)
@@ -173,19 +172,35 @@ def student_dashboard(request):
         upcoming_deadlines = [dict(zip(cols, row)) for row in cursor.fetchall()]
 
     # my applications
+    # replace my_applications query with this
+# my applications
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT s.name AS scholarship_name,
-                   a.applied_date,
-                   a.application_status
+            SELECT
+                s.name AS scholarship_name,
+                a.applied_date,
+                a.application_status,
+                d.amount
             FROM application a
             JOIN scholarship s ON a.scholarship_id = s.scholarship_id
+            LEFT JOIN disbursement d ON d.application_id = a.application_id
             WHERE a.student_id = %s
             ORDER BY a.applied_date DESC
             LIMIT 5
         """, [student_id])
         cols = [col[0] for col in cursor.description]
         my_applications = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    # total received
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT IFNULL(SUM(d.amount), 0)
+            FROM disbursement d
+            JOIN application a ON d.application_id = a.application_id
+            WHERE a.student_id = %s
+              AND d.payment_status = 'Paid'
+        """, [student_id])
+        total_received = cursor.fetchone()[0]
 
     return render(request, 'student_dashboard.html', {
         'student': student,
@@ -196,7 +211,9 @@ def student_dashboard(request):
         'latest_scholarships': latest_scholarships,
         'upcoming_deadlines': upcoming_deadlines,
         'my_applications': my_applications,
+        'total_received': total_received,
     })
+
 def browse_scholarships(request):
     if request.session.get('role') != 'student':
         return redirect('login')
@@ -206,6 +223,11 @@ def my_applications(request):
     if request.session.get('role') != 'student':
         return redirect('login')
     return render(request, 'my_applications.html')
+
+def disbursements(request):
+    if request.session.get('role') != 'student':
+        return redirect('login')
+    return render(request, 'disbursements.html')
 
 def profile(request):
     if request.session.get('role') != 'student':

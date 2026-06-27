@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELEVATE </title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">ELEVATE</div>
+
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#scholarships">Scholarships</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">Resources ▼</a>
+                <div class="dropdown-content">
+                    <a href="#">Available Scholarships</a>
+                    <a href="#">Application Guidelines</a>
+                    <a href="#">Important Notices</a>
+                    <a href="#">Contact Office</a>
+                    <a href="#">FAQ</a>
+                </div>
+            </li>
+        </ul>
+
+        <div class="auth-buttons">
+            <a href="{% url 'login' %}" class="login-btn">Sign In</a>
+            <a href="{% url 'register' %}" class="register-btn">Register</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>ELEVATE</h1>
+            <div class="hero-line"></div>
+            <p class="hero-tagline">Where Ambition Meets Opportunity</p>
+            <p class="hero-motto">Elevate Beyond Limits</p>
+            <div class="hero-buttons">
+                <a href="{% url 'register' %}" class="primary-btn">Apply Now</a>
+                <a href="#scholarships" class="secondary-btn">Explore Scholarships</a>
+            </div>
+        </div>
+
+    </section>
+    <section id="about" class="about">
+        <div class="about-inner">
+            <div class="about-text">
+                <p class="section-eyebrow">Who We Are</p>
+                <h2>Built for students,<br>driven by opportunity.</h2>
+                <p>
+                    ELEVATE is a Smart Scholarship Management System designed to remove the friction from scholarship applications. We bring transparency, speed, and accessibility to students who deserve financial support — all through one unified platform.
+                </p>
+            </div>
+            <div class="about-cards">
+                <div class="about-card">
+                    <span class="about-icon">✦</span>
+                    <h4>Transparent Process</h4>
+                    <p>Track every step of your application in real time with full visibility.</p>
+                </div>
+                <div class="about-card">
+                    <span class="about-icon">✦</span>
+                    <h4>Auto Eligibility Check</h4>
+                    <p>Our system matches you with scholarships you actually qualify for.</p>
+                </div>
+                <div class="about-card">
+                    <span class="about-icon">✦</span>
+                    <h4>Instant Notifications</h4>
+                    <p>Get notified immediately on submissions, updates, and final decisions.</p>
+                </div>
+                <div class="about-card">
+                    <span class="about-icon">✦</span>
+                    <h4>Unified Dashboard</h4>
+                    <p>Manage all your applications from one clean, easy-to-use dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="scholarships" class="scholarships">
+        <p class="section-eyebrow" style="text-align:center;">What We Offer</p>
+        <h2>Scholarship Categories</h2>
+        <p class="section-subtitle">
+            Discover scholarships that matches your profile.<br>
+            Explore opportunities, view details, and apply with clarity.
+        </p>
+
+        <div class="card-container">
+            <div class="card">
+                <h3>Merit Scholarship</h3>
+                <p>Awarded to students with exceptional academic performance and outstanding CGPA scores.</p>
+                <a href="{% url 'register' %}" class="card-link">Apply Now →</a>
+            </div>
+            <div class="card">
+                <h3>Need-Based Scholarship</h3>
+                <p>Financial support for students facing economic hardship in continuing their education.</p>
+                <a href="{% url 'register' %}" class="card-link">Apply Now →</a>
+            </div>
+            <div class="card">
+                <h3>Sibling Waiver</h3>
+                <p>Tuition fee benefits for students whose siblings are currently enrolled at the institution.</p>
+                <a href="{% url 'register' %}" class="card-link">Apply Now →</a>
+            </div>
+            <div class="card">
+                <h3>Entrance Scholarship</h3>
+                <p>Rewards high achievers in SSC and HSC with scholarship opportunities upon enrollment.</p>
+                <a href="{% url 'register' %}" class="card-link">Apply Now →</a>
+            </div>
+        </div>
+    </section>
+    <section class="cta-section">
+        <div class="cta-inner">
+            <h2>Ready to begin your ELEVATE journey?</h2>
+            <p>Create your account and explore the Opportunities Elevate has to offer.</p>
+            <div class="hero-buttons" style="justify-content:center; margin-top:32px;">
+                <a href="{% url 'register' %}" class="primary-btn">Create Your Account</a>
+                <a href="{% url 'login' %}" class="secondary-btn cta-secondary">Sign In</a>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <h3>ELEVATE</h3>
+            </div>
+            <div class="footer-links">
+                <a href="#about">About</a>
+                <a href="#scholarships">Scholarships</a>
+                <a href="{% url 'login' %}">Sign In</a>
+                <a href="{% url 'register' %}">Register</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>support@elevate.edu &nbsp;·&nbsp; ©️ 2026 ELEVATE. All Rights Reserved. </p>
+        </div>
+    </footer>
+</body>
+</html>

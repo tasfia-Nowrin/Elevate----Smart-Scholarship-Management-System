@@ -11,6 +11,7 @@ urlpatterns = [
     path('student/browse/', views.browse_scholarships, name='browse_scholarships'),
     path('student/applications/', views.my_applications, name='my_applications'),
     path('student/profile/', views.profile, name='profile'),
+    path('student/disbursements/', views.disbursements, name='disbursements'),
     path('portal/dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('admin/disbursements/', views.manage_disbursements, name='manage_disbursements'),
     path('admin/disbursements/update/', views.update_disbursement, name='update_disbursement'),
