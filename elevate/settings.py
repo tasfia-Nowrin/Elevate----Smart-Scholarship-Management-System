@@ -55,10 +55,11 @@ ROOT_URLCONF = 'elevate.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'scholarships/templates'],
+        'DIRS': [BASE_DIR / 'scholarships/templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -78,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'elevate',
         'USER': 'root',
-        'PASSWORD': '01234Mahi$',        
+        'PASSWORD': '1234/12',        
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -125,5 +126,5 @@ STATIC_URL = 'static/'
 import os
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'scholarships' / 'static',
+   BASE_DIR / 'scholarships' / 'static',
 ]

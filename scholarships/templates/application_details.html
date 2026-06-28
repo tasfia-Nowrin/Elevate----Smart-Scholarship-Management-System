@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application #{{ app.application_id }} | ELEVATE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2F6F6F;
+            --dark: #244B52;
+            --gold: #C2A878;
+            --cream: #F8F6F1;
+            --grey: #ECEAE4;
+            --white: #FFFFFF;
+            --text: #2B2B2B;
+            --muted: #7a8a8c;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: linear-gradient(170deg, #2a5a60 0%, #244B52 60%, #1a3840 100%);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: rgba(194, 168, 120, 0.07);
+            pointer-events: none;
+        }
+
+        .sidebar-logo {
+            padding: 36px 28px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            letter-spacing: 6px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .sidebar-logo p {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .sidebar-user {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-info p {
+            font-size: 0.85rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-info span {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 16px;
+        }
+
+        .nav-label {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            padding: 0 12px;
+            margin: 16px 0 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: .2s;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.88rem;
+            font-weight: 400;
+            text-decoration: none;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--gold);
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-bottom {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.88rem;
+            transition: .2s;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            color: #e07070;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-content {
+            padding: 48px 48px 40px;
+            flex: 1;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 22px;
+            transition: .2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .review-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .review-heading-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .review-heading h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .app-id-tag {
+            background: var(--dark);
+            color: var(--gold);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            letter-spacing: 0.5px;
+            border: 1px solid var(--gold);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 18px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .status-pending {
+            background: rgba(194, 168, 120, 0.15);
+            color: #9a7a45;
+        }
+
+        .status-approved {
+            background: rgba(40, 160, 100, 0.12);
+            color: #1e7a50;
+        }
+
+        .status-rejected {
+            background: rgba(198, 40, 40, 0.1);
+            color: #C62828;
+        }
+
+        .details-card {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .info-section-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 32px;
+            border-left: 5px solid var(--gold);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            color: var(--primary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--grey);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px 20px;
+        }
+
+        .info-grid.cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .info-block.full {
+            grid-column: 1 / -1;
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 0.94rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .info-value.lg {
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .statement-box {
+            font-size: 0.94rem;
+            text-align: justify;
+            background: var(--cream);
+            border-left: 4px solid var(--primary);
+            padding: 22px;
+            border-radius: 8px;
+            color: var(--dark);
+            line-height: 1.7;
+        }
+
+        .review-actions {
+            margin-top: 12px;
+            padding-top: 24px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .review-actions form {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-action {
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 12px 26px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-action.approve {
+            background: #1e7a50;
+            color: white;
+        }
+
+        .btn-action.approve:hover {
+            background: #155c3c;
+        }
+
+        .btn-action.reject {
+            background: white;
+            color: #C62828;
+            border: 1px solid rgba(198, 40, 40, 0.25);
+        }
+
+        .btn-action.reject:hover {
+            background: #C62828;
+            color: white;
+        }
+
+        @media (max-width: 800px) {
+
+            .info-grid,
+            .info-grid.cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+                <p>Admin</p>
+                <span>Administrator</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="{% url 'admin_dashboard' %}" class="nav-item">
+                <span class="nav-icon">⊞</span> Dashboard
+            </a>
+            <a href="{% url 'manage_scholarships' %}" class="nav-item">
+                <span class="nav-icon">✦</span> Manage Scholarships
+            </a>
+            <a href="{% url 'view_applications' %}" class="nav-item active">
+                <span class="nav-icon">◈</span> View Applications
+            </a>
+            <a href="{% url 'manage_deadlines' %}" class="nav-item">
+                <span class="nav-icon">○</span> Manage Deadlines
+            </a>
+            <a href="{% url 'manage_disbursements' %}" class="nav-item">
+                <span class="nav-icon">✦</span> Disbursements</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <span class="nav-icon">→</span> Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <div class="main">
+
+        <div class="page-content">
+
+            <a href="{% url 'view_applications' %}" class="back-link">← Back to View Applications</a>
+            <div class="review-heading">
+                <div class="review-heading-left">
+                    <h1>Application Review</h1>
+                    <span class="app-id-tag">ID: #APP-{{ app.application_id }}</span>
+                </div>
+                <span class="status-badge status-{{ app.application_status|lower }}">{{ app.application_status }}</span>
+            </div>
+
+            <div class="details-card">
+
+                <div class="info-section-card">
+                    <div class="section-title">Scholarship</div>
+                    <div class="info-grid">
+                        <div class="info-block">
+                            <div class="info-label">Scholarship Type</div>
+                            <div class="info-value">{{ app.scholarship_name }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Academic Semester</div>
+                            <div class="info-value">{{ app.academic_term }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Student ID</div>
+                            <div class="info-value">{{ app.university_id }}</div>
+                        </div>
+                        <div class="info-block full">
+                            <div class="info-label">Student Name</div>
+                            <div class="info-value lg">{{ app.student_name }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section-card">
+                    <div class="section-title">Personal Information</div>
+                    <div class="info-grid">
+                        <div class="info-block">
+                            <div class="info-label">Date of Birth</div>
+                            <div class="info-value">{{ app.date_of_birth }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Gender</div>
+                            <div class="info-value">{{ app.gender }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">National ID Number (NID)</div>
+                            <div class="info-value">N/A</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Email Address</div>
+                            <div class="info-value">{{ app.email }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Phone Number</div>
+                            <div class="info-value">{{ app.phone }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Programme / Department</div>
+                            <div class="info-value">{{ app.department }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section-card">
+                    <div class="section-title">Academic Information</div>
+                    <div class="info-grid cols-4">
+                        <div class="info-block">
+                            <div class="info-label">Current CGPA</div>
+                            <div class="info-value">{{ app.cgpa }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Current Semester / Year</div>
+                            <div class="info-value">{{ app.current_semester }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">SSC GPA</div>
+                            <div class="info-value">N/A</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">HSC GPA</div>
+                            <div class="info-value">N/A</div>
+                        </div>
+                        <div class="info-block full">
+                            <div class="info-label">Academic Achievements / Honours</div>
+                            <div class="info-value">N/A</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section-card">
+                    <div class="section-title">Financial Information</div>
+                    <div class="info-grid">
+                        <div class="info-block">
+                            <div class="info-label">Guardian's Occupation</div>
+                            <div class="info-value">N/A</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Annual Family Income</div>
+                            <div class="info-value">N/A</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Receiving Other Scholarship?</div>
+                            <div class="info-value">N/A</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section-card">
+                    <div class="section-title">Personal Statement</div>
+                    <div class="statement-box">N/A</div>
+                </div>
+
+                <div class="review-actions">
+                    {% if app.application_status == 'Pending' %}
+                    <form method="POST" action="{% url 'application_decide' app.application_id %}">
+                        {% csrf_token %}
+                        <button class="btn-action reject" name="decision" value="Rejected">Reject Application</button>
+                        <button class="btn-action approve" name="decision" value="Approved">Approve Application</button>
+                    </form>
+                    {% else %}
+                    <p style="color: var(--muted); font-size: 0.9rem;">
+                        Decision already recorded: <strong>{{ app.application_status }}</strong>
+                    </p>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

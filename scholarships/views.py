@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.db import connection
 
 def index(request):
-    return render(request, 'index.html')
+    return redirect('login')
 
 def login_view(request):
     if request.method == 'POST':
@@ -220,7 +220,108 @@ def manage_scholarships(request):
 def view_applications(request):
     if request.session.get('role') != 'admin':
         return redirect('login')
-    return render(request, 'view_applications.html')
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT a.application_id, st.name, st.university_id,
+                   sc.name AS scholarship_name, a.applied_date, a.application_status
+            FROM application a
+            JOIN student     st ON a.student_id     = st.student_id
+            JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
+            ORDER BY a.applied_date DESC
+        """)
+        cols = [col[0] for col in cursor.description]
+        applications = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    return render(request, 'view_applications.html', {'applications': applications})
+
+
+def application_details(request, app_id):
+    if request.session.get('role') != 'admin':
+        return redirect('login')
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT
+                a.application_id,
+                a.application_status,
+                a.applied_date,
+                a.decision_date,
+                sc.name              AS scholarship_name,
+                d.academic_term,
+                st.university_id,
+                st.name              AS student_name,
+                st.date_of_birth,
+                st.gender,
+                u.email,
+                st.phone,
+                st.department,
+                st.current_semester,
+                st.cgpa,
+                st.sibling_studies_here
+            FROM application a
+            JOIN student     st ON a.student_id     = st.student_id
+            JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
+            JOIN user         u ON st.student_id    = u.user_id
+            LEFT JOIN deadline d ON d.scholarship_id = sc.scholarship_id
+            WHERE a.application_id = %s
+        """, [app_id])
+        row = cursor.fetchone()
+
+    if not row:
+        return redirect('view_applications')
+
+    app = {
+        'application_id':     row[0],
+        'application_status': row[1],
+        'applied_date':       row[2],
+        'decision_date':      row[3],
+        'scholarship_name':   row[4],
+        'academic_term':      row[5] or 'N/A',
+        'university_id':      row[6],
+        'student_name':       row[7],
+        'date_of_birth':      row[8].strftime('%d/%m/%Y') if row[8] else 'N/A',
+        'gender':             row[9] or 'N/A',
+        'email':              row[10],
+        'phone':              row[11] or 'N/A',
+        'department':         row[12] or 'N/A',
+        'current_semester':   row[13] or 'N/A',
+        'cgpa':               str(row[14]) + ' / 4.00' if row[14] else 'N/A',
+        'sibling':            'Yes' if row[15] else 'No',
+    }
+
+    return render(request, 'application_details.html', {'app': app})
+
+
+def application_decide(request, app_id):
+    if request.session.get('role') != 'admin':
+        return redirect('login')
+
+    if request.method == 'POST':
+        decision = request.POST.get('decision')
+        if decision in ('Approved', 'Rejected'):
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE application
+                    SET application_status = %s,
+                        decision_date = CURDATE()
+                    WHERE application_id = %s
+                """, [decision, app_id])
+
+            if decision == 'Approved':
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        INSERT INTO disbursement (application_id, amount, disbursement_date, payment_status)
+                        SELECT %s, s.waiver_percentage, NULL, 'Pending'
+                        FROM application a
+                        JOIN scholarship s ON a.scholarship_id = s.scholarship_id
+                        WHERE a.application_id = %s
+                          AND NOT EXISTS (
+                              SELECT 1 FROM disbursement WHERE application_id = %s
+                          )
+                    """, [app_id, app_id, app_id])
+
+    return redirect('application_details', app_id=app_id)
 
 def manage_deadlines(request):
     if request.session.get('role') != 'admin':
