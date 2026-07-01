@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Scholarships | ELEVATE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'st.css' %}">
+    <style>
+        .filter-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 32px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-right: 8px;
+            white-space: nowrap;
+        }
+
+        .filter-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .pill {
+            padding: 7px 18px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1.5px solid var(--grey);
+            background: transparent;
+            color: var(--muted);
+            transition: .2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .pill:hover,
+        .pill.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--cream);
+            border: 1.5px solid var(--grey);
+            border-radius: 10px;
+            padding: 9px 16px;
+            margin-left: auto;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            color: var(--dark);
+            outline: none;
+            width: 180px;
+        }
+
+        .search-box input::placeholder {
+            color: #bbb;
+        }
+
+        .page-hero {
+            background: linear-gradient(135deg, #2a5a60 0%, #244B52 100%);
+            border-radius: 18px;
+            padding: 40px 44px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(194, 168, 120, 0.07);
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: 120px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .page-hero .eyebrow {
+            font-size: 0.72rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .page-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .page-hero p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Scholarship Grid */
+        .sch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .sch-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 28px;
+            border-top: 3px solid var(--gold);
+            display: flex;
+            flex-direction: column;
+            transition: .3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sch-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(194, 168, 120, 0.05), transparent);
+            border-radius: 0 0 0 100px;
+        }
+
+        .sch-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .sch-badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            width: fit-content;
+        }
+
+        .badge-merit {
+            background: rgba(47, 111, 111, 0.1);
+            color: var(--primary);
+        }
+
+        .badge-need {
+            background: rgba(194, 168, 120, 0.15);
+            color: #9a7a45;
+        }
+
+        .badge-sibling {
+            background: rgba(40, 100, 160, 0.1);
+            color: #2860a0;
+        }
+
+        .badge-entrance {
+            background: rgba(120, 60, 160, 0.1);
+            color: #783ca0;
+        }
+
+        .sch-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .sch-card p {
+            color: #777;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            flex: 1;
+        }
+
+        .sch-meta {
+            display: flex;
+            gap: 20px;
+            margin: 18px 0;
+            padding: 14px 0;
+            border-top: 1px solid var(--grey);
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .sch-meta-item {
+            font-size: 0.78rem;
+        }
+
+        .sch-meta-item span {
+            display: block;
+            font-size: 0.68rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 2px;
+        }
+
+        .sch-meta-item strong {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .sch-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .btn-apply {
+            flex: 1;
+            text-align: center;
+            background: var(--primary);
+            color: white;
+            padding: 11px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: .2s;
+        }
+
+        .btn-apply:hover {
+            background: var(--dark);
+        }
+
+        .btn-detail {
+            padding: 11px 16px;
+            border-radius: 8px;
+            border: 1.5px solid var(--grey);
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: .2s;
+            white-space: nowrap;
+        }
+
+        .btn-detail:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .eligible-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(40, 160, 100, 0.12);
+            color: #1e7a50;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
+        </div>
+        <div class="sidebar-user">
+            <div class="user-avatar">{{ student_name|first|upper }}</div>
+            <div class="user-info">
+                <p>{{ student_name }}</p>
+                <span>Student</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="{% url 'student_dashboard' %}" class="nav-item">
+                <span class="nav-icon">⊞</span> Dashboard
+            </a>
+            <a href="{% url 'browse_scholarships' %}" class="nav-item active">
+                <span class="nav-icon">✦</span> Browse Scholarships
+            </a>
+            <a href="{% url 'my_applications' %}" class="nav-item">
+                <span class="nav-icon">◈</span> My Applications
+            </a>
+            <a href="{% url 'disbursements' %}" class="nav-item">
+                <span class="nav-icon">◎</span> My Disbursements
+            </a>
+            <p class="nav-label">Account</p>
+            <a href="{% url 'profile' %}" class="nav-item">
+                <span class="nav-icon">○</span> Profile
+            </a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <span class="nav-icon">→</span> Sign Out
+            </a>
+        </div>
+    </aside>
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h3>Browse Scholarships</h3>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="page-hero">
+                <p class="eyebrow">Opportunities</p>
+                <h1>Find Your Scholarship</h1>
+                <p style="position:relative;z-index:1;">Explore all available scholarships and find the ones that match
+                    your academic profile.</p>
+            </div>
+            <div class="filter-bar">
+                <h3>Filter</h3>
+                <div class="filter-pills">
+                    <button class="pill active" onclick="filterCards('all',this)">All</button>
+                    <button class="pill" onclick="filterCards('merit',this)">Merit-Based</button>
+                    <button class="pill" onclick="filterCards('need',this)">Need-Based</button>
+                    <button class="pill" onclick="filterCards('sibling',this)">Sibling Waiver</button>
+                    <button class="pill" onclick="filterCards('entrance',this)">Entrance</button>
+                </div>
+                <div class="search-box">
+                    <span style="color:#bbb;">🔍</span>
+                    <input type="text" placeholder="Search scholarships..." oninput="searchCards(this.value)">
+                </div>
+            </div>
+            <div class="sch-grid" id="schGrid">
+                {% for s in scholarships %}
+                <div class="sch-card" data-type="{{ s.type }}">
+                    {% if s.eligible and not s.already_applied %}
+                    <span class="eligible-tag">✓ Eligible</span>
+                    {% endif %}
+                    {% if s.already_applied %}
+                    <span class="eligible-tag" style="background:rgba(40,100,200,0.1);color:#2860a0;">✓ Applied</span>
+                    {% endif %}
+
+                    <span class="sch-badge badge-{{ s.type }}">
+                        {% if s.type == 'merit' %}Merit-Based
+                        {% elif s.type == 'need' %}Need-Based
+                        {% elif s.type == 'sibling' %}Sibling Waiver
+                        {% elif s.type == 'entrance' %}Entrance
+                        {% else %}{{ s.name }}
+                        {% endif %}
+                    </span>
+
+                    <h3>{{ s.name }}</h3>
+                    <p>{{ s.description }}</p>
+
+                    <div class="sch-meta">
+                        <div class="sch-meta-item">
+                            <span>Award Value</span>
+                            <strong>{{ s.waiver_percentage }}% Waiver</strong>
+                        </div>
+                        <div class="sch-meta-item">
+                            <span>Deadline</span>
+                            <strong>{{ s.end_date_fmt }}</strong>
+                        </div>
+                        <div class="sch-meta-item">
+                            <span>Min CGPA</span>
+                            <strong>{% if s.min_cgpa %}{{ s.min_cgpa }}{% else %}N/A{% endif %}</strong>
+                        </div>
+                    </div>
+
+                    <div class="sch-actions">
+                        <a href="{% url 'scholarship_detail' s.scholarship_id %}" class="btn-detail">Details</a>
+                        {% if s.already_applied %}
+                        <span class="btn-apply" style="opacity:0.5;cursor:not-allowed;background:var(--muted);">✓ Applied</span>
+                        {% elif s.eligible %}
+                        <a href="{% url 'application_form' s.scholarship_id %}" class="btn-apply">Apply Now</a>
+                        {% else %}
+                        <span class="btn-apply" style="opacity:0.4;cursor:not-allowed;">Not Eligible</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p>No active scholarships available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterCards(type, btn) {
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.sch-card').forEach(card => {
+                card.style.display = (type === 'all' || card.dataset.type === type) ? '' : 'none';
+            });
+        }
+        function searchCards(val) {
+            const q = val.toLowerCase();
+            document.querySelectorAll('.sch-card').forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+
+</html>

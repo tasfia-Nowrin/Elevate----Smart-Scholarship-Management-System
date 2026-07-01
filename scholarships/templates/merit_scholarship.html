@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merit Scholarship | ELEVATE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'st.css' %}">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+            transition: .2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .detail-hero {
+            background: linear-gradient(135deg, #2a5a60 0%, #244B52 100%);
+            border-radius: 18px;
+            padding: 44px;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .detail-hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(194, 168, 120, 0.08);
+        }
+
+        .detail-hero .eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .detail-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .detail-hero p {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.9rem;
+            max-width: 580px;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        .detail-hero-badge {
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            margin-top: 20px;
+            background: rgba(47, 111, 111, 0.3);
+            border: 1px solid rgba(47, 111, 111, 0.5);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .info-card h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .criteria-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .criteria-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.88rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .criteria-list li::before {
+            content: '✦';
+            color: var(--gold);
+            font-size: 0.7rem;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .award-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .award-item {
+            background: var(--cream);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            border-top: 2px solid var(--gold);
+        }
+
+        .award-item span {
+            display: block;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .award-item strong {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .docs-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .docs-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.87rem;
+            color: #555;
+            padding: 10px 14px;
+            background: var(--cream);
+            border-radius: 8px;
+        }
+
+        .docs-list li::before {
+            content: '📄';
+            font-size: 0.9rem;
+        }
+
+        /* Sidebar sticky */
+        .detail-sidebar {
+            position: sticky;
+            top: 88px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .apply-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            border-top: 3px solid var(--gold);
+            text-align: center;
+        }
+
+        .apply-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .apply-card .deadline-countdown {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            font-weight: 600;
+            margin: 14px 0 4px;
+        }
+
+        .apply-card .deadline-label {
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .btn-apply-large {
+            display: block;
+            background: var(--primary);
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: .3s;
+            margin-bottom: 10px;
+        }
+
+        .btn-apply-large:hover {
+            background: var(--dark);
+        }
+
+        .btn-save {
+            display: block;
+            background: transparent;
+            border: 1.5px solid var(--grey);
+            color: var(--dark);
+            padding: 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: .2s;
+        }
+
+        .btn-save:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .quick-facts {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .quick-facts h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .fact-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--grey);
+            font-size: 0.84rem;
+        }
+
+        .fact-row:last-child {
+            border-bottom: none;
+        }
+
+        .fact-row span {
+            color: var(--muted);
+        }
+
+        .fact-row strong {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .process-steps {
+            counter-reset: steps;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .process-step {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .process-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .step-text h4 {
+            font-size: 0.88rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .step-text p {
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
+        </div>
+        <div class="sidebar-user">
+            <div class="user-avatar">{{ student_name|first|upper }}</div>
+            <div class="user-info">
+                <p>{{ student_name }}</p><span>Student</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="{% url 'student_dashboard' %}" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+            <a href="{% url 'browse_scholarships' %}" class="nav-item active"><span class="nav-icon">✦</span> Browse
+                Scholarships</a>
+            <a href="{% url 'my_applications' %}" class="nav-item"><span class="nav-icon">◈</span> My Applications</a>
+            <a href="{% url 'disbursements' %}" class="nav-item"><span class="nav-icon">◎</span> My Disbursements</a>
+            <p class="nav-label">Account</p>
+            <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon">○</span> Profile</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="{% url 'logout' %}" class="logout-btn"><span class="nav-icon">→</span> Sign Out</a>
+        </div>
+
+    </aside>
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h3>Scholarship Details</h3>
+            </div>
+        </div>
+        <div class="page-content">
+            <a href="{% url 'browse_scholarships' %}" class="back-link">← Back to Browse</a>
+
+            <div class="detail-hero">
+                <p class="eyebrow">{{ sch.type_label }}</p>
+                <h1>{{ sch.name }}</h1>
+                <p>{{ sch.description }}</p>
+                {% if sch.eligible %}
+                <span class="detail-hero-badge">✓ You are eligible</span>
+                {% endif %}
+            </div>
+
+            <div class="detail-layout">
+                <div class="detail-main">
+
+                    <div class="info-card">
+                        <h2>About This Scholarship</h2>
+                        <p style="font-size:0.9rem;color:#666;line-height:1.8;">{{ sch.description }}
+                        </p>
+                    </div>
+
+                    <div class="info-card">
+                        <h2>Eligibility Criteria</h2>
+                        <ul class="criteria-list">
+                            {% if sch.min_cgpa %}<li>Minimum CGPA of {{ sch.min_cgpa }} required</li>{% endif %}
+                            {% if sch.max_cgpa %}<li>Maximum CGPA of {{ sch.max_cgpa }} (need-based cap)</li>{% endif %}
+                            {% if sch.type == 'sibling' %}<li>Must have a sibling currently studying at this institution </li>{% endif %}
+                            {% if sch.fee_type %}<li>Applies to: {{ sch.fee_type }}</li>{% endif %}
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h2>Award Structure</h2>
+                        <div class="award-grid">
+                            <div class="award-item"><span>Maximum Waiver</span><strong>{{ sch.waiver_percentage }}%</strong></div>
+                            <div class="award-item"><span>Fee Type</span><strong>{{ sch.fee_type|default:"N/A"}}</strong></div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h2>Required Documents</h2>
+                        <ul class="docs-list">
+                            <li>Official academic transcript (current semester)</li>
+                            <li> university-issued student card</li>
+                            <li>Faculty recommendation letter (signed and sealed)</li>
+                            <li>Personal statement (500–800 words)</li>
+                            <li>Completed ELEVATE application form</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h2>Application Process</h2>
+                        <ul class="process-steps">
+                            <li class="process-step">
+                                <div class="step-num">1</div>
+                                <div class="step-text">
+                                    <h4>Register or Sign In</h4>
+                                    <p>Ensure your ELEVATE profile is complete and up to date before applying.</p>
+                                </div>
+                            </li>
+                            <li class="process-step">
+                                <div class="step-num">2</div>
+                                <div class="step-text">
+                                    <h4>Complete the Application Form</h4>
+                                    <p>Fill in all required fields and upload supporting documents.</p>
+                                </div>
+                            </li>
+                            <li class="process-step">
+                                <div class="step-num">3</div>
+                                <div class="step-text">
+                                    <h4>Submit Before Deadline</h4>
+                                    <p>Applications submitted after the deadline will not be considered under any
+                                        circumstances.</p>
+                                </div>
+                            </li>
+                            <li class="process-step">
+                                <div class="step-num">4</div>
+                                <div class="step-text">
+                                    <h4>Await Committee Review</h4>
+                                    <p>The scholarship committee reviews all applications within 14 working days.</p>
+                                </div>
+                            </li>
+                            <li class="process-step">
+                                <div class="step-num">5</div>
+                                <div class="step-text">
+                                    <h4>Receive Decision</h4>
+                                    <p>You will be notified via your registered email and ELEVATE dashboard.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="detail-sidebar">
+                    <div class="apply-card">
+                        <h3>Ready to Apply?</h3>
+                        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">Application closes in</p>
+                        <p class="deadline-countdown">{% if sch.days_remaining %}{{ sch.days_remaining }} Days{% else %}—{% endif %}</p>
+                        <p class="deadline-label">{{ sch.end_date_fmt }}</p>{% if sch.already_applied %}
+                        <a href="{% url 'my_applications' %}" class="btn-apply-large">View Application</a>{% elif sch.eligible %}
+                        <a href="{% url 'apply_scholarship' sch.scholarship_id %}" class="btn-apply-large">Apply Now →</a>{% else %}
+                        <span class="btn-apply-large" style="opacity:0.5;cursor:not-allowed;">Not Eligible</span> {% endif %}
+                    </div>
+                    <div class="quick-facts">
+                        <h3>Quick Facts</h3>
+                        <div class="fact-row"><span>Type</span><strong>{{ sch.type_label }}</strong></div>
+                        <div class="fact-row"><span>Award</span><strong>Up to {{ sch.waiver_percentage }}% Waiver</strong></div>
+                        <div class="fact-row"><span>Deadline</span><strong>{{ sch.end_date_fmt }}</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

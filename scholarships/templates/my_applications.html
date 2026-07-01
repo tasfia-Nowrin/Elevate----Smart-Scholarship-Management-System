@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications | ELEVATE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'st.css' %}">
+    <style>
+        .page-hero {
+            background: linear-gradient(135deg, #2a5a60 0%, #244B52 100%);
+            border-radius: 18px;
+            padding: 40px 44px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(194, 168, 120, 0.07)
+        }
+
+        .page-hero .eyebrow {
+            font-size: 0.72rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 8px
+        }
+
+        .page-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1
+        }
+
+        .page-hero p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            font-weight: 300;
+            position: relative;
+            z-index: 1
+        }
+
+        .app-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 28px
+        }
+
+        .app-stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px 20px;
+            border-left: 3px solid var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 14px
+        }
+
+        .app-stat-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.7rem;
+            color: var(--dark);
+            font-weight: 600;
+            line-height: 1;
+            margin-bottom: 2px
+        }
+
+        .app-stat-lbl {
+            font-size: 0.72rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap
+        }
+
+        .tab {
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1.5px solid var(--grey);
+            background: transparent;
+            color: var(--muted);
+            transition: .2s;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .tab:hover,
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary)
+        }
+
+        .app-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            transition: .2s
+        }
+
+        .app-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+            transform: translateY(-2px)
+        }
+
+        .app-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0
+        }
+
+        .app-card-main {
+            flex: 1
+        }
+
+        .app-card-main h3 {
+            font-size: 0.95rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 4px
+        }
+
+        .app-card-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            flex-wrap: wrap
+        }
+
+        .app-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap
+        }
+
+        .status-pending {
+            background: rgba(194, 168, 120, 0.15);
+            color: #9a7a45
+        }
+
+        .status-approved {
+            background: rgba(40, 160, 100, 0.12);
+            color: #1e7a50
+        }
+
+        .status-rejected {
+            background: rgba(200, 60, 60, 0.1);
+            color: #a03030
+        }
+
+        .app-card-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .btn-view {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            border: 1.5px solid var(--grey);
+            color: var(--dark);
+            transition: .2s;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            background: transparent
+        }
+
+        .btn-view:hover {
+            border-color: var(--primary);
+            color: var(--primary)
+        }
+
+        .tl-mini {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--grey);
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .tl-mini-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 0.8rem;
+            color: #666
+        }
+
+        .tl-mini-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gold);
+            margin-top: 4px;
+            flex-shrink: 0
+        }
+
+        .tl-mini-dot.grey {
+            background: var(--grey)
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 14px
+        }
+
+        .empty-state h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 8px
+        }
+
+        .empty-state p {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-bottom: 20px
+        }
+
+        .empty-state a {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 11px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: .2s
+        }
+
+        .empty-state a:hover {
+            background: var(--dark)
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
+        </div>
+        <div class="sidebar-user">
+            <div class="user-avatar">{{ student_name|first|upper }}</div>
+            <div class="user-info">
+                <p>{{ student_name }}</p><span>Student</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="{% url 'student_dashboard' %}" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+            <a href="{% url 'browse_scholarships' %}" class="nav-item"><span class="nav-icon">✦</span> Browse
+                Scholarships</a>
+            <a href="{% url 'my_applications' %}" class="nav-item active"><span class="nav-icon">◈</span> My
+                Applications</a>
+            <a href="{% url 'disbursements' %}" class="nav-item"><span class="nav-icon">◎</span> My Disbursements</a>
+            <p class="nav-label">Account</p>
+            <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon">○</span> Profile</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="{% url 'logout' %}" class="logout-btn"><span class="nav-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h3>My Applications</h3>
+            </div>
+        </div>
+        <div class="page-content">
+
+            <div class="page-hero">
+                <p class="eyebrow">Application Tracker</p>
+                <h1>My Applications</h1>
+                <p>Track the status of all your scholarship applications in one place.</p>
+            </div>
+
+            <div class="app-stats">
+                <div class="app-stat-card">
+                    <div>
+                        <p class="app-stat-val">{{ stats.total }}</p>
+                        <p class="app-stat-lbl">Total Submitted</p>
+                    </div>
+                </div>
+                <div class="app-stat-card" style="border-color:rgba(194,168,120,0.4)">
+                    <div>
+                        <p class="app-stat-val">{{ stats.pending }}</p>
+                        <p class="app-stat-lbl">Pending</p>
+                    </div>
+                </div>
+                <div class="app-stat-card" style="border-color:rgba(40,160,100,0.4)">
+                    <div>
+                        <p class="app-stat-val">{{ stats.approved }}</p>
+                        <p class="app-stat-lbl">Approved</p>
+                    </div>
+                </div>
+                <div class="app-stat-card" style="border-color:rgba(200,60,60,0.4)">
+                    <div>
+                        <p class="app-stat-val">{{ stats.rejected }}</p>
+                        <p class="app-stat-lbl">Rejected</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-tabs">
+                <button class="tab active" onclick="filterApps('all',this)">All Applications</button>
+                <button class="tab" onclick="filterApps('pending',this)">Pending</button>
+                <button class="tab" onclick="filterApps('approved',this)">Approved</button>
+                <button class="tab" onclick="filterApps('rejected',this)">Rejected</button>
+            </div>
+
+            <div id="appList">
+                {% for app in applications %}
+                <div class="app-card" data-status="{{ app.status_lower }}">
+                    <div class="app-card-icon">✦</div>
+                    <div class="app-card-main">
+                        <h3>{{ app.scholarship_name }}</h3>
+                        <div class="app-card-meta">
+                            <span>📅 Submitted: {{ app.applied_date|date:"d M Y" }}</span>
+                            <span>📌 Application ID: ELV-{{ app.application_id }}</span>
+                            {% if app.payment_status %}<span>💰 Payment: {{ app.payment_status }}</span>{% endif %}
+                        </div>
+                    </div>
+                    <span class="status-badge status-{{ app.status_lower }}">{{ app.application_status }}</span>
+                    
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <h3>No applications yet</h3>
+                    <p>You haven't applied to any scholarships yet.</p>
+                    <a href="{% url 'browse_scholarships' %}">Browse Scholarships</a>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function filterApps(status, btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.app-card').forEach(card => {
+                card.style.display = (status === 'all' || card.dataset.status === status) ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+
+</html>

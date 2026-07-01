@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Details | ELEVATE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'st.css' %}">
+    <style>
+        .back-link{display:inline-flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-size:0.85rem;margin-bottom:22px;transition:.2s}
+        .back-link:hover{color:var(--primary)}
+        .review-heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:30px}
+        .review-heading h1{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--dark);font-weight:600}
+        .app-id-tag{background:var(--dark);color:var(--gold);padding:6px 16px;border-radius:20px;font-weight:600;font-size:0.82rem;letter-spacing:0.5px;border:1px solid var(--gold);margin-left:14px}
+        .status-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:20px;font-weight:500;font-size:0.85rem}
+        .status-pending{background:rgba(194,168,120,0.15);color:#9a7a45}
+        .status-approved{background:rgba(40,160,100,0.12);color:#1e7a50}
+        .status-rejected{background:rgba(198,40,40,0.1);color:#C62828}
+        .details-card{display:flex;flex-direction:column;gap:28px}
+        .info-section-card{background:white;border-radius:16px;padding:32px;border-left:5px solid var(--gold)}
+        .section-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:var(--primary);font-weight:600;border-bottom:1px solid var(--grey);padding-bottom:16px;margin-bottom:24px;text-transform:uppercase;letter-spacing:0.8px}
+        .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px 20px}
+        .info-grid.cols-4{grid-template-columns:repeat(4,1fr)}
+        .info-block.full{grid-column:1/-1}
+        .info-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:5px;font-weight:500}
+        .info-value{font-size:0.94rem;color:var(--dark);font-weight:500}
+        .info-value.lg{font-size:1.05rem;font-weight:600}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-logo"><h2>ELEVATE</h2><p>Scholarship Portal</p></div>
+    <div class="sidebar-user">
+        <div class="user-avatar">{{ student_name|first|upper }}</div>
+        <div class="user-info"><p>{{ student_name }}</p><span>Student</span></div>
+    </div>
+    <nav class="sidebar-nav">
+        <p class="nav-label">Main</p>
+        <a href="{% url 'student_dashboard' %}" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+        <a href="{% url 'browse_scholarships' %}" class="nav-item"><span class="nav-icon">✦</span> Browse Scholarships</a>
+        <a href="{% url 'my_applications' %}" class="nav-item active"><span class="nav-icon">◈</span> My Applications</a>
+        <a href="{% url 'disbursements' %}" class="nav-item"><span class="nav-icon">◎</span> My Disbursements</a>
+        <p class="nav-label">Account</p>
+        <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon">○</span> Profile</a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="{% url 'logout' %}" class="logout-btn"><span class="nav-icon">→</span> Sign Out</a>
+    </div>
+</aside>
+
+<div class="main">
+    <div class="page-content">
+        <a href="{% url 'my_applications' %}" class="back-link">← Back to My Applications</a>
+
+        <div class="review-heading">
+            <div style="display:flex;align-items:center;">
+                <h1>Application Details</h1>
+                <span class="app-id-tag">ELV-{{ app.application_id }}</span>
+            </div>
+            <span class="status-badge status-{{ app.status_lower }}">{{ app.application_status }}</span>
+        </div>
+
+        <div class="details-card">
+
+            <div class="info-section-card">
+                <div class="section-title">Scholarship</div>
+                <div class="info-grid">
+                    <div class="info-block">
+                        <div class="info-label">Scholarship</div>
+                        <div class="info-value lg">{{ app.scholarship_name }}</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Waiver Percentage</div>
+                        <div class="info-value">{{ app.waiver_percentage }}%</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Applied Date</div>
+                        <div class="info-value">{{ app.applied_date|date:"d F Y" }}</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Eligibility Result</div>
+                        <div class="info-value">{{ app.eligibility_result|default:"Pending" }}</div>
+                    </div>
+                    {% if app.approved_waiver %}
+                    <div class="info-block">
+                        <div class="info-label">Approved Waiver</div>
+                        <div class="info-value">{{ app.approved_waiver }}%</div>
+                    </div>
+                    {% endif %}
+                    {% if app.decision_date %}
+                    <div class="info-block">
+                        <div class="info-label">Decision Date</div>
+                        <div class="info-value">{{ app.decision_date|date:"d F Y" }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="info-section-card">
+                <div class="section-title">Personal Information</div>
+                <div class="info-grid">
+                    <div class="info-block">
+                        <div class="info-label">Full Name</div>
+                        <div class="info-value lg">{{ app.student_name }}</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Student ID</div>
+                        <div class="info-value">{{ app.university_id }}</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ app.email }}</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Phone</div>
+                        <div class="info-value">{{ app.phone|default:"Not provided" }}</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Date of Birth</div>
+                        <div class="info-value">{{ app.date_of_birth|date:"d F Y"|default:"Not provided" }}</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Gender</div>
+                        <div class="info-value">{{ app.gender|default:"Not provided" }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section-card">
+                <div class="section-title">Academic Information</div>
+                <div class="info-grid cols-4">
+                    <div class="info-block">
+                        <div class="info-label">Current CGPA</div>
+                        <div class="info-value">{{ app.cgpa|default:"—" }}</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Current Semester</div>
+                        <div class="info-value">{{ app.current_semester|default:"—" }}</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Department</div>
+                        <div class="info-value">{{ app.department|default:"—" }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if app.amount %}
+            <div class="info-section-card">
+                <div class="section-title">Disbursement</div>
+                <div class="info-grid">
+                    <div class="info-block">
+                        <div class="info-label">Amount</div>
+                        <div class="info-value lg">BDT {{ app.amount }}</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Payment Status</div>
+                        <div class="info-value">{{ app.payment_status }}</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

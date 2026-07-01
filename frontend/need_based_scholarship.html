@@ -1,170 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Need-Based Scholarship | ELEVATE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="st.css">
     <style>
-        .back-link { display:inline-flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-size:0.85rem;margin-bottom:24px;transition:.2s; }
-        .back-link:hover { color:var(--primary); }
-        .detail-layout { display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start; }
-        .detail-hero { background:linear-gradient(135deg,#7a4f20 0%,#5a3810 50%,#3d2508 100%);border-radius:18px;padding:44px;margin-bottom:28px;position:relative;overflow:hidden; }
-        .detail-hero::before { content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;background:rgba(194,168,120,0.1); }
-        .detail-hero .eyebrow { font-size:0.7rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px; }
-        .detail-hero h1 { font-family:'Cormorant Garamond',serif;font-size:2.5rem;color:white;font-weight:600;margin-bottom:12px;position:relative;z-index:1; }
-        .detail-hero p { color:rgba(255,255,255,0.65);font-size:0.9rem;max-width:580px;line-height:1.7;position:relative;z-index:1; }
-        .detail-hero-badge { position:relative;z-index:1;display:inline-block;margin-top:20px;background:rgba(194,168,120,0.2);border:1px solid rgba(194,168,120,0.4);color:rgba(255,255,255,0.85);font-size:0.75rem;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;border-radius:20px;font-weight:500; }
-        .info-card { background:white;border-radius:16px;padding:28px;margin-bottom:24px; }
-        .info-card h2 { font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--dark);font-weight:600;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--grey); }
-        .criteria-list { list-style:none;display:flex;flex-direction:column;gap:12px; }
-        .criteria-list li { display:flex;align-items:flex-start;gap:12px;font-size:0.88rem;color:#555;line-height:1.6; }
-        .criteria-list li::before { content:'✦';color:var(--gold);font-size:0.7rem;margin-top:3px;flex-shrink:0; }
-        .award-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
-        .award-item { background:var(--cream);border-radius:10px;padding:16px;text-align:center;border-top:2px solid var(--gold); }
-        .award-item span { display:block;font-size:0.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px; }
-        .award-item strong { font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--dark);font-weight:600; }
-        .docs-list { list-style:none;display:flex;flex-direction:column;gap:10px; }
-        .docs-list li { display:flex;align-items:center;gap:12px;font-size:0.87rem;color:#555;padding:10px 14px;background:var(--cream);border-radius:8px; }
-        .docs-list li::before { content:'📄';font-size:0.9rem; }
-        .detail-sidebar { position:sticky;top:88px;display:flex;flex-direction:column;gap:20px; }
-        .apply-card { background:white;border-radius:16px;padding:28px;border-top:3px solid var(--gold);text-align:center; }
-        .apply-card h3 { font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--dark);font-weight:600;margin-bottom:6px; }
-        .apply-card .deadline-countdown { font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold);font-weight:600;margin:14px 0 4px; }
-        .apply-card .deadline-label { font-size:0.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:20px; }
-        .btn-apply-large { display:block;background:var(--primary);color:white;padding:14px;border-radius:10px;text-decoration:none;font-size:0.95rem;font-weight:500;transition:.3s;margin-bottom:10px; }
-        .btn-apply-large:hover { background:var(--dark); }
-        .btn-save { display:block;background:transparent;border:1.5px solid var(--grey);color:var(--dark);padding:12px;border-radius:10px;text-decoration:none;font-size:0.88rem;font-weight:500;transition:.2s; }
-        .btn-save:hover { border-color:var(--primary);color:var(--primary); }
-        .quick-facts { background:white;border-radius:16px;padding:24px; }
-        .quick-facts h3 { font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--dark);font-weight:600;margin-bottom:16px; }
-        .fact-row { display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--grey);font-size:0.84rem; }
-        .fact-row:last-child { border-bottom:none; }
-        .fact-row span { color:var(--muted); }
-        .fact-row strong { color:var(--dark);font-weight:500; }
-        .process-steps { list-style:none;display:flex;flex-direction:column;gap:0; }
-        .process-step { display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--grey); }
-        .process-step:last-child { border-bottom:none; }
-        .step-num { width:28px;height:28px;border-radius:50%;background:var(--gold);color:white;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;flex-shrink:0;margin-top:2px; }
-        .step-text h4 { font-size:0.88rem;color:var(--dark);font-weight:600;margin-bottom:3px; }
-        .step-text p { font-size:0.8rem;color:var(--muted);line-height:1.5; }
-        .notice-box { background:rgba(194,168,120,0.1);border:1px solid rgba(194,168,120,0.3);border-radius:12px;padding:18px 20px;font-size:0.85rem;color:#7a5a20;line-height:1.7; }
-        .notice-box strong { display:block;margin-bottom:4px;font-size:0.8rem;letter-spacing:1px;text-transform:uppercase; }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+            transition: .2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .detail-hero {
+            background: linear-gradient(135deg, #7a4f20 0%, #5a3810 50%, #3d2508 100%);
+            border-radius: 18px;
+            padding: 44px;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .detail-hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(194, 168, 120, 0.1);
+        }
+
+        .detail-hero .eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .detail-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .detail-hero p {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.9rem;
+            max-width: 580px;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        .detail-hero-badge {
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            margin-top: 20px;
+            background: rgba(194, 168, 120, 0.2);
+            border: 1px solid rgba(194, 168, 120, 0.4);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .info-card h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .criteria-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .criteria-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.88rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .criteria-list li::before {
+            content: '✦';
+            color: var(--gold);
+            font-size: 0.7rem;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .award-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .award-item {
+            background: var(--cream);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            border-top: 2px solid var(--gold);
+        }
+
+        .award-item span {
+            display: block;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .award-item strong {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .docs-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .docs-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.87rem;
+            color: #555;
+            padding: 10px 14px;
+            background: var(--cream);
+            border-radius: 8px;
+        }
+
+        .docs-list li::before {
+            content: '📄';
+            font-size: 0.9rem;
+        }
+
+        .detail-sidebar {
+            position: sticky;
+            top: 88px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .apply-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            border-top: 3px solid var(--gold);
+            text-align: center;
+        }
+
+        .apply-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .apply-card .deadline-countdown {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            font-weight: 600;
+            margin: 14px 0 4px;
+        }
+
+        .apply-card .deadline-label {
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .btn-apply-large {
+            display: block;
+            background: var(--primary);
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: .3s;
+            margin-bottom: 10px;
+        }
+
+        .btn-apply-large:hover {
+            background: var(--dark);
+        }
+
+        .btn-save {
+            display: block;
+            background: transparent;
+            border: 1.5px solid var(--grey);
+            color: var(--dark);
+            padding: 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: .2s;
+        }
+
+        .btn-save:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .quick-facts {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .quick-facts h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .fact-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--grey);
+            font-size: 0.84rem;
+        }
+
+        .fact-row:last-child {
+            border-bottom: none;
+        }
+
+        .fact-row span {
+            color: var(--muted);
+        }
+
+        .fact-row strong {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .process-steps {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .process-step {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .process-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .step-text h4 {
+            font-size: 0.88rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .step-text p {
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .notice-box {
+            background: rgba(194, 168, 120, 0.1);
+            border: 1px solid rgba(194, 168, 120, 0.3);
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 0.85rem;
+            color: #7a5a20;
+            line-height: 1.7;
+        }
+
+        .notice-box strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
+
 <body>
-<aside class="sidebar">
-    <div class="sidebar-logo"><h2>ELEVATE</h2><p>Scholarship Portal</p></div>
-    <div class="sidebar-user">
-        <div class="user-avatar">M</div>
-        <div class="user-info"><p>Mahisa</p><span>Student</span></div>
-    </div>
-    <nav class="sidebar-nav">
-        <p class="nav-label">Main</p>
-        <a href="student_dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
-        <a href="browse_scholarships.html" class="nav-item active"><span class="nav-icon">✦</span> Browse Scholarships</a>
-        <a href="my_applications.html" class="nav-item"><span class="nav-icon">◈</span> My Applications</a>
-                <a href="disbursements.html" class="nav-item active"><span class="nav-icon">◎</span> My Disbursements</a>
-        <p class="nav-label">Account</p>
-        <a href="profile.html" class="nav-item"><span class="nav-icon">○</span> Profile</a>
-    </nav>
-    <div class="sidebar-bottom">
-        <a href="login.html" class="logout-btn"><span class="nav-icon">→</span> Sign Out</a>
-    </div>
-</aside>
- 
-<div class="main">
-    <div class="topbar"><div class="topbar-left"><h3>Scholarship Details</h3></div></div>
-    <div class="page-content">
-        <a href="browse_scholarships.html" class="back-link">← Back to Browse</a>
- 
-        <div class="detail-hero">
-            <p class="eyebrow">Need-Based</p>
-            <h1>Need-Based Scholarship</h1>
-            <p>Ensuring that financial circumstance is never a barrier to quality education. Supporting deserving students from economically disadvantaged backgrounds.</p>
-            <span class="detail-hero-badge">Open for Applications</span>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
         </div>
- 
-        <div class="detail-layout">
-            <div class="detail-main">
-                <div class="info-card">
-                    <h2>About This Scholarship</h2>
-                    <p style="font-size:0.9rem;color:#666;line-height:1.8;margin-bottom:16px;">The Need-Based Scholarship reflects ELEVATE's commitment to educational equity — a principle embraced by eminent institutions including BRAC University and North South University, who have long championed inclusive access to higher education.</p>
-                    <p style="font-size:0.9rem;color:#666;line-height:1.8;">This scholarship provides meaningful financial relief to students whose family income falls below defined thresholds, empowering them to focus on academic achievement rather than financial anxiety.</p>
-                    <div class="notice-box" style="margin-top:18px;">
-                        <strong>Confidentiality Notice</strong>
-                        All financial information submitted as part of this application is held in strict confidence and used solely for assessment purposes.
-                    </div>
-                </div>
- 
-                <div class="info-card">
-                    <h2>Eligibility Criteria</h2>
-                    <ul class="criteria-list">
-                        <li>Annual family income not exceeding BDT 3,00,000 (supported by income certificate)</li>
-                        <li>Currently enrolled as a full-time student in good academic standing</li>
-                        <li>Minimum CGPA of 2.75 in the preceding semester</li>
-                        <li>No concurrent receipt of another tuition waiver exceeding 25%</li>
-                        <li>Evidence of genuine financial hardship as assessed by the scholarship committee</li>
-                        <li>Clean disciplinary record at the institution</li>
-                    </ul>
-                </div>
- 
-                <div class="info-card">
-                    <h2>Award Structure</h2>
-                    <div class="award-grid">
-                        <div class="award-item"><span>Maximum Waiver</span><strong>75%</strong></div>
-                        <div class="award-item"><span>Available Slots</span><strong>15</strong></div>
-                        <div class="award-item"><span>Duration</span><strong>1 Semester</strong></div>
-                        <div class="award-item"><span>Renewable</span><strong>Yes</strong></div>
-                    </div>
-                </div>
- 
-                <div class="info-card">
-                    <h2>Required Documents</h2>
-                    <ul class="docs-list">
-                        <li>Family income certificate (issued by local government authority)</li>
-                        <li>Parent or guardian's tax certificate or affidavit of income</li>
-                        <li>Official academic transcript (current semester)</li>
-                        <li>National ID of student and guardian</li>
-                        <li>Personal statement of financial hardship (400–600 words)</li>
-                        <li>Completed ELEVATE application form</li>
-                    </ul>
-                </div>
- 
-                <div class="info-card">
-                    <h2>Application Process</h2>
-                    <ul class="process-steps">
-                        <li class="process-step"><div class="step-num">1</div><div class="step-text"><h4>Prepare Your Documents</h4><p>Gather all financial and academic documents before beginning the application.</p></div></li>
-                        <li class="process-step"><div class="step-num">2</div><div class="step-text"><h4>Complete the Application</h4><p>Fill in all form fields carefully and attach all required supporting documents.</p></div></li>
-                        <li class="process-step"><div class="step-num">3</div><div class="step-text"><h4>Submit Before Deadline</h4><p>Deadline is 20 July 2026. Late submissions will not be entertained.</p></div></li>
-                        <li class="process-step"><div class="step-num">4</div><div class="step-text"><h4>Financial Assessment</h4><p>The committee may request a follow-up interview or additional documentation.</p></div></li>
-                        <li class="process-step"><div class="step-num">5</div><div class="step-text"><h4>Receive Decision</h4><p>Results will be communicated within 21 working days of submission.</p></div></li>
-                    </ul>
-                </div>
-            </div>
- 
-            <div class="detail-sidebar">
-                <div class="apply-card">
-                    <h3>Apply Now</h3>
-                    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">Closes in</p>
-                    <p class="deadline-countdown">13 Days</p>
-                    <p class="deadline-label">20 July 2026</p>
-                    <a href="application_form.html" class="btn-apply-large">Apply Now →</a>
-                    <a href="#" class="btn-save">Save for Later</a>
-                </div>
-                <div class="quick-facts">
-                    <h3>Quick Facts</h3>
-                    <div class="fact-row"><span>Type</span><strong>Need-Based</strong></div>
-                    <div class="fact-row"><span>Award</span><strong>Up to 75% Waiver</strong></div>
-                    <div class="fact-row"><span>Deadline</span><strong>20 July 2026</strong></div>
-                    <div class="fact-row"><span>Open Slots</span><strong>15 Remaining</strong></div>
-                    <div class="fact-row"><span>Decision By</span><strong>20 Aug 2026</strong></div>
-                    <div class="fact-row"><span>Renewable</span><strong>Yes (per semester)</strong></div>
-                </div>
+        <div class="sidebar-user">
+            <div class="user-avatar">{{ student_name|first|upper }}</div>
+            <div class="user-info">
+                <p>{{ student_name }}</p><span>Student</span>
             </div>
         </div>
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="student_dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+            <a href="browse_scholarships.html" class="nav-item active"><span class="nav-icon">✦</span> Browse
+                Scholarships</a>
+            <a href="my_applications.html" class="nav-item"><span class="nav-icon">◈</span> My Applications</a>
+            <a href="disbursements.html" class="nav-item active"><span class="nav-icon">◎</span> My Disbursements</a>
+            <p class="nav-label">Account</p>
+            <a href="profile.html" class="nav-item"><span class="nav-icon">○</span> Profile</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="login.html" class="logout-btn"><span class="nav-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h3>Scholarship Details</h3>
+            </div>
+        </div>
+        <div class="page-content">
+            <a href="browse_scholarships.html" class="back-link">← Back to Browse</a>
+
+            <div class="detail-hero">
+                <p class="eyebrow">Need-Based</p>
+                <h1>Need-Based Scholarship</h1>
+                <p>Ensuring that financial circumstance is never a barrier to quality education. Supporting deserving
+                    students from economically disadvantaged backgrounds.</p>
+                <span class="detail-hero-badge">Open for Applications</span>
+            </div>
+
+            <div class="detail-layout">
+                <div class="detail-main">
+                    <div class="info-card">
+                        <h2>About This Scholarship</h2>
+                        <p style="font-size:0.9rem;color:#666;line-height:1.8;margin-bottom:16px;">The Need-Based
+                            Scholarship reflects ELEVATE's commitment to educational equity — a principle embraced by
+                            eminent institutions including BRAC University and North South University, who have long
+                            championed inclusive access to higher education.</p>
+                        <p style="font-size:0.9rem;color:#666;line-height:1.8;">This scholarship provides meaningful
+                            financial relief to students whose family income falls below defined thresholds, empowering
+                            them to focus on academic achievement rather than financial anxiety.</p>
+                        <div class="notice-box" style="margin-top:18px;">
+                            <strong>Confidentiality Notice</strong>
+                            All financial information submitted as part of this application is held in strict confidence
+                            and used solely for assessment purposes.
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h2>Eligibility Criteria</h2>
+                        <ul class="criteria-list">
+                            <li>Annual family income not exceeding BDT 3,00,000 (supported by income certificate)</li>
+                            <li>Currently enrolled as a full-time student in good academic standing</li>
+                            <li>Minimum CGPA of 2.75 in the preceding semester</li>
+                            <li>No concurrent receipt of another tuition waiver exceeding 25%</li>
+                            <li>Evidence of genuine financial hardship as assessed by the scholarship committee</li>
+                            <li>Clean disciplinary record at the institution</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h2>Award Structure</h2>
+                        <div class="award-grid">
+                            <div class="award-item"><span>Maximum Waiver</span><strong>75%</strong></div>
+                            <div class="award-item"><span>Available Slots</span><strong>15</strong></div>
+                            <div class="award-item"><span>Duration</span><strong>1 Semester</strong></div>
+                            <div class="award-item"><span>Renewable</span><strong>Yes</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h2>Required Documents</h2>
+                        <ul class="docs-list">
+                            <li>Family income certificate (issued by local government authority)</li>
+                            <li>Parent or guardian's tax certificate or affidavit of income</li>
+                            <li>Official academic transcript (current semester)</li>
+                            <li>National ID of student and guardian</li>
+                            <li>Personal statement of financial hardship (400–600 words)</li>
+                            <li>Completed ELEVATE application form</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h2>Application Process</h2>
+                        <ul class="process-steps">
+                            <li class="process-step">
+                                <div class="step-num">1</div>
+                                <div class="step-text">
+                                    <h4>Prepare Your Documents</h4>
+                                    <p>Gather all financial and academic documents before beginning the application.</p>
+                                </div>
+                            </li>
+                            <li class="process-step">
+                                <div class="step-num">2</div>
+                                <div class="step-text">
+                                    <h4>Complete the Application</h4>
+                                    <p>Fill in all form fields carefully and attach all required supporting documents.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="process-step">
+                                <div class="step-num">3</div>
+                                <div class="step-text">
+                                    <h4>Submit Before Deadline</h4>
+                                    <p>Deadline is 20 July 2026. Late submissions will not be entertained.</p>
+                                </div>
+                            </li>
+                            <li class="process-step">
+                                <div class="step-num">4</div>
+                                <div class="step-text">
+                                    <h4>Financial Assessment</h4>
+                                    <p>The committee may request a follow-up interview or additional documentation.</p>
+                                </div>
+                            </li>
+                            <li class="process-step">
+                                <div class="step-num">5</div>
+                                <div class="step-text">
+                                    <h4>Receive Decision</h4>
+                                    <p>Results will be communicated within 21 working days of submission.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="detail-sidebar">
+                    <div class="apply-card">
+                        <h3>Apply Now</h3>
+                        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">Closes in</p>
+                        <p class="deadline-countdown">13 Days</p>
+                        <p class="deadline-label">20 July 2026</p>
+                        <a href="application_form.html" class="btn-apply-large">Apply Now →</a>
+                        <a href="#" class="btn-save">Save for Later</a>
+                    </div>
+                    <div class="quick-facts">
+                        <h3>Quick Facts</h3>
+                        <div class="fact-row"><span>Type</span><strong>Need-Based</strong></div>
+                        <div class="fact-row"><span>Award</span><strong>Up to 75% Waiver</strong></div>
+                        <div class="fact-row"><span>Deadline</span><strong>20 July 2026</strong></div>
+                        <div class="fact-row"><span>Open Slots</span><strong>15 Remaining</strong></div>
+                        <div class="fact-row"><span>Decision By</span><strong>20 Aug 2026</strong></div>
+                        <div class="fact-row"><span>Renewable</span><strong>Yes (per semester)</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
+
 </html>

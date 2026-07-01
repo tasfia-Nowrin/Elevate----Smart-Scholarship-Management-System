@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | ELEVATE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'st.css' %}">
+    <style>
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 28px;
+            align-items: start
+        }
+
+        .profile-sidebar-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            position: sticky;
+            top: 88px
+        }
+
+        .profile-avatar {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.4rem;
+            color: white;
+            font-weight: 600;
+            margin: 0 auto 16px;
+            position: relative
+        }
+
+        .avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 26px;
+            height: 26px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: white;
+            cursor: pointer;
+            border: 2px solid white
+        }
+
+        .profile-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 2px
+        }
+
+        .profile-role {
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px
+        }
+
+        .profile-id {
+            font-size: 0.82rem;
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding: 5px 14px;
+            background: rgba(47, 111, 111, 0.08);
+            border-radius: 20px;
+            display: inline-block
+        }
+
+        .profile-divider {
+            height: 1px;
+            background: var(--grey);
+            margin: 20px 0
+        }
+
+        .profile-stat-row {
+            display: flex;
+            justify-content: space-around;
+            text-align: center
+        }
+
+        .p-stat-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--dark);
+            font-weight: 600;
+            line-height: 1
+        }
+
+        .p-stat-lbl {
+            font-size: 0.68rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-top: 3px
+        }
+
+        .edit-profile-btn {
+            display: block;
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: .3s;
+            font-family: 'DM Sans', sans-serif;
+            margin-top: 20px
+        }
+
+        .edit-profile-btn:hover {
+            background: var(--dark)
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px
+        }
+
+        .info-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--grey)
+        }
+
+        .info-card-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600
+        }
+
+        .edit-section-btn {
+            font-size: 0.8rem;
+            color: var(--primary);
+            background: transparent;
+            border: 1.5px solid var(--grey);
+            padding: 7px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            transition: .2s
+        }
+
+        .edit-section-btn:hover {
+            border-color: var(--primary)
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px
+        }
+
+        .info-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px
+        }
+
+        .info-field label {
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 500
+        }
+
+        .info-field p {
+            font-size: 0.9rem;
+            color: var(--dark);
+            font-weight: 400
+        }
+
+        .info-field input {
+            padding: 10px 14px;
+            border: 1.5px solid var(--grey);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+            color: var(--dark);
+            font-family: 'DM Sans', sans-serif;
+            transition: .2s
+        }
+
+        .info-field input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(47, 111, 111, 0.1)
+        }
+
+        .info-field input[disabled] {
+            background: var(--cream);
+            color: var(--muted);
+            cursor: not-allowed
+        }
+
+        .academic-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px
+        }
+
+        .academic-card {
+            background: var(--cream);
+            border-radius: 10px;
+            padding: 16px;
+            border-top: 2px solid var(--gold);
+            text-align: center
+        }
+
+        .academic-card span {
+            display: block;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px
+        }
+
+        .academic-card strong {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            color: var(--dark);
+            font-weight: 600
+        }
+
+        .badge-grid {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px
+        }
+
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(194, 168, 120, 0.12);
+            border: 1px solid rgba(194, 168, 120, 0.3);
+            border-radius: 20px;
+            font-size: 0.78rem;
+            color: #9a7a45;
+            font-weight: 500
+        }
+
+        .change-pw-btn {
+            background: transparent;
+            border: 1.5px solid var(--grey);
+            color: var(--dark);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: .2s;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .change-pw-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary)
+        }
+
+        .notification-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--grey)
+        }
+
+        .notification-row:last-child {
+            border-bottom: none
+        }
+
+        .notification-row label {
+            font-size: 0.88rem;
+            color: var(--dark);
+            cursor: pointer
+        }
+
+        .notification-row p {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--grey);
+            border-radius: 22px;
+            transition: .3s
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: .3s
+        }
+
+        .toggle input:checked+.toggle-slider {
+            background: var(--primary)
+        }
+
+        .toggle input:checked+.toggle-slider::before {
+            transform: translateX(18px)
+        }
+
+        .danger-zone {
+            background: rgba(200, 60, 60, 0.04);
+            border: 1px solid rgba(200, 60, 60, 0.15);
+            border-radius: 12px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .danger-zone div h4 {
+            font-size: 0.9rem;
+            color: #a03030;
+            font-weight: 600;
+            margin-bottom: 3px
+        }
+
+        .danger-zone div p {
+            font-size: 0.8rem;
+            color: var(--muted)
+        }
+
+        .btn-danger {
+            background: rgba(200, 60, 60, 0.08);
+            border: 1.5px solid rgba(200, 60, 60, 0.25);
+            color: #a03030;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: .2s;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .btn-danger:hover {
+            background: rgba(200, 60, 60, 0.15)
+        }
+
+        .save-bar {
+            background: white;
+            border-top: 1px solid var(--grey);
+            padding: 16px 48px;
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 260px;
+            right: 0;
+            z-index: 200;
+            justify-content: flex-end;
+            gap: 12px;
+            align-items: center
+        }
+
+        .save-bar.visible {
+            display: flex
+        }
+
+        .save-bar p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            flex: 1
+        }
+
+        .btn-save-changes {
+            background: var(--primary);
+            color: white;
+            padding: 11px 24px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: .2s;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .btn-save-changes:hover {
+            background: var(--dark)
+        }
+
+        .btn-cancel-edit {
+            background: transparent;
+            border: 1.5px solid var(--grey);
+            color: var(--dark);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: .2s
+        }
+
+        .btn-cancel-edit:hover {
+            border-color: #ccc
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
+        </div>
+        <div class="sidebar-user">
+            <div class="user-avatar">{{ student.name|first|upper }}</div>
+            <div class="user-info">
+                <p>{{ student.name }}</p><span>Student</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="{% url 'student_dashboard' %}" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+            <a href="{% url 'browse_scholarships' %}" class="nav-item"><span class="nav-icon">✦</span> Browse Scholarships</a>
+            <a href="{% url 'my_applications' %}" class="nav-item"><span class="nav-icon">◈</span> My Applications</a>
+            <a href="{% url 'disbursements' %}" class="nav-item"><span class="nav-icon">◎</span> My Disbursements</a>
+            <p class="nav-label">Account</p>
+            <a href="{% url 'profile' %}" class="nav-item active"><span class="nav-icon">○</span> Profile</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="{% url 'logout' %}" class="logout-btn"><span class="nav-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h3>My Profile</h3>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="profile-layout">
+                <!-- Profile Sidebar -->
+                <div class="profile-sidebar-card">
+                    <div class="profile-avatar">{{ student.name|first|upper }}
+                        <div class="avatar-edit" title="Change photo">✏</div>
+                    </div>
+                    <p class="profile-name" id="fname-display">{{ student.name }}</p>
+                    <p class="profile-role">Undergraduate Student</p>
+                    <p class="profile-id">{{ student.university_id }}</p>
+                    <div class="profile-divider"></div>
+                    <div class="profile-stat-row">
+                        <div>
+                            <p class="p-stat-val">{{ student.cgpa|default:"—" }}</p>
+                            <p class="p-stat-lbl">CGPA</p>
+                        </div>
+                        <div>
+                            <p class="p-stat-val">{{ total_applications }}</p>
+                            <p class="p-stat-lbl">Applications</p>
+                        </div>
+                        <div>
+                            <p class="p-stat-val">{{ student.current_semester|default:"—" }}</p>
+                            <p class="p-stat-lbl">Semester</p>
+                        </div>
+                    </div>
+                    <div class="profile-divider"></div>
+                    <div style="text-align:left">
+                        <p
+                            style="font-size:0.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px"> Department</p>
+                        <p style="font-size:0.88rem;color:var(--dark);font-weight:500">{{ student.department|default:"Not set" }}</p>
+                    </div>
+                    <button class="edit-profile-btn" onclick="enableEdit()">Edit Profile</button>
+                </div>
+                <!-- Main Content -->
+                <div class="profile-main">
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <p
+                        style="background:rgba(40,160,100,0.08);border:1px solid rgba(40,160,100,0.25);color:#1e7a50;padding:10px 14px;border-radius:8px;font-size:0.85rem;margin-bottom:14px;">{{ message }}</p>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form method="post" action="{% url 'profile' %}" id="profileForm">
+                        {% csrf_token %}
+
+                        <!-- Personal Info -->
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <h2>Personal Information</h2>
+                                <button type="button" class="edit-section-btn" onclick="enableEdit()">Edit</button>
+                            </div>
+                            <div class="info-grid">
+                                <div class="info-field">
+                                    <label>Full Name</label>
+                                    <input type="text" name="name" value="{{ student.name }}" id="fname" disabled>
+                                </div>
+                                <div class="info-field">
+                                    <label>Student ID</label>
+                                    <input type="text" value="{{ student.university_id }}" disabled>
+                                </div>
+                                <div class="info-field">
+                                    <label>Email Address</label>
+                                    <input type="email" value="{{ student.email }}" disabled>
+                                </div>
+                                <div class="info-field">
+                                    <label>Phone Number</label>
+                                    <input type="tel" name="phone" value="{{ student.phone }}" id="fphone" disabled>
+                                </div>
+                                <div class="info-field">
+                                    <label>Date of Birth</label>
+                                    <input type="date" name="date_of_birth" value="{{ student.date_of_birth|date:'Y-m-d' }}" disabled>
+                                </div>
+                                <div class="info-field">
+                                    <label>Gender</label>
+                                    <input type="text" name="gender" value="{{ student.gender }}" disabled>
+                                </div>
+                                <div class="info-field">
+                                    <label>Father's Name</label>
+                                    <input type="text" name="father_name" value="{{ student.father_name }}" disabled>
+                                </div>
+                                <div class="info-field">
+                                    <label>Mother's Name</label>
+                                    <input type="text" name="mother_name" value="{{ student.mother_name }}" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Academic Info -->
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <h2>Academic Profile</h2>
+                                <button type="button" class="edit-section-btn" onclick="enableEdit()">Edit</button>
+                            </div>
+                            <div class="academic-row">
+                                <div class="academic-card"><span>Current CGPA</span><strong>{{ student.cgpa|default:"0.00" }}</strong></div>
+                            </div>
+                            <div class="info-grid">
+                                <div class="info-field">
+                                    <label>Programme / Department</label>
+                                    <input type="text" name="department" value="{{ student.department }}" disabled>
+                                </div>
+                                <div class="info-field">
+                                    <label>Current Semester</label>
+                                    <input type="text" name="current_semester" value="{{ student.current_semester }}" disabled>
+                                </div>
+                                <div class="info-field">
+                                    <label>Current CGPA</label>
+                                    <input type="number" name="cgpa" step="0.01" min="0" max="4" value="{{ student.cgpa }}" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account & Security -->
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <h2>Account &amp; Security</h2>
+                            </div>
+                            <div class="info-grid">
+                                <div class="info-field">
+                                    <label>Password</label>
+                                    <input type="password" value="••••••••••" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Danger Zone -->
+                        <div class="info-card">
+                            <div class="info-card-header" style="margin-bottom:16px">
+                                <h2 style="color:#a03030">Danger Zone</h2>
+                            </div>
+                            <div class="danger-zone">
+                                <div>
+                                    <h4>Delete Account</h4>
+                                    <p>Permanently delete your ELEVATE account and all associated data.</p>
+                                </div>
+                                <button type="button" class="btn-danger">Delete Account</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Bar -->
+    <div class="save-bar" id="saveBar">
+        <p>You have unsaved changes.</p>
+        <button type="button" class="btn-cancel-edit" onclick="cancelEdit()">Cancel</button>
+        <button type="button" class="btn-save-changes" onclick="document.getElementById('profileForm').submit()">Save Changes</button>
+    </div>
+
+    <script>
+        function enableEdit() {
+            document.querySelectorAll('#profileForm .info-field input:not([type=password])').forEach(i => {
+                i.disabled = false;
+            });
+            document.getElementById('saveBar').classList.add('visible');
+        }
+        function cancelEdit() {
+            document.querySelectorAll('#profileForm .info-field input').forEach(i => i.disabled = true);
+            document.getElementById('saveBar').classList.remove('visible');
+        }
+    </script>
+</body>
+
+</html>
