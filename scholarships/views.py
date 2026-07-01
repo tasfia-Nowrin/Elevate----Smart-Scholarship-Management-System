@@ -19,10 +19,11 @@ def save_scholarship(request, scholarship_id):
 
     return redirect(request.META.get('HTTP_REFERER'))
 
-
 def index(request):
-    return render(request, 'index.html')
-
+    scholarships = Scholarship.objects.filter(status="Active")
+    return render(request, "index.html", {
+        "scholarships": scholarships
+    })
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
