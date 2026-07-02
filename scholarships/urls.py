@@ -25,4 +25,8 @@ urlpatterns = [
     path('admin/scholarships/', views.manage_scholarships, name='manage_scholarships'),
     path('admin/applications/', views.view_applications, name='view_applications'),
     path('admin/deadlines/', views.manage_deadlines, name='manage_deadlines'),
+    path('admin/applications/<int:app_id>/', views.application_details, name='application_details'),
+    path('admin/applications/<int:app_id>/decide/', views.application_decide, name='application_decide'),
+    path('admin/deadlines/delete/<int:deadline_id>/', views.delete_deadline, name='delete_deadline'),
+    path('admin/scholarships/delete/<int:scholarship_id>/', views.delete_scholarship, name='delete_scholarship'),
 ]

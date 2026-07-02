@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Disbursements | ELEVATE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2F6F6F;
+            --dark: #244B52;
+            --gold: #C2A878;
+            --cream: #F8F6F1;
+            --grey: #ECEAE4;
+            --white: #FFFFFF;
+            --text: #2B2B2B;
+            --muted: #7a8a8c;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: linear-gradient(170deg, #2a5a60 0%, #244B52 60%, #1a3840 100%);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: rgba(194, 168, 120, 0.07);
+            pointer-events: none;
+        }
+
+        .sidebar-logo {
+            padding: 36px 28px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            letter-spacing: 6px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .sidebar-logo p {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .sidebar-user {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-info p {
+            font-size: 0.85rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-info span {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 16px;
+        }
+
+        .nav-label {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            padding: 0 12px;
+            margin: 16px 0 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: .2s;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.88rem;
+            font-weight: 400;
+            text-decoration: none;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--gold);
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-bottom {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.88rem;
+            transition: .2s;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            color: #e07070;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-content {
+            padding: 48px 48px 40px;
+            flex: 1;
+        }
+
+        .page-heading {
+            margin-bottom: 32px;
+        }
+
+        .page-heading p.eyebrow {
+            font-size: 0.72rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .page-heading h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.1rem;
+            color: var(--dark);
+            font-weight: 600;
+            line-height: 1.1;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 36px;
+        }
+
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px 24px;
+            border-left: 3px solid var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .stat-info p.stat-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--dark);
+            font-weight: 600;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .stat-info p.stat-lbl {
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── SECTION CARD ── */
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 28px;
+        }
+
+        .section-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .section-card-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .view-all-btn {
+            font-size: 0.8rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--grey);
+            transition: .2s;
+        }
+
+        .view-all-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* ── APPLICATIONS TABLE ── */
+        .app-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .app-table th {
+            text-align: left;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0 16px 14px;
+            border-bottom: 1px solid var(--grey);
+            font-weight: 500;
+        }
+
+        .app-table td {
+            padding: 14px 16px;
+            font-size: 0.88rem;
+            color: var(--text);
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .app-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .app-table tr:hover td {
+            background: var(--cream);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: rgba(194, 168, 120, 0.15);
+            color: #9a7a45;
+        }
+
+        .status-review {
+            background: rgba(47, 111, 111, 0.12);
+            color: var(--primary);
+        }
+
+        .status-approved {
+            background: rgba(40, 160, 100, 0.12);
+            color: #1e7a50;
+        }
+
+        .status-rejected {
+            background: rgba(198, 40, 40, 0.1);
+            color: #C62828;
+        }
+
+        .action-btn {
+            border: none;
+            background: var(--primary);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: .2s;
+        }
+
+        .action-btn:hover {
+            background: var(--dark);
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+                <p>Admin</p>
+                <span>Administrator</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="{% url 'admin_dashboard' %}" class="nav-item">
+                <span class="nav-icon">⊞</span> Dashboard
+            </a>
+            <a href="{% url 'manage_scholarships' %}" class="nav-item">
+                <span class="nav-icon">✦</span> Manage Scholarships
+            </a>
+            <a href="{% url 'view_applications' %}" class="nav-item">
+                <span class="nav-icon">◈</span> View Applications
+            </a>
+            <a href="{% url 'manage_deadlines' %}" class="nav-item">
+                <span class="nav-icon">○</span> Manage Deadlines
+            </a>
+            <a href="{% url 'manage_disbursements' %}" class="nav-item active">
+                <span class="nav-icon">◎</span> Disbursements
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <span class="nav-icon">→</span> Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <div class="main">
+
+        <div class="page-content">
+
+            <div class="page-heading">
+                <p class="eyebrow">Financial Management</p>
+                <h1>Scholarship Disbursements</h1>
+            </div>
+
+            <div class="stats-row">
+
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <p class="stat-val">৳{{ total_disbursed }}</p>
+                        <p class="stat-lbl">Total Disbursed</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">🎓</div>
+                    <div class="stat-info">
+                        <p class="stat-val">{{ total_recipients }}</p>
+                        <p class="stat-lbl">Recipients</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-info">
+                        <p class="stat-val">{{ pending_payments }}</p>
+                        <p class="stat-lbl">Pending Payments</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="section-card">
+
+                <div class="section-card-header">
+                    <h2>Disbursement Records</h2>
+                </div>
+
+                <table class="app-table">
+
+                    <thead>
+                        <tr>
+                            <th>University ID</th>
+                            <th>Student Name</th>
+                            <th>Scholarship</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tbody>
+                        {% for d in disbursements %}
+                        <tr>
+                            <td>{{ d.university_id }}</td>
+                            <td>{{ d.student_name }}</td>
+                            <td>{{ d.scholarship_name }}</td>
+                            <td>৳{{ d.amount }}</td>
+                            <td>{{ d.disbursement_date|default:"N/A" }}</td>
+                            <td>
+                                {% if d.payment_status == 'Paid' %}
+                                <span class="status-badge status-approved">Paid</span>
+                                {% else %}
+                                <span class="status-badge status-pending">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" action="{% url 'update_disbursement' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="disbursement_id" value="{{ d.disbursement_id }}">
+                                    <input type="hidden" name="payment_status"
+                                        value="{% if d.payment_status == 'Paid' %}Pending{% else %}Paid{% endif %}">
+                                    <button type="submit" class="action-btn">
+                                        {% if d.payment_status == 'Paid' %}Mark Pending{% else %}Mark Paid{% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding:30px; color:var(--muted);">No
+                                disbursements found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

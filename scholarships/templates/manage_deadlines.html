@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Deadlines | ELEVATE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2F6F6F;
+            --dark: #244B52;
+            --gold: #C2A878;
+            --cream: #F8F6F1;
+            --grey: #ECEAE4;
+            --white: #FFFFFF;
+            --text: #2B2B2B;
+            --muted: #7a8a8c;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: linear-gradient(170deg, #2a5a60 0%, #244B52 60%, #1a3840 100%);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: rgba(194, 168, 120, 0.07);
+            pointer-events: none;
+        }
+
+        .sidebar-logo {
+            padding: 36px 28px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            letter-spacing: 6px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .sidebar-logo p {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .sidebar-user {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-info p {
+            font-size: 0.85rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-info span {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 16px;
+        }
+
+        .nav-label {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            padding: 0 12px;
+            margin: 16px 0 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: .2s;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.88rem;
+            font-weight: 400;
+            text-decoration: none;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--gold);
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-bottom {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.88rem;
+            transition: .2s;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            color: #e07070;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-content {
+            padding: 40px 48px;
+            flex: 1;
+        }
+
+        .page-heading {
+            margin-bottom: 32px;
+        }
+
+        .page-heading p.eyebrow {
+            font-size: 0.72rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .page-heading h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.1rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 28px;
+            border-left: 5px solid var(--gold);
+            box-shadow: 0 4px 24px rgba(194, 168, 120, 0.06);
+        }
+
+        .form-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--grey);
+            padding-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-card label {
+            display: block;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-card input[type="text"],
+        .form-card input[type="date"],
+        .form-card select {
+            width: 100%;
+            border: 1px solid var(--grey);
+            background: var(--cream);
+            font-size: 0.88rem;
+            font-family: 'DM Sans', sans-serif;
+            padding: 11px 14px;
+            color: var(--dark);
+            border-radius: 8px;
+            outline: none;
+            transition: .2s;
+        }
+
+        .form-card input:focus,
+        .form-card select:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(47, 111, 111, 0.1);
+        }
+
+        .form-actions {
+            grid-column: span 2;
+            text-align: right;
+            margin-top: 4px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 11px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-submit:hover {
+            background: var(--dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--grey);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 11px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--grey);
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .section-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--grey);
+            padding-bottom: 10px;
+        }
+
+        .deadline-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .deadline-table th {
+            text-align: left;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0 16px 14px;
+            border-bottom: 1px solid var(--grey);
+            font-weight: 500;
+        }
+
+        .deadline-table td {
+            padding: 16px;
+            font-size: 0.88rem;
+            color: var(--text);
+            border-bottom: 1px solid var(--grey);
+            vertical-align: middle;
+        }
+
+        .deadline-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .deadline-table tr:hover td {
+            background: var(--cream);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-open {
+            background: rgba(40, 160, 100, 0.12);
+            color: #1e7a50;
+        }
+
+        .status-expired {
+            background: rgba(198, 40, 40, 0.1);
+            color: #C62828;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 20px;
+            transition: .2s;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .action-btn.edit {
+            background: transparent;
+            color: var(--dark);
+            border: 1px solid var(--grey);
+        }
+
+        .action-btn.edit:hover {
+            background: var(--cream);
+            border-color: var(--gold);
+        }
+
+        .action-btn.delete {
+            background: rgba(198, 40, 40, 0.05);
+            color: #C62828;
+            border: 1px solid rgba(198, 40, 40, 0.1);
+        }
+
+        .action-btn.delete:hover {
+            background: #C62828;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width,
+            .form-actions {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+                <p>Admin</p>
+                <span>Administrator</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="{% url 'admin_dashboard' %}" class="nav-item">
+                <span class="nav-icon">⊞</span> Dashboard
+            </a>
+            <a href="{% url 'manage_scholarships' %}" class="nav-item">
+                <span class="nav-icon">✦</span> Manage Scholarships
+            </a>
+            <a href="{% url 'view_applications' %}" class="nav-item">
+                <span class="nav-icon">◈</span> View Applications
+            </a>
+            <a href="{% url 'manage_deadlines' %}" class="nav-item active">
+                <span class="nav-icon">○</span> Manage Deadlines
+            </a>
+            <a href="{% url 'manage_disbursements' %}" class="nav-item">
+                <span class="nav-icon">◎</span> Disbursements</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <span class="nav-icon">→</span> Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <div class="main">
+
+        <div class="page-content">
+
+            <div class="page-heading">
+                <p class="eyebrow">Application Timelines</p>
+                <h1>Manage System Deadlines</h1>
+            </div>
+
+            <div class="form-card">
+                <h3 id="formTitle">Set Scholarship Application Timeline</h3>
+                <form id="deadlineForm" method="POST" action="{% url 'manage_deadlines' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="deadline_id" id="editDeadlineId" value="">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Select Scholarship Program</label>
+                            <select id="schSelect" name="scholarship_id" required>
+                                <option value="" disabled selected>Choose a scheme...</option>
+                                {% for s in scholarships %}
+                                <option value="{{ s.scholarship_id }}">{{ s.name }}</option>
+                                {% endfor %}
+                                <option value="" disabled selected>Choose a scheme...</option>
+                                <option value="Academic / Merit Scholarship">Academic / Merit Scholarship</option>
+                                <option value="Need-Based Scholarship">Need-Based Scholarship</option>
+                                <option value="Sibling Scholarship">Sibling Scholarship</option>
+                                <option value="Entrance Scholarship">Entrance Scholarship</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Academic Term</label>
+                            <input type="text" id="termInput" name="academic_term" placeholder="e.g., Autumn 2026"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="startDateInput" name="start_date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>End Date (Deadline)</label>
+                            <input type="date" id="endDateInput" name="end_date" required>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="cancelEditBtn" style="display: none;">Cancel
+                                Edit</button>
+                            <button type="submit" class="btn-submit" id="submitFormBtn">Publish Timeline</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section-card">
+                <h3>Active & Configured Timelines</h3>
+                <table class="deadline-table">
+                    <thead>
+                        <tr>
+                            <th>Scholarship</th>
+                            <th>Academic Term</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th style="text-align:right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deadlineTableBody">
+                        {% for d in deadlines %}
+                        <tr>
+                            <td><strong>{{ d.scholarship_name }}</strong></td>
+                            <td>{{ d.academic_term }}</td>
+                            <td>{{ d.start_date }}</td>
+                            <td>{{ d.end_date }}</td>
+                            <td>
+                                <span
+                                    class="status-badge {% if d.is_expired %}status-expired{% else %}status-open{% endif %}">
+                                    {% if d.is_expired %}Expired{% else %}Open{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-btns">
+                                    <a class="action-btn edit"
+                                        onclick="editTimeline('{{ d.deadline_id }}', '{{ d.scholarship_id }}', '{{ d.academic_term }}', '{{ d.start_date }}', '{{ d.end_date }}')">Edit</a>
+                                    <form method="POST" action="{% url 'delete_deadline' d.deadline_id %}"
+                                        style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn delete"
+                                            onclick="return confirm('Delete this deadline?')">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align:center; padding:30px; color:var(--muted);">No deadlines
+                                configured yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
