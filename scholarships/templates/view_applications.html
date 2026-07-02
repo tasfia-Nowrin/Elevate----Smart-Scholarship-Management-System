@@ -476,15 +476,24 @@
                             <td>{{ a.name }}</td>
                             <td>{{ a.scholarship_name }}</td>
                             <td>{{ a.applied_date }}</td>
-                            <td><span class="status-badge status-{{ a.application_status|lower }}">{{
-                                    a.application_status }}</span></td>
+                            <td>
+                                {% if a.application_status == 'Pending' %}
+                                <span class="status-badge status-pending">Pending</span>
+                                {% elif a.application_status == 'Approved' %}
+                                <span class="status-badge status-approved">Approved</span>
+                                {% else %}
+                                <span class="status-badge status-rejected">Rejected</span>
+                                {% endif %}
+                            </td>
                             <td>N/A</td>
                             <td style="text-align:right;">
+                                {% if a.application_status == 'Pending' %}
                                 <a href="{% url 'application_details' a.application_id %}"
-                                    class="review-btn {% if a.application_status == 'Pending' %}primary{% else %}secondary{% endif %}">
-                                    {% if a.application_status == 'Pending' %}Review Details{% else %}View Details{%
-                                    endif %}
-                                </a>
+                                    class="review-btn primary">Review Details</a>
+                                {% else %}
+                                <a href="{% url 'application_details' a.application_id %}"
+                                    class="review-btn secondary">View Details</a>
+                                {% endif %}
                             </td>
                         </tr>
                         {% empty %}

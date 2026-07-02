@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Scholarships | ELEVATE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2F6F6F;
+            --dark: #244B52;
+            --gold: #C2A878;
+            --cream: #F8F6F1;
+            --grey: #ECEAE4;
+            --white: #FFFFFF;
+            --text: #2B2B2B;
+            --muted: #7a8a8c;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: linear-gradient(170deg, #2a5a60 0%, #244B52 60%, #1a3840 100%);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: rgba(194, 168, 120, 0.07);
+            pointer-events: none;
+        }
+
+        .sidebar-logo {
+            padding: 36px 28px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            letter-spacing: 6px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .sidebar-logo p {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .sidebar-user {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-info p {
+            font-size: 0.85rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-info span {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 16px;
+        }
+
+        .nav-label {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            padding: 0 12px;
+            margin: 16px 0 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: .2s;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.88rem;
+            font-weight: 400;
+            text-decoration: none;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--gold);
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-bottom {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.88rem;
+            transition: .2s;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            color: #e07070;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-content {
+            padding: 34px;
+            flex: 1;
+        }
+
+        .page-heading {
+            margin-bottom: 32px;
+        }
+
+        .page-heading p.eyebrow {
+            font-size: 0.72rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .page-heading h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.1rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 28px;
+            border: 1px solid var(--grey);
+        }
+
+        /* --- Manage Deadlines Style Match --- */
+        .form-deadline-style {
+            border-left: 4px solid var(--gold) !important;
+        }
+
+        .section-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .section-card-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--dark);
+            opacity: .75;
+            font-weight: 500;
+        }
+
+        .form-control {
+            border: 1px solid var(--grey);
+            background: var(--cream);
+            font-size: 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            padding: 12px 14px;
+            color: var(--dark);
+            border-radius: 8px;
+            outline: none;
+            transition: .2s;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(47, 111, 111, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .slabs-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-slab-btn {
+            background: none;
+            border: 1px solid var(--grey);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .add-slab-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .slab-row {
+            display: grid;
+            grid-template-columns: 200px 200px 200px 44px;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .slab-input-wrap {
+            position: relative;
+        }
+
+        .slab-input-wrap span.unit {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .remove-slab-btn {
+            width: 44px;
+            border: 1px solid rgba(198, 40, 40, 0.15);
+            background: rgba(198, 40, 40, 0.06);
+            color: #C62828;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: .2s;
+        }
+
+        .remove-slab-btn:hover:not(:disabled) {
+            background: #C62828;
+            color: white;
+            border-color: #C62828;
+        }
+
+        .remove-slab-btn:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+        }
+
+        .form-actions {
+            margin-top: 26px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 13px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--grey);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 13px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--grey);
+        }
+
+        .app-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .app-table th {
+            text-align: left;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0 16px 14px;
+            border-bottom: 1px solid var(--grey);
+            font-weight: 500;
+        }
+
+        .app-table td {
+            padding: 16px;
+            font-size: 0.88rem;
+            color: var(--text);
+            border-bottom: 1px solid var(--grey);
+            vertical-align: middle;
+        }
+
+        .app-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .app-table tr:hover td {
+            background: var(--cream);
+        }
+
+        .sch-name {
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .sch-id {
+            font-size: 0.78rem;
+            color: var(--gold);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .sch-desc {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .type-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .type-badge.tuition {
+            background: rgba(47, 111, 111, 0.1);
+            color: var(--primary);
+        }
+
+        .type-badge.admission {
+            background: rgba(194, 168, 120, 0.15);
+            color: #917543;
+        }
+
+        .slab-badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .slab-badge {
+            background: var(--grey);
+            color: var(--dark);
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--grey);
+            background: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: .2s;
+        }
+
+        .icon-btn.edit {
+            color: var(--primary);
+        }
+
+        .icon-btn.edit:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .icon-btn.delete {
+            color: #C62828;
+        }
+
+        .icon-btn.delete:hover {
+            background: #C62828;
+            color: white;
+            border-color: #C62828;
+        }
+
+        @media (max-width: 720px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .slab-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .slab-row .remove-slab-btn {
+                grid-column: span 2;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+                <p>Admin</p>
+                <span>Administrator</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="{% url 'admin_dashboard' %}" class="nav-item">
+                <span class="nav-icon">⊞</span> Dashboard
+            </a>
+            <a href="{% url 'manage_scholarships' %}" class="nav-item active">
+                <span class="nav-icon">✦</span> Manage Scholarships
+            </a>
+            <a href="{% url 'view_applications' %}" class="nav-item">
+                <span class="nav-icon">◈</span> View Applications
+            </a>
+            <a href="{% url 'manage_deadlines' %}" class="nav-item">
+                <span class="nav-icon">○</span> Manage Deadlines
+            </a>
+            <a href="{% url 'manage_disbursements' %}" class="nav-item">
+                <span class="nav-icon">◎</span> Disbursements
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <span class="nav-icon">→</span> Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <div class="main">
+
+        <div class="page-content">
+
+            <div class="page-heading">
+                <p class="eyebrow">Scholarship Programs</p>
+                <h1>Create and manage scholarship schemes.</h1>
+            </div>
+
+            <div class="section-card form-deadline-style">
+                <div class="section-card-header">
+                    <h2 id="formTitle">Add New Scholarship Scheme</h2>
+                </div>
+                <form id="scholarshipForm" method="POST" action="{% url 'manage_scholarships' %}">
+                    {% csrf_token %}
+                    <input type="hidden" id="editSchId" name="scholarship_id" value="">
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label for="schName">Scholarship Name</label>
+                            <input type="text" id="schName" name="name" class="form-control"
+                                placeholder="e.g., Academic or Merit Scholarship" required>
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="schType">Scholarship Waiver Type</label>
+                            <select id="schType" name="fee_type" class="form-control" required>
+                                <option value="" disabled selected>Select fee coverage type</option>
+                                <option value="Tuition">Tuition Fee Waiver</option>
+                                <option value="Admission">Admission Fee Waiver</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full">
+                            <div class="slabs-label-row">
+                                <label>CGPA Criteria Range &amp; Waiver Percentage (Slabs)</label>
+                            </div>
+
+                            <div id="slabsContainer">
+                            </div>
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="schDesc">Scholarship Description / Guidelines</label>
+                            <textarea id="schDesc" name="description" class="form-control" rows="4"
+                                placeholder="Enter frequency, baseline eligibility requirements, terms and conditions..."
+                                required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelEditBtn" style="display: none;">Cancel
+                            Edit</button>
+                        <button type="submit" class="btn-primary" id="submitFormBtn">+ Create Scholarship
+                            Scheme</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section-card">
+                <div class="section-card-header">
+                    <h2>Active Provided Scholarship Programs</h2>
+                </div>
+                <table class="app-table">
+                    <thead>
+                        <tr>
+                            <th style="width:10%">ID</th>
+                            <th style="width:20%">Scholarship Name</th>
+                            <th style="width:15%">Coverage Type</th>
+                            <th style="width:25%">Slab Ranges (CGPA)</th>
+                            <th style="width:20%">Base Guideline</th>
+                            <th style="width:10%; text-align:right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scholarshipTableBody">
+                        {% for s in scholarships %}
+                        <tr>
+                            <td><span class="sch-id">SCH-{{ s.scholarship_id }}</span></td>
+                            <td><span class="sch-name">{{ s.name }}</span></td>
+                            <td>
+                                <span
+                                    class="type-badge {% if s.fee_type == 'Tuition' %}tuition{% else %}admission{% endif %}">
+                                    {% if s.fee_type == 'Tuition' %}Tuition Fee{% else %}Admission Fee{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="slab-badge-container">
+                                    {% if s.slabs %}
+                                    {% for slab in s.slabs %}
+                                    <span class="slab-badge">{{ slab.min_cgpa }}–{{ slab.max_cgpa }} CGPA → <b>{{ slab.waiver_percentage }}%</b></span>
+                                    {% endfor %}
+                                    {% else %}
+                                    No Slabs Set
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sch-desc">{{ s.description }}</div>
+                            </td>
+                            <td>
+                                <div class="action-group">
+                                    <button class="icon-btn edit" title="Edit"
+                                        onclick="editScholarship('{{ s.scholarship_id }}', '{{ s.name }}', '{{ s.fee_type }}', '{{ s.description }}', '{{ s.min_cgpa }}', '{{ s.max_cgpa }}', '{{ s.waiver_percentage }}')">✎</button>
+                                    <form method="POST" action="{% url 'delete_scholarship' s.scholarship_id %}"
+                                        style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="icon-btn delete" title="Delete"
+                                            onclick="return confirm('Delete this scholarship?')">🗑</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align:center; padding:30px; color:var(--muted);">No scholarships
+                                found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        const slabsContainer = document.getElementById('slabsContainer');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            addSlabRow();
+        });
+
+        function addSlabRow(minCgpa = '', maxCgpa = '', waiver = '') {
+            const row = document.createElement('div');
+            row.className = 'slab-row';
+            row.innerHTML = `
+            <div class="slab-input-wrap">
+                <input type="number" step="0.01" min="0" max="4" name="min_cgpa" class="form-control min-cgpa" placeholder="Min CGPA" value="${minCgpa}">            </div>
+            <div class="slab-input-wrap">
+                <input type="number" step="0.01" min="0" max="4" name="max_cgpa" class="form-control max-cgpa" placeholder="Max CGPA" value="${maxCgpa}">            </div>
+            <div class="slab-input-wrap">
+                <input type="number" min="1" max="100" name="waiver_percentage" class="form-control slab-waiver" placeholder="Waiver" value="${waiver}" required>
+                <span class="unit">%</span>
+            </div>
+            <button type="button" class="remove-slab-btn">✕</button>
+        `;
+            slabsContainer.appendChild(row);
+            updateRemoveButtons();
+        }
+
+
+        slabsContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-slab-btn')) {
+                e.target.closest('.slab-row').remove();
+                updateRemoveButtons();
+            }
+        });
+
+        function updateRemoveButtons() {
+            const rows = document.querySelectorAll('.slab-row');
+            rows.forEach(row => {
+                row.querySelector('.remove-slab-btn').disabled = rows.length === 1;
+            });
+        }
+
+        function editScholarship(id, name, feeType, desc, minCgpa, maxCgpa, waiver) {
+            document.getElementById('formTitle').textContent = "Edit Scholarship Scheme";
+            document.getElementById('submitFormBtn').textContent = "Update Scholarship Scheme";
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+            document.getElementById('editSchId').value = id;
+            document.getElementById('schName').value = name;
+            document.getElementById('schType').value = feeType;
+            document.getElementById('schDesc').value = desc;
+            slabsContainer.innerHTML = '';
+            addSlabRow(minCgpa, maxCgpa, waiver);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.getElementById('cancelEditBtn').addEventListener('click', function () {
+            document.getElementById('formTitle').textContent = "Add New Scholarship Scheme";
+            document.getElementById('submitFormBtn').textContent = "+ Create Scholarship Scheme";
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            document.getElementById('editSchId').value = '';
+            document.getElementById('scholarshipForm').reset();
+            slabsContainer.innerHTML = '';
+            addSlabRow();
+        });
+    </script>
+</body>
+
+</html>

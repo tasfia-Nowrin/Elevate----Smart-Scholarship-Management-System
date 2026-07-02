@@ -576,7 +576,7 @@
                 <span class="nav-icon">○</span> Manage Deadlines
             </a>
              <a href="manage_disbursements.html" class="nav-item"> 
-                <span class="nav-icon">✦</span> Disbursements
+                <span class="nav-icon">◎</span> Disbursements
             </a>
         </nav>
 
@@ -621,7 +621,6 @@
                         <div class="form-group full">
                             <div class="slabs-label-row">
                                 <label>CGPA Criteria Range &amp; Waiver Percentage (Slabs)</label>
-                                <button type="button" class="add-slab-btn" id="addSlabBtn">+ Add More Slab</button>
                             </div>
 
                             <div id="slabsContainer">
@@ -735,8 +734,6 @@
             slabsContainer.appendChild(row);
             updateRemoveButtons();
         }
-
-        document.getElementById('addSlabBtn').addEventListener('click', () => addSlabRow());
 
         slabsContainer.addEventListener('click', function (e) {
             if (e.target.classList.contains('remove-slab-btn')) {

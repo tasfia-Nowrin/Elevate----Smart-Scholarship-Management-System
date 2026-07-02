@@ -165,7 +165,6 @@ def student_dashboard(request):
             FROM deadline d
             JOIN scholarship s ON d.scholarship_id = s.scholarship_id
             WHERE s.status = 'Active'
-              AND d.end_date >= CURDATE()
             ORDER BY d.end_date ASC
             LIMIT 4
         """)
@@ -173,19 +172,35 @@ def student_dashboard(request):
         upcoming_deadlines = [dict(zip(cols, row)) for row in cursor.fetchall()]
 
     # my applications
+    # replace my_applications query with this
+# my applications
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT s.name AS scholarship_name,
-                   a.applied_date,
-                   a.application_status
+            SELECT
+                s.name AS scholarship_name,
+                a.applied_date,
+                a.application_status,
+                d.amount
             FROM application a
             JOIN scholarship s ON a.scholarship_id = s.scholarship_id
+            LEFT JOIN disbursement d ON d.application_id = a.application_id
             WHERE a.student_id = %s
             ORDER BY a.applied_date DESC
             LIMIT 5
         """, [student_id])
         cols = [col[0] for col in cursor.description]
         my_applications = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    # total received
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT IFNULL(SUM(d.amount), 0)
+            FROM disbursement d
+            JOIN application a ON d.application_id = a.application_id
+            WHERE a.student_id = %s
+              AND d.payment_status = 'Paid'
+        """, [student_id])
+        total_received = cursor.fetchone()[0]
 
     return render(request, 'student_dashboard.html', {
         'student': student,
@@ -196,7 +211,9 @@ def student_dashboard(request):
         'latest_scholarships': latest_scholarships,
         'upcoming_deadlines': upcoming_deadlines,
         'my_applications': my_applications,
+        'total_received': total_received,
     })
+
 def browse_scholarships(request):
     if request.session.get('role') != 'student':
         return redirect('login')
@@ -207,6 +224,11 @@ def my_applications(request):
         return redirect('login')
     return render(request, 'my_applications.html')
 
+def disbursements(request):
+    if request.session.get('role') != 'student':
+        return redirect('login')
+    return render(request, 'disbursements.html')
+
 def profile(request):
     if request.session.get('role') != 'student':
         return redirect('login')
@@ -215,7 +237,86 @@ def profile(request):
 def manage_scholarships(request):
     if request.session.get('role') != 'admin':
         return redirect('login')
-    return render(request, 'manage_scholarships.html')
+
+    if request.method == 'POST':
+        scholarship_id = request.POST.get('scholarship_id')
+        name = request.POST.get('name')
+        fee_type = request.POST.get('fee_type')
+        description = request.POST.get('description')
+        min_cgpa = request.POST.get('min_cgpa')
+        max_cgpa = request.POST.get('max_cgpa')
+        waiver_percentage = request.POST.get('waiver_percentage')
+
+        if scholarship_id:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE scholarship
+                    SET name=%s, fee_type=%s, description=%s,
+                        min_cgpa=%s, max_cgpa=%s, waiver_percentage=%s
+                    WHERE scholarship_id=%s
+                """, [name, fee_type, description, min_cgpa, max_cgpa, waiver_percentage, scholarship_id])
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO scholarship (name, fee_type, description, status, min_cgpa, max_cgpa, waiver_percentage)
+                    VALUES (%s, %s, %s, 'Active', %s, %s, %s)
+                """, [name, fee_type, description, min_cgpa, max_cgpa, waiver_percentage])
+
+        return redirect('manage_scholarships')
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT name, fee_type, description,
+                   GROUP_CONCAT(scholarship_id ORDER BY min_cgpa ASC) AS ids,
+                   GROUP_CONCAT(min_cgpa ORDER BY min_cgpa ASC) AS min_cgpas,
+                   GROUP_CONCAT(max_cgpa ORDER BY min_cgpa ASC) AS max_cgpas,
+                   GROUP_CONCAT(waiver_percentage ORDER BY min_cgpa ASC) AS waivers
+            FROM scholarship
+            WHERE status = 'Active'
+            GROUP BY name, fee_type, description
+            ORDER BY MIN(scholarship_id) DESC
+        """)
+        cols = [col[0] for col in cursor.description]
+        raw = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    scholarships = []
+    for s in raw:
+        ids = s['ids'].split(',') if s['ids'] else []
+        min_cgpas = s['min_cgpas'].split(',') if s['min_cgpas'] else []
+        max_cgpas = s['max_cgpas'].split(',') if s['max_cgpas'] else []
+        waivers = s['waivers'].split(',') if s['waivers'] else []
+        slabs = []
+        for i in range(len(min_cgpas)):
+            slabs.append({
+                'scholarship_id': ids[i] if i < len(ids) else '',
+                'min_cgpa': min_cgpas[i],
+                'max_cgpa': max_cgpas[i] if i < len(max_cgpas) else '',
+                'waiver_percentage': waivers[i] if i < len(waivers) else '',
+            })
+        scholarships.append({
+            'name': s['name'],
+            'fee_type': s['fee_type'],
+            'description': s['description'],
+            'scholarship_id': ids[0] if ids else '',
+            'slabs': slabs,
+        })
+
+    return render(request, 'manage_scholarships.html', {'scholarships': scholarships})
+
+
+def delete_scholarship(request, scholarship_id):
+    if request.session.get('role') != 'admin':
+        return redirect('login')
+    if request.method == 'POST':
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM scholarship WHERE scholarship_id=%s", [scholarship_id])
+        # find the current max id and reset auto increment
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT IFNULL(MAX(scholarship_id), 0) FROM scholarship")
+            max_id = cursor.fetchone()[0]
+        with connection.cursor() as cursor:
+            cursor.execute("ALTER TABLE scholarship AUTO_INCREMENT = %s", [max_id + 1])
+    return redirect('manage_scholarships')
 
 def view_applications(request):
     if request.session.get('role') != 'admin':
@@ -300,33 +401,112 @@ def application_decide(request, app_id):
     if request.method == 'POST':
         decision = request.POST.get('decision')
         if decision in ('Approved', 'Rejected'):
+
+            # get student cgpa and scholarship name
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT st.cgpa, sc.name, sc.waiver_percentage
+                    FROM application a
+                    JOIN student st ON a.student_id = st.student_id
+                    JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
+                    WHERE a.application_id = %s
+                """, [app_id])
+                row = cursor.fetchone()
+                cgpa = float(row[0]) if row[0] else 0
+                scholarship_name = row[1]
+                waiver = float(row[2]) if row[2] else 0
+
+            # merit scholarship tiered waiver logic
+            if 'Merit' in scholarship_name:
+                if 3.70 <= cgpa <= 3.79:
+                    waiver = 21
+                elif 3.80 <= cgpa <= 3.89:
+                    waiver = 35
+                elif 3.90 <= cgpa <= 4.00:
+                    waiver = 50
+                else:
+                    waiver = 0
+
             with connection.cursor() as cursor:
                 cursor.execute("""
                     UPDATE application
                     SET application_status = %s,
-                        decision_date = CURDATE()
+                        decision_date = CURDATE(),
+                        approved_waiver = %s
                     WHERE application_id = %s
-                """, [decision, app_id])
+                """, [decision, waiver, app_id])
 
             if decision == 'Approved':
                 with connection.cursor() as cursor:
                     cursor.execute("""
                         INSERT INTO disbursement (application_id, amount, disbursement_date, payment_status)
-                        SELECT %s, s.waiver_percentage, NULL, 'Pending'
+                        SELECT %s, %s, NULL, 'Pending'
                         FROM application a
-                        JOIN scholarship s ON a.scholarship_id = s.scholarship_id
                         WHERE a.application_id = %s
                           AND NOT EXISTS (
                               SELECT 1 FROM disbursement WHERE application_id = %s
                           )
-                    """, [app_id, app_id, app_id])
+                    """, [app_id, waiver, app_id, app_id])
 
     return redirect('application_details', app_id=app_id)
 
 def manage_deadlines(request):
     if request.session.get('role') != 'admin':
         return redirect('login')
-    return render(request, 'manage_deadlines.html')
+
+    if request.method == 'POST':
+        deadline_id = request.POST.get('deadline_id')
+        scholarship_id = request.POST.get('scholarship_id')
+        academic_term = request.POST.get('academic_term')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+
+        if deadline_id:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE deadline
+                    SET scholarship_id=%s, academic_term=%s, start_date=%s, end_date=%s
+                    WHERE deadline_id=%s
+                """, [scholarship_id, academic_term, start_date, end_date, deadline_id])
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO deadline (scholarship_id, academic_term, start_date, end_date)
+                    VALUES (%s, %s, %s, %s)
+                """, [scholarship_id, academic_term, start_date, end_date])
+
+        return redirect('manage_deadlines')
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT d.deadline_id, d.scholarship_id, s.name AS scholarship_name,
+                   d.academic_term, d.start_date, d.end_date,
+                   CASE WHEN d.end_date < CURDATE() THEN 1 ELSE 0 END AS is_expired
+            FROM deadline d
+            JOIN scholarship s ON d.scholarship_id = s.scholarship_id
+            ORDER BY d.end_date DESC
+        """)
+        cols = [col[0] for col in cursor.description]
+        deadlines = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT scholarship_id, name FROM scholarship WHERE status='Active'")
+        cols = [col[0] for col in cursor.description]
+        scholarships = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    return render(request, 'manage_deadlines.html', {
+        'deadlines': deadlines,
+        'scholarships': scholarships,
+    })
+
+
+def delete_deadline(request, deadline_id):
+    if request.session.get('role') != 'admin':
+        return redirect('login')
+    if request.method == 'POST':
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM deadline WHERE deadline_id=%s", [deadline_id])
+    return redirect('manage_deadlines')
 
 
 def admin_dashboard(request):
