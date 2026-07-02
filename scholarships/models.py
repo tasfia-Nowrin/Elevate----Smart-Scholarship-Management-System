@@ -117,3 +117,15 @@ class User(models.Model):
     class Meta:
         managed = False
         db_table = 'user'
+
+class SavedScholarship(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('student', 'scholarship')
+
+    def __str__(self):
+        return f"{self.student} - {self.scholarship}"
+      

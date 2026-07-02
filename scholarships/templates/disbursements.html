@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Disbursements | ELEVATE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'st.css' %}">
+    <style>
+        .page-header { margin-bottom: 28px; }
+        .page-header .eyebrow { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+        .page-header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--dark); font-weight: 600; }
+        .page-header p { color: #888; font-size: 0.88rem; margin-top: 4px; }
+
+        .summary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 28px; }
+        .summary-card { background: white; border-radius: 14px; padding: 24px 26px; border-top: 3px solid var(--gold); display: flex; flex-direction: column; gap: 6px; }
+        .summary-card.accent { border-top-color: var(--primary); }
+        .summary-card.muted { border-top-color: #d0cec9; }
+        .s-label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: #aaa; }
+        .s-value { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--dark); line-height: 1; }
+        .s-sub { font-size: 0.75rem; color: #bbb; margin-top: 2px; }
+
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: white; border-radius: 10px; padding: 6px; width: fit-content; border: 1px solid #eee; }
+        .tab-btn { padding: 8px 22px; border-radius: 8px; border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: #999; cursor: pointer; transition: .2s; font-weight: 500; }
+        .tab-btn.active { background: var(--dark); color: white; }
+        .tab-btn:hover:not(.active) { background: var(--cream); color: var(--dark); }
+
+        .section-card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+        .section-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .section-card-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--dark); font-weight: 600; }
+
+        .dis-table { width: 100%; border-collapse: collapse; }
+        .dis-table th { text-align: left; font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; padding: 10px 14px; border-bottom: 1px solid #f0ede6; font-weight: 500; }
+        .dis-table td { padding: 14px 14px; font-size: 0.86rem; border-bottom: 1px solid #f8f6f1; color: var(--dark); vertical-align: middle; }
+        .dis-table tr:last-child td { border-bottom: none; }
+        .dis-table tr:hover td { background: #fcfaf7; }
+
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; display: inline-block; }
+        .status-paid { background: #e6f4ec; color: #1a7a40; }
+        .status-pending { background: #fff4e0; color: #a07000; }
+
+        .waiver-pill { background: var(--cream); border: 1px solid var(--gold); color: var(--dark); padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; display: inline-block; }
+
+        .pending-grid { display: flex; flex-direction: column; gap: 12px; }
+        .pending-card { border: 1px solid #f0ede6; border-radius: 10px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; transition: .2s; }
+        .pending-card:hover { border-color: var(--gold); box-shadow: 0 4px 12px rgba(194, 168, 120, 0.1); }
+        .pending-card-left h4 { font-size: 0.92rem; font-weight: 600; color: var(--dark); margin-bottom: 4px; }
+        .pending-card-left p { font-size: 0.78rem; color: #aaa; }
+        .pending-card-right { text-align: right; }
+        .pending-waiver { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+        .pending-status { font-size: 0.72rem; color: #a07000; background: #fff4e0; padding: 3px 10px; border-radius: 20px; margin-top: 4px; display: inline-block; }
+
+        .empty-state { text-align: center; padding: 48px 24px; }
+        .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
+        .empty-state p { font-size: 0.88rem; color: #bbb; }
+
+        .txn-id { font-family: monospace; font-size: 0.78rem; background: #f4f2ed; padding: 3px 8px; border-radius: 6px; color: #666; }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>ELEVATE</h2>
+            <p>Scholarship Portal</p>
+        </div>
+        <div class="sidebar-user">
+            <div class="user-avatar">{{ student_name|first|upper }}</div>
+            <div class="user-info">
+                <p>{{ student_name }}</p><span>Student</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <p class="nav-label">Main</p>
+            <a href="{% url 'student_dashboard' %}" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+            <a href="{% url 'browse_scholarships' %}" class="nav-item"><span class="nav-icon">✦</span> Browse Scholarships</a>
+            <a href="{% url 'my_applications' %}" class="nav-item"><span class="nav-icon">◈</span> My Applications</a>
+            <a href="{% url 'disbursements' %}" class="nav-item active"><span class="nav-icon">◎</span> My Disbursements</a>
+            <p class="nav-label">Account</p>
+            <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon">○</span> Profile</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="{% url 'logout' %}" class="logout-btn"><span class="nav-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left"><h3>My Disbursements</h3></div>
+        </div>
+
+        <div class="page-content">
+
+            <div class="page-header">
+                <p class="eyebrow">Scholarship Payments</p>
+                <h1>My Disbursements</h1>
+                <p>Track all scholarship payments released to your account.</p>
+            </div>
+
+            <div class="summary-row">
+                <div class="summary-card">
+                    <p class="s-label">Total Amount Received</p>
+                    <p class="s-value">৳ {{ total_amount }}</p>
+                    <p class="s-sub">Across all paid scholarships</p>
+                </div>
+                <div class="summary-card accent">
+                    <p class="s-label">Scholarships Received</p>
+                    <p class="s-value">{{ received_count }}</p>
+                    <p class="s-sub">Successfully disbursed</p>
+                </div>
+                <div class="summary-card muted">
+                    <p class="s-label">Last Payment Date</p>
+                    <p class="s-value" style="font-size:1.4rem;">{% if last_payment %}{{ last_payment }}{% else %}—{% endif %}</p>
+                    <p class="s-sub">Most recent payment</p>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('paid', this)">Paid</button>
+                <button class="tab-btn" onclick="showTab('pending', this)">Pending</button>
+                <button class="tab-btn" onclick="showTab('all', this)">All</button>
+            </div>
+
+            <!-- PAID -->
+            <div id="tab-paid" class="tab-content">
+                <div class="section-card">
+                    <div class="section-card-header"><h2>Received Payments</h2></div>
+                    <table class="dis-table">
+                        <thead>
+                            <tr>
+                                <th>Scholarship</th>
+                                <th>Fee Type</th>
+                                <th>Waiver</th>
+                                <th>Amount</th>
+                                <th>Payment Date</th>
+                                <th>Reference</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if paid %}
+                            {% for row in paid %}
+                            <tr>
+                                <td>{{ row.0 }}</td>
+                                <td>{{ row.1 }}</td>
+                                <td><span class="waiver-pill">{{ row.2 }}%</span></td>
+                                <td>৳ {{ row.3 }}</td>
+                                <td>{{ row.4 }}</td>
+                                <td><span class="txn-id">DSB-{{ row.5 }}</span></td>
+                                <td><span class="status-badge status-paid">{{ row.6 }}</span></td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <div class="empty-icon">◎</div>
+                                        <p>No paid disbursements yet.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PENDING -->
+            <div id="tab-pending" class="tab-content" style="display:none;">
+                <div class="section-card">
+                    <div class="section-card-header"><h2>Awaiting Payment</h2></div>
+                    <div class="pending-grid">
+                        {% if pending %}
+                        {% for row in pending %}
+                        <div class="pending-card">
+                            <div class="pending-card-left">
+                                <h4>{{ row.0 }}</h4>
+                                <p>Applied: {{ row.1 }}</p>
+                            </div>
+                            <div class="pending-card-right">
+                                <p class="pending-waiver">{{ row.2 }}% Waiver</p>
+                                <span class="pending-status">{% if row.3 %}{{ row.3 }}{% else %}Awaiting Disbursement{% endif %}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">◈</div>
+                            <p>No pending disbursements.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ALL -->
+            <div id="tab-all" class="tab-content" style="display:none;">
+                <div class="section-card">
+                    <div class="section-card-header"><h2>All Disbursements</h2></div>
+                    <table class="dis-table">
+                        <thead>
+                            <tr>
+                                <th>Scholarship</th>
+                                <th>Fee Type</th>
+                                <th>Waiver</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Payment Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if paid %}
+                            {% for row in paid %}
+                            <tr>
+                                <td>{{ row.0 }}</td>
+                                <td>{{ row.1 }}</td>
+                                <td><span class="waiver-pill">{{ row.2 }}%</span></td>
+                                <td>৳ {{ row.3 }}</td>
+                                <td>{{ row.4 }}</td>
+                                <td><span class="status-badge status-paid">{{ row.6 }}</span></td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if pending %}
+                            {% for row in pending %}
+                            <tr>
+                                <td>{{ row.0 }}</td>
+                                <td>—</td>
+                                <td><span class="waiver-pill">{{ row.2 }}%</span></td>
+                                <td>—</td>
+                                <td>{{ row.1 }}</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if not paid and not pending %}
+                            <tr>
+                                <td colspan="6">
+                                    <div class="empty-state">
+                                        <div class="empty-icon">◎</div>
+                                        <p>No disbursement records found.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function showTab(name, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + name).style.display = 'block';
+            btn.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>

@@ -299,3 +299,14 @@ button:hover {
         width: 100%;
     }
 }
+/* Hide Microsoft Edge password reveal button */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+/* Hide old IE reveal button */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
