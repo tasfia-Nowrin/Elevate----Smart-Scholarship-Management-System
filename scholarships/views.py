@@ -989,7 +989,7 @@ def scholarship_detail(request, scholarship_id):
     })
 
 
-def application_details(request, application_id):
+def student_application_details(request, application_id):
     if request.session.get('role') != 'student':
         return redirect('login')
 
