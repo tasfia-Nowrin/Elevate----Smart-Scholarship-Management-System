@@ -1,5 +1,5 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -407,7 +407,8 @@
                                 </div>
                                 <div class="field-group">
                                     <label>Student ID <span>*</span></label>
-                                    <input type="text" name="university_id" value="{{ student.university_id }}" readonly>
+                                    <input type="text" name="university_id" value="{{ student.university_id }}"
+                                        readonly>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -441,8 +442,8 @@
                             </div>
                             <div class="form-row">
                                 <div class="field-group">
-                                    <label>National ID Number <span>*</span></label>
-                                    <input type="text" placeholder="NID number">
+                                    <label>Emergency Contact Number<span>*</span></label>
+                                    <input type="tel" placeholder="+8801XXXXXXXXX">
                                 </div>
                                 <div class="field-group">
                                     <label>Programme / Department <span>*</span></label>
@@ -537,16 +538,16 @@
                                         <input type="file" id="f1" name="transcript" accept=".pdf,.jpg,.png">
                                         <div>📎</div>
                                         <strong>Click to upload</strong>
-                                        <p>PDF, JPG or PNG · Max 5MB</p>
+                                        <p>PDF, JPG or PNG</p>
                                     </label>
                                 </div>
                                 <div class="field-group">
                                     <label>National ID <span>*</span></label>
                                     <label class="file-upload" for="f2">
-                                        <input type="file" id="f1" name="nid" accept=".pdf,.jpg,.png">
+                                        <input type="file" id="f2" name="nid" accept=".pdf,.jpg,.png">
                                         <div>📎</div>
                                         <strong>Click to upload</strong>
-                                        <p>PDF, JPG or PNG · Max 5MB</p>
+                                        <p>PDF, JPG or PNG</p>
                                     </label>
                                 </div>
                             </div>
@@ -554,25 +555,25 @@
                                 <div class="field-group">
                                     <label>Income Certificate</label>
                                     <label class="file-upload" for="f3">
-                                        <input type="file" id="f1" name="income_certificate" accept=".pdf,.jpg,.png">
+                                        <input type="file" id="f3" name="income_certificate" accept=".pdf,.jpg,.png">
                                         <div>📎</div>
                                         <strong>Click to upload</strong>
-                                        <p>PDF, JPG or PNG · Max 5MB</p>
+                                        <p>PDF, JPG or PNG</p>
                                     </label>
                                 </div>
                                 <div class="field-group">
                                     <label>Additional Document (Optional)</label>
                                     <label class="file-upload" for="f4">
-                                        <input type="file" id="f1" name="additional_document" accept=".pdf,.jpg,.png">
+                                        <input type="file" id="f4" name="additional_document" accept=".pdf,.jpg,.png">
                                         <div>📎</div>
                                         <strong>Click to upload</strong>
-                                        <p>PDF, JPG or PNG · Max 5MB</p>
+                                        <p>PDF, JPG or PNG</p>
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <!-- Terms -->
-                        <div class="form-card" style="margin-bottom:0">
+                        <div class="form-card" style="margin: bottom 24px;">
                             <h2><span>Step 7</span>Declaration</h2>
                             <p style="font-size:0.87rem;color:#666;line-height:1.7;margin-bottom:18px;">By submitting
                                 this application, you declare that all information provided herein is accurate and
@@ -585,86 +586,85 @@
                                     ELEVATE.</label>
                             </div>
                         </div>
-                        <!-- Sidebar -->
-                        <div class="progress-sidebar">
-                            <div class="progress-card">
-                                <h3>Your Progress</h3>
-                                <div class="progress-step">
-                                    <div class="step-dot done">✓</div>
-                                    <div class="progress-step-label">
-                                        <p>Scholarship Selection</p><span>Completed</span>
-                                    </div>
-                                </div>
-                                <div class="progress-step">
-                                    <div class="step-dot done">✓</div>
-                                    <div class="progress-step-label">
-                                        <p>Personal Information</p><span>Completed</span>
-                                    </div>
-                                </div>
-                                <div class="progress-step">
-                                    <div class="step-dot current">3</div>
-                                    <div class="progress-step-label">
-                                        <p>Academic Information</p><span>In progress</span>
-                                    </div>
-                                </div>
-                                <div class="progress-step">
-                                    <div class="step-dot todo">4</div>
-                                    <div class="progress-step-label">
-                                        <p>Financial Information</p><span>Pending</span>
-                                    </div>
-                                </div>
-                                <div class="progress-step">
-                                    <div class="step-dot todo">5</div>
-                                    <div class="progress-step-label">
-                                        <p>Personal Statement</p><span>Pending</span>
-                                    </div>
-                                </div>
-                                <div class="progress-step">
-                                    <div class="step-dot todo">6</div>
-                                    <div class="progress-step-label">
-                                        <p>Document Upload</p><span>Pending</span>
-                                    </div>
-                                </div>
-                                <div class="progress-step">
-                                    <div class="step-dot todo">7</div>
-                                    <div class="progress-step-label">
-                                        <p>Declaration</p><span>Pending</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="submit-card">
-                                <p>Ensure all required fields are filled before submitting. Applications cannot be
-                                    edited after
-                                    submission.</p>
-                                <button type="submit" class="btn-submit">Submit Application →</button>
-                                <button class="btn-draft">Save as Draft</button>
-                            </div>
+                        <div class="submit-card">
+                            <p>Ensure all required fields are filled before submitting. Applications cannot be
+                                edited after
+                                submission.</p>
+                            <button type="submit" class="btn-submit">Submit Application →</button>
+                            <button type="button" class="btn-draft">
+                                Save as Draft
+                            </button>
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        function handleSubmit() {
-            const terms = document.getElementById('terms');
-            if (!terms.checked) {
-                alert('Please read and accept the declaration before submitting.');
-                return;
-            }
-            if (confirm('Are you sure you want to submit your application? This cannot be undone.')) {
-                window.location.href = 'my_applications.html';
-            }
-        }
-        // File upload label update
-        document.querySelectorAll('.file-upload input[type=file]').forEach(input => {
-            input.addEventListener('change', function () {
-                const label = this.closest('.file-upload');
-                const strong = label.querySelector('strong');
-                if (this.files[0]) strong.textContent = this.files[0].name;
-            });
-        });
-    </script>
+                <!-- Sidebar -->
+                <div class="progress-sidebar">
+                    <div class="progress-card">
+                        <h3>Your Progress</h3>
+                        <div class="progress-step">
+                            <div class="step-dot done">✓</div>
+                            <div class="progress-step-label">
+                                <p>Scholarship Selection</p><span>Completed</span>
+                            </div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-dot done">✓</div>
+                            <div class="progress-step-label">
+                                <p>Personal Information</p><span>Completed</span>
+                            </div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-dot current">3</div>
+                            <div class="progress-step-label">
+                                <p>Academic Information</p><span>In progress</span>
+                            </div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-dot todo">4</div>
+                            <div class="progress-step-label">
+                                <p>Financial Information</p><span>Pending</span>
+                            </div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-dot todo">5</div>
+                            <div class="progress-step-label">
+                                <p>Personal Statement</p><span>Pending</span>
+                            </div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-dot todo">6</div>
+                            <div class="progress-step-label">
+                                <p>Document Upload</p><span>Pending</span>
+                            </div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-dot todo">7</div>
+                            <div class="progress-step-label">
+                                <p>Declaration</p><span>Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    function handleSubmit() {
+                        const terms = document.getElementById('terms');
+                        if (!terms.checked) {
+                            alert('Please read and accept the declaration before submitting.');
+                            return;
+                        }
+                        if (confirm('Are you sure you want to submit your application? This cannot be undone.')) {
+                            window.location.href = 'my_applications.html';
+                        }
+                    }
+                    // File upload label update
+                    document.querySelectorAll('.file-upload input[type=file]').forEach(input => {
+                        input.addEventListener('change', function () {
+                            const label = this.closest('.file-upload');
+                            const strong = label.querySelector('strong');
+                            if (this.files[0]) strong.textContent = this.files[0].name;
+                        });
+                    });
+                </script>
 </body>
 
 </html>
