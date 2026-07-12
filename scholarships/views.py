@@ -20,10 +20,8 @@ def save_scholarship(request, scholarship_id):
     return redirect(request.META.get('HTTP_REFERER'))
 
 def index(request):
-    scholarships = Scholarship.objects.filter(status="Active")
-    return render(request, "index.html", {
-        "scholarships": scholarships
-    })
+    return redirect('login')
+
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -560,20 +558,50 @@ def view_applications(request):
     if request.session.get('role') != 'admin':
         return redirect('login')
 
+    search = request.GET.get('search', '').strip()
+    scholarship_filter = request.GET.get('scholarship', '').strip()
+    status_filter = request.GET.get('status', '').strip()
+
+    query = """
+        SELECT a.application_id, st.name, st.university_id,
+               sc.name AS scholarship_name, a.applied_date, a.application_status
+        FROM application a
+        JOIN student     st ON a.student_id     = st.student_id
+        JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
+        WHERE 1=1
+    """
+    params = []
+
+    if search:
+        query += " AND (st.name LIKE %s OR st.university_id LIKE %s)"
+        params += [f'%{search}%', f'%{search}%']
+
+    if scholarship_filter:
+        query += " AND sc.name = %s"
+        params.append(scholarship_filter)
+
+    if status_filter:
+        query += " AND a.application_status = %s"
+        params.append(status_filter)
+
+    query += " ORDER BY a.applied_date DESC"
+
     with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT a.application_id, st.name, st.university_id,
-                   sc.name AS scholarship_name, a.applied_date, a.application_status
-            FROM application a
-            JOIN student     st ON a.student_id     = st.student_id
-            JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
-            ORDER BY a.applied_date DESC
-        """)
+        cursor.execute(query, params)
         cols = [col[0] for col in cursor.description]
         applications = [dict(zip(cols, row)) for row in cursor.fetchall()]
 
-    return render(request, 'view_applications.html', {'applications': applications})
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT DISTINCT name FROM scholarship WHERE status='Active'")
+        scholarship_names = [row[0] for row in cursor.fetchall()]
 
+    return render(request, 'view_applications.html', {
+        'applications': applications,
+        'scholarship_names': scholarship_names,
+        'search': search,
+        'scholarship_filter': scholarship_filter,
+        'status_filter': status_filter,
+    })
 
 def application_details(request, app_id):
     if request.session.get('role') != 'admin':
@@ -686,7 +714,7 @@ def application_decide(request, app_id):
                           )
                     """, [app_id, waiver, app_id, app_id])
 
-    return redirect('application_details', app_id=app_id)
+    return redirect('admin_application_details', app_id=app_id)
 
 def manage_deadlines(request):
     if request.session.get('role') != 'admin':
@@ -732,9 +760,29 @@ def manage_deadlines(request):
         cols = [col[0] for col in cursor.description]
         scholarships = [dict(zip(cols, row)) for row in cursor.fetchall()]
 
+    # check if editing
+    editing = None
+    edit_id = request.GET.get('edit')
+    if edit_id:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT deadline_id, scholarship_id, academic_term, start_date, end_date
+                FROM deadline WHERE deadline_id = %s
+            """, [edit_id])
+            row = cursor.fetchone()
+            if row:
+                editing = {
+                    'deadline_id':   row[0],
+                    'scholarship_id': row[1],
+                    'academic_term': row[2],
+                    'start_date':    row[3],
+                    'end_date':      row[4],
+                }
+
     return render(request, 'manage_deadlines.html', {
         'deadlines': deadlines,
         'scholarships': scholarships,
+        'editing': editing,
     })
 
 

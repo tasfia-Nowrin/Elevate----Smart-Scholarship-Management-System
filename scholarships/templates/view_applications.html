@@ -436,20 +436,18 @@
                 <h1>Review scholarship applications.</h1>
             </div>
 
-            <form class="filter-card" id="filterForm">
-                <input type="text" id="searchInput" placeholder="Search by student name or ID...">
-                <select id="schemeSelect">
+            <form class="filter-card" method="GET" action="{% url 'view_applications' %}">
+                <input type="text" name="search" placeholder="Search by student name or ID..." value="{{ search }}">
+                <select name="scholarship">
                     <option value="">All Scholarships</option>
-                    <option value="Academic / Merit Scholarship">Academic / Merit Scholarship</option>
-                    <option value="Need-Based Scholarship">Need-Based Scholarship</option>
-                    <option value="Sibling Scholarship">Sibling Scholarship</option>
-                    <option value="Entrance Scholarship">Entrance Scholarship</option>
+                    {% for name in scholarship_names %}
+                    <option value="{{ name }}" {% if scholarship_filter == name %}selected{% endif %}>{{ name }}</option>                    {% endfor %}
                 </select>
-                <select id="statusSelect">
-                    <option value="">All Statuses</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
+                <select name="status">
+                    <option value="" {% if not status_filter %}selected{% endif %}>All Statuses</option>
+                    <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option value="Approved" {% if status_filter == 'Approved' %}selected{% endif %}>Approved</option>
+                    <option value="Rejected" {% if status_filter == 'Rejected' %}selected{% endif %}>Rejected</option>
                 </select>
                 <button type="submit" class="filter-search-btn">⌕</button>
             </form>
@@ -488,10 +486,10 @@
                             <td>N/A</td>
                             <td style="text-align:right;">
                                 {% if a.application_status == 'Pending' %}
-                                <a href="{% url 'application_details' a.application_id %}"
+                                <a href="{% url 'admin_application_details' a.application_id %}"
                                     class="review-btn primary">Review Details</a>
                                 {% else %}
-                                <a href="{% url 'application_details' a.application_id %}"
+                                <a href="{% url 'admin_application_details' a.application_id %}"
                                     class="review-btn secondary">View Details</a>
                                 {% endif %}
                             </td>
