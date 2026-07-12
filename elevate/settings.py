@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'elevate.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'elevate',
-        'USER': 'root',    
-        'PASSWORD': '01234Mahi$',        
+        'NAME': 'elevate',      
+        'USER': 'root',
+        'PASSWORD': '@Mysql1+',        
         'HOST': 'localhost',
         'PORT': '3306',
     }

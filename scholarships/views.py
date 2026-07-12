@@ -61,50 +61,6 @@ def login_view(request):
     return render(request, 'login.html')
 
 
-def register_view(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        university_id = request.POST.get('university_id')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-
-        # check passwords match
-        if password != confirm_password:
-            messages.error(request, 'Passwords do not match')
-            return redirect('register')
-
-        # check email not already used
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT user_id FROM user WHERE email = %s
-            """, [email])
-            existing = cursor.fetchone()
-
-        if existing:
-            messages.error(request, 'Email already registered')
-            return redirect('register')
-
-        # insert into user table first
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                INSERT INTO user (email, password)
-                VALUES (%s, %s)
-            """, [email, password])
-            user_id = cursor.lastrowid
-
-        # insert into student table
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                INSERT INTO student (student_id, university_id, name)
-                VALUES (%s, %s, %s)
-            """, [user_id, university_id, name])
-
-        messages.success(request, 'Account created! Please login.')
-        return redirect('login')
-
-    return render(request, 'register.html')
-
 
 def logout_view(request):
     request.session.flush()
@@ -319,7 +275,50 @@ def apply_scholarship(request, scholarship_id):
 
     student_id = request.session.get('user_id')
 
-    # check if already applied
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT name
+            FROM scholarship
+            WHERE scholarship_id = %s
+        """, [scholarship_id])
+        scholarship_name = cursor.fetchone()[0]
+
+    if scholarship_name == "Entrance Scholarship":
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT current_semester
+                FROM student
+                WHERE student_id = %s
+            """, [student_id])
+            current_semester = cursor.fetchone()[0]
+
+        if current_semester != "1st":
+            messages.error(
+                request,
+                "Only 1st semester students can apply for the Entrance Scholarship."
+            )
+            return redirect('browse_scholarships')
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT application_id FROM application
+                WHERE student_id = %s AND scholarship_id = %s
+            """, [student_id, scholarship_id])
+            existing = cursor.fetchone()
+
+        if existing:
+            messages.info(request, 'You have already applied to this scholarship.')
+            return redirect('browse_scholarships')
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO application (student_id, scholarship_id, applied_date, application_status)
+                VALUES (%s, %s, CURDATE(), 'Pending')
+            """, [student_id, scholarship_id])
+
+        messages.success(request, 'Application submitted successfully!')
+        return redirect('my_applications')
+
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT application_id FROM application
@@ -331,7 +330,6 @@ def apply_scholarship(request, scholarship_id):
         messages.info(request, 'You have already applied to this scholarship.')
         return redirect('browse_scholarships')
 
-    # insert new application
     with connection.cursor() as cursor:
         cursor.execute("""
             INSERT INTO application (student_id, scholarship_id, applied_date, application_status)
@@ -340,6 +338,7 @@ def apply_scholarship(request, scholarship_id):
 
     messages.success(request, 'Application submitted successfully!')
     return redirect('my_applications')
+
 
 def disbursements(request):
     if request.session.get('role') != 'student':
@@ -667,16 +666,30 @@ def application_decide(request, app_id):
             if decision == 'Approved':
                 with connection.cursor() as cursor:
                     cursor.execute("""
-                        INSERT INTO disbursement (application_id, amount, disbursement_date, payment_status)
-                        SELECT %s, %s, NULL, 'Pending'
+                        INSERT INTO disbursement (
+                            application_id,
+                            amount,
+                            disbursement_date,
+                            payment_status
+                        )
+                        SELECT
+                            a.application_id,
+                            CASE
+                                WHEN sc.fee_type = 'Admission Fee' THEN 30000
+                                ELSE s.tuition_fee * a.approved_waiver / 100
+                            END,
+                            NULL,
+                            'Pending'
                         FROM application a
+                        JOIN student s ON a.student_id = s.student_id
+                        JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
                         WHERE a.application_id = %s
                           AND NOT EXISTS (
-                              SELECT 1 FROM disbursement WHERE application_id = %s
+                              SELECT 1 FROM disbursement d WHERE d.application_id = a.application_id
                           )
-                    """, [app_id, waiver, app_id, app_id])
+                    """, [app_id])
 
-    return redirect('application_details', app_id=app_id)
+            return redirect('application_details', app_id=app_id)
 
 def manage_deadlines(request):
     if request.session.get('role') != 'admin':

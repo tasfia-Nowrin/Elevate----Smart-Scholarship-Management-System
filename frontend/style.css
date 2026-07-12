@@ -117,18 +117,9 @@ body {
     background: rgba(36, 75, 82, 0.08);
 }
 
-.register-btn {
-    text-decoration: none;
-    background: var(--primary);
-    color: white;
-    padding: 9px 22px;
-    border-radius: 30px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: .3s;
-}
 
-.register-btn:hover { background: var(--dark); }
+
+
 .hero {
     position: relative;
     height: 100vh;

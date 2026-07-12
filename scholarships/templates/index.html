@@ -20,7 +20,6 @@
 
         <div class="auth-buttons">
             <a href="{% url 'login' %}" class="login-btn">Sign In</a>
-            <a href="{% url 'register' %}" class="register-btn">Register</a>
         </div>
     </nav>
 
@@ -32,7 +31,7 @@
             <p class="hero-tagline">Where Ambition Meets Opportunity</p>
             <p class="hero-motto">Elevate Beyond Limits</p>
             <div class="hero-buttons">
-                <a href="{% url 'register' %}" class="primary-btn">Apply Now</a>
+                <a href="{% url 'login' %}" class="primary-btn">Apply Now</a>
                 <a href="#scholarships" class="secondary-btn">Explore Scholarships</a>
             </div>
         </div>
@@ -83,22 +82,22 @@
             <div class="card">
                 <h3>Merit Scholarship</h3>
                 <p>Awarded to students with exceptional academic performance and outstanding CGPA scores.</p>
-                <a href="{% url 'register' %}" class="card-link">Apply Now →</a>
+                <a href="{% url 'login' %}" class="card-link">Apply Now →</a>
             </div>
             <div class="card">
                 <h3>Need-Based Scholarship</h3>
                 <p>Financial support for students facing economic hardship in continuing their education.</p>
-                <a href="{% url 'register' %}" class="card-link">Apply Now →</a>
+                <a href="{% url 'login' %}" class="card-link">Apply Now →</a>
             </div>
             <div class="card">
                 <h3>Sibling Waiver</h3>
                 <p>Tuition fee benefits for students whose siblings are currently enrolled at the institution.</p>
-                <a href="{% url 'register' %}" class="card-link">Apply Now →</a>
+                <a href="{% url 'login' %}" class="card-link">Apply Now →</a>
             </div>
             <div class="card">
                 <h3>Entrance Scholarship</h3>
                 <p>Rewards high achievers in SSC and HSC with scholarship opportunities upon enrollment.</p>
-                <a href="{% url 'register' %}" class="card-link">Apply Now →</a>
+                <a href="{% url 'login' %}" class="card-link">Apply Now →</a>
             </div>
         </div>
     </section>
@@ -107,7 +106,6 @@
             <h2>Ready to begin your ELEVATE journey?</h2>
             <p>Create your account and explore the Opportunities Elevate has to offer.</p>
             <div class="hero-buttons" style="justify-content:center; margin-top:32px;">
-                <a href="{% url 'register' %}" class="primary-btn">Create Your Account</a>
                 <a href="{% url 'login' %}" class="secondary-btn cta-secondary">Sign In</a>
             </div>
         </div>
@@ -121,7 +119,6 @@
                 <a href="#about">About</a>
                 <a href="#scholarships">Scholarships</a>
                 <a href="{% url 'login' %}">Sign In</a>
-                <a href="{% url 'register' %}">Register</a>
             </div>
         </div>
         <div class="footer-bottom">
