@@ -361,6 +361,12 @@
             vertical-align: middle;
         }
 
+        .deadline-table td:first-child {
+            max-width: 160px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
         .deadline-table tr:last-child td {
             border-bottom: none;
         }
@@ -493,38 +499,41 @@
                 <h3 id="formTitle">Set Scholarship Application Timeline</h3>
                 <form id="deadlineForm" method="POST" action="{% url 'manage_deadlines' %}">
                     {% csrf_token %}
-                    <input type="hidden" name="deadline_id" id="editDeadlineId" value="">
+                    <input type="hidden" name="deadline_id" id="editDeadlineId"
+                        value="{{ editing.deadline_id|default:'' }}">
 
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Select Scholarship Program</label>
                             <select id="schSelect" name="scholarship_id" required>
-                                <option value="" disabled selected>Choose a scheme...</option>
+                                <option value="" disabled {% if not editing %}selected{% endif %}>Choose a scheme...
+                                </option>
                                 {% for s in scholarships %}
+                                {% if editing and editing.scholarship_id == s.scholarship_id %}
+                                <option value="{{ s.scholarship_id }}" selected>{{ s.name }}</option>
+                                {% else %}
                                 <option value="{{ s.scholarship_id }}">{{ s.name }}</option>
+                                {% endif %}
                                 {% endfor %}
-                                <option value="" disabled selected>Choose a scheme...</option>
-                                <option value="Academic / Merit Scholarship">Academic / Merit Scholarship</option>
-                                <option value="Need-Based Scholarship">Need-Based Scholarship</option>
-                                <option value="Sibling Scholarship">Sibling Scholarship</option>
-                                <option value="Entrance Scholarship">Entrance Scholarship</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label>Academic Term</label>
                             <input type="text" id="termInput" name="academic_term" placeholder="e.g., Autumn 2026"
-                                required>
+                                value="{{ editing.academic_term|default:'' }}" required> required>
                         </div>
 
                         <div class="form-group">
                             <label>Start Date</label>
-                            <input type="date" id="startDateInput" name="start_date" required>
+                            <input type="date" id="startDateInput" name="start_date"
+                                value="{{ editing.start_date|default:'' }}" required>
                         </div>
 
                         <div class="form-group">
                             <label>End Date (Deadline)</label>
-                            <input type="date" id="endDateInput" name="end_date" required>
+                            <input type="date" id="endDateInput" name="end_date"
+                                value="{{ editing.end_date|default:'' }}" required>
                         </div>
 
                         <div class="form-actions">
@@ -564,8 +573,8 @@
                             </td>
                             <td>
                                 <div class="action-btns">
-                                    <a class="action-btn edit"
-                                        onclick="editTimeline('{{ d.deadline_id }}', '{{ d.scholarship_id }}', '{{ d.academic_term }}', '{{ d.start_date }}', '{{ d.end_date }}')">Edit</a>
+                                    <a href="{% url 'manage_deadlines' %}?edit={{ d.deadline_id }}"
+                                        class="action-btn edit">Edit</a>
                                     <form method="POST" action="{% url 'delete_deadline' d.deadline_id %}"
                                         style="display:inline;">
                                         {% csrf_token %}
