@@ -411,25 +411,14 @@ def profile(request):
     student_id = request.session.get('user_id')
 
     if request.method == 'POST':
-        name = request.POST.get('name')
         phone = request.POST.get('phone')
         date_of_birth = request.POST.get('date_of_birth')
-        gender = request.POST.get('gender')
-        father_name = request.POST.get('father_name')
-        mother_name = request.POST.get('mother_name')
-        department = request.POST.get('department')
-        current_semester = request.POST.get('current_semester')
-        cgpa = request.POST.get('cgpa')
-
         with connection.cursor() as cursor:
             cursor.execute("""
                 UPDATE student
-                SET name=%s, phone=%s, date_of_birth=%s, gender=%s,
-                    father_name=%s, mother_name=%s, department=%s,
-                    current_semester=%s, cgpa=%s
+                SET phone=%s, date_of_birth=%s
                 WHERE student_id=%s
-            """, [name, phone, date_of_birth, gender, father_name,
-                  mother_name, department, current_semester, cgpa, student_id])
+            """, [ phone, date_of_birth, student_id])
 
         messages.success(request, 'Profile updated successfully.')
         return redirect('profile')
@@ -440,7 +429,7 @@ def profile(request):
             SELECT s.name, s.university_id, s.phone, s.department,
                    s.current_semester, s.cgpa, s.date_of_birth, s.gender,
                    s.father_name, s.mother_name, s.sibling_studies_here,
-                   u.email
+                   u.email,u.password
             FROM student s
             JOIN user u ON u.user_id = s.student_id
             WHERE s.student_id = %s
@@ -459,6 +448,7 @@ def profile(request):
             'mother_name': row[9],
             'sibling_studies_here': row[10],
             'email': row[11],
+            'password': row[12],
         }
 
     with connection.cursor() as cursor:

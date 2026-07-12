@@ -539,7 +539,7 @@
                         {% csrf_token %}
 
                         <!-- Personal Info -->
-                        <div class="info-card">
+                        <div class="info-card personal-info">
                             <div class="info-card-header">
                                 <h2>Personal Information</h2>
                                 <button type="button" class="edit-section-btn" onclick="enableEdit()">Edit</button>
@@ -584,7 +584,6 @@
                         <div class="info-card">
                             <div class="info-card-header">
                                 <h2>Academic Profile</h2>
-                                <button type="button" class="edit-section-btn" onclick="enableEdit()">Edit</button>
                             </div>
                             <div class="academic-row">
                                 <div class="academic-card"><span>Current CGPA</span><strong>{{ student.cgpa|default:"0.00" }}</strong></div>
@@ -613,22 +612,8 @@
                             <div class="info-grid">
                                 <div class="info-field">
                                     <label>Password</label>
-                                    <input type="password" value="••••••••••" disabled>
+                                    <input type="text" value="{{ student.password }}" disabled>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Danger Zone -->
-                        <div class="info-card">
-                            <div class="info-card-header" style="margin-bottom:16px">
-                                <h2 style="color:#a03030">Danger Zone</h2>
-                            </div>
-                            <div class="danger-zone">
-                                <div>
-                                    <h4>Delete Account</h4>
-                                    <p>Permanently delete your ELEVATE account and all associated data.</p>
-                                </div>
-                                <button type="button" class="btn-danger">Delete Account</button>
                             </div>
                         </div>
 
@@ -647,13 +632,14 @@
 
     <script>
         function enableEdit() {
-            document.querySelectorAll('#profileForm .info-field input:not([type=password])').forEach(i => {
-                i.disabled = false;
-            });
-            document.getElementById('saveBar').classList.add('visible');
+             document.getElementById('fphone').disabled = false;
+             document.querySelector('input[name="date_of_birth"]').disabled = false;
+             document.getElementById('saveBar').classList.add('visible');
         }
         function cancelEdit() {
             document.querySelectorAll('#profileForm .info-field input').forEach(i => i.disabled = true);
+            document.getElementById('fphone').disabled = true;
+            document.querySelector('input[name="date_of_birth"]').disabled = true;
             document.getElementById('saveBar').classList.remove('visible');
         }
     </script>
