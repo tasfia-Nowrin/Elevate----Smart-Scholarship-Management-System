@@ -102,7 +102,10 @@ def student_dashboard(request):
 
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT COUNT(*) FROM scholarship WHERE status = 'Active'
+            SELECT COUNT(DISTINCT s.scholarship_id)
+            FROM scholarship s
+            JOIN deadline d ON d.scholarship_id = s.scholarship_id
+            WHERE s.status = 'Active'
         """)
         available_scholarships = cursor.fetchone()[0]
 
@@ -120,10 +123,15 @@ def student_dashboard(request):
     # latest scholarships
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT name, description, waiver_percentage
-            FROM scholarship
-            WHERE status = 'Active'
-            ORDER BY scholarship_id DESC
+            SELECT DISTINCT
+                s.scholarship_id,       
+                s.name,
+                s.description,
+                s.waiver_percentage
+            FROM scholarship s
+            JOIN deadline d ON d.scholarship_id = s.scholarship_id
+            WHERE s.status = 'Active'
+            ORDER BY s.scholarship_id DESC
             LIMIT 5
         """)
         cols = [col[0] for col in cursor.description]
@@ -218,7 +226,7 @@ def browse_scholarships(request):
                    d.end_date,
                    a.application_id, a.application_status
             FROM scholarship s
-            LEFT JOIN deadline d ON d.scholarship_id = s.scholarship_id
+            JOIN deadline d ON d.scholarship_id = s.scholarship_id
             LEFT JOIN application a ON a.scholarship_id = s.scholarship_id
                 AND a.student_id = %s
             WHERE s.status = 'Active'
@@ -991,7 +999,8 @@ def scholarship_detail(request, scholarship_id):
                    d.end_date,
                    a.application_id, a.application_status
             FROM scholarship s
-            LEFT JOIN deadline d ON d.scholarship_id = s.scholarship_id
+            
+            JOIN deadline d ON d.scholarship_id = s.scholarship_id
             LEFT JOIN application a ON a.scholarship_id = s.scholarship_id
                 AND a.student_id = %s
             WHERE s.scholarship_id = %s
