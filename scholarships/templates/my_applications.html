@@ -289,6 +289,13 @@
 </head>
 
 <body>
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
     <aside class="sidebar">
         <div class="sidebar-logo">
             <h2>ELEVATE</h2>

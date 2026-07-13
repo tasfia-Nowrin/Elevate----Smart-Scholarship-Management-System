@@ -1,670 +1,580 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Form | ELEVATE</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'st.css' %}">
+    <title>Scholarship Application | ELEVATE</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <style>
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            margin-bottom: 24px;
-            transition: .2s
+
+        :root{
+            --primary:#2f6f6f;
+            --dark:#183b3b;
+            --gold:#c49a45;
+            --cream:#f8f4eb;
+            --grey:#ddd8cc;
+            --muted:#777;
+            --danger:#c0392b;
         }
 
-        .back-link:hover {
-            color: var(--primary)
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
         }
 
-        .form-layout {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 28px;
-            align-items: start
+        body{
+            font-family:'DM Sans',sans-serif;
+            background:#f6f3ec;
+            color:var(--dark);
         }
 
-        .form-card {
-            background: white;
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 24px
+        .sidebar{
+            width:260px;
+            height:100vh;
+            position:fixed;
+            top:0;
+            left:0;
+            background:#fff;
+            border-right:1px solid var(--grey);
+            display:flex;
+            flex-direction:column;
+            padding:25px;
         }
 
-        .form-card h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
-            color: var(--dark);
-            font-weight: 600;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--grey)
+        .sidebar-logo h2{
+            font-family:'Cormorant Garamond',serif;
+            color:var(--primary);
+            font-size:2rem;
         }
 
-        .form-card h2 span {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.7rem;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--gold);
-            display: block;
-            margin-bottom: 4px;
-            font-weight: 500
+        .sidebar-logo p{
+            color:var(--muted);
+            font-size:.8rem;
+            margin-top:3px;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px
+        .sidebar-user{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            margin:35px 0;
         }
 
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 16px
+        .user-avatar{
+            width:42px;
+            height:42px;
+            border-radius:50%;
+            background:var(--primary);
+            color:#fff;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-weight:600;
         }
 
-        .field-group label {
-            font-size: 0.8rem;
-            color: var(--dark);
-            font-weight: 500;
-            opacity: 0.8;
-            letter-spacing: 0.2px
+        .user-info p{
+            font-weight:600;
         }
 
-        .field-group label span {
-            color: #c06060;
-            margin-left: 2px
+        .user-info span{
+            color:var(--muted);
+            font-size:.8rem;
         }
 
-        .field-group input,
-        .field-group select,
-        .field-group textarea {
-            padding: 12px 14px;
-            border: 1.5px solid var(--grey);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            background: white;
-            color: var(--dark);
-            font-family: 'DM Sans', sans-serif;
-            transition: .2s;
-            width: 100%;
+        .nav-label{
+            color:#aaa;
+            font-size:.72rem;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            margin:18px 0 10px;
         }
 
-        .field-group input:focus,
-        .field-group select:focus,
-        .field-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(47, 111, 111, 0.1);
+        .nav-item,
+        .logout-btn{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            text-decoration:none;
+            color:var(--dark);
+            padding:12px;
+            border-radius:8px;
+            margin-bottom:6px;
+            transition:.2s;
         }
 
-        .field-group select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23aaa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            padding-right: 36px;
-            cursor: pointer
+        .nav-item:hover,
+        .nav-item.active{
+            background:var(--cream);
+            color:var(--primary);
         }
 
-        .field-group textarea {
-            resize: vertical;
-            min-height: 110px;
-            line-height: 1.6
+        .sidebar-bottom{
+            margin-top:auto;
         }
 
-        .field-group input::placeholder,
-        .field-group textarea::placeholder {
-            color: #bbb;
-            font-weight: 300
+        .main{
+            margin-left:260px;
+            min-height:100vh;
         }
 
-        .file-upload {
-            border: 2px dashed var(--grey);
-            border-radius: 10px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: .2s;
-            background: var(--cream)
+        .topbar{
+            height:70px;
+            background:#fff;
+            border-bottom:1px solid var(--grey);
+            display:flex;
+            align-items:center;
+            padding:0 35px;
         }
 
-        .file-upload:hover {
-            border-color: var(--primary);
-            background: rgba(47, 111, 111, 0.03)
+        .topbar h2{
+            font-family:'Cormorant Garamond',serif;
+            font-size:1.7rem;
+            color:var(--dark);
         }
 
-        .file-upload p {
-            font-size: 0.85rem;
-            color: var(--muted);
-            margin-top: 8px
+        .page-content{
+            padding:35px;
+            max-width:1000px;
         }
 
-        .file-upload strong {
-            font-size: 0.9rem;
-            color: var(--dark)
+        .back-link{
+            display:inline-block;
+            text-decoration:none;
+            color:var(--muted);
+            margin-bottom:25px;
+            font-size:.9rem;
         }
 
-        .file-upload input[type=file] {
-            display: none
+        .form-card{
+            background:#fff;
+            border-radius:16px;
+            padding:30px;
+            margin-bottom:25px;
         }
 
-        .progress-sidebar {
-            position: sticky;
-            top: 88px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px
+        .form-card h2{
+            font-family:'Cormorant Garamond',serif;
+            font-size:1.5rem;
+            border-bottom:1px solid var(--grey);
+            padding-bottom:12px;
+            margin-bottom:25px;
         }
 
-        .progress-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px
+        .form-card h2 span{
+            display:block;
+            font-family:'DM Sans',sans-serif;
+            color:var(--gold);
+            font-size:.72rem;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            margin-bottom:4px;
         }
 
-        .progress-card h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
-            color: var(--dark);
-            font-weight: 600;
-            margin-bottom: 18px
+        .form-row{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:18px;
         }
 
-        .progress-step {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--grey)
+        .field-group{
+            display:flex;
+            flex-direction:column;
+            margin-bottom:18px;
         }
 
-        .progress-step:last-child {
-            border-bottom: none
+        .field-group label{
+            font-size:.85rem;
+            font-weight:600;
+            margin-bottom:7px;
         }
 
-        .step-dot {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 600;
-            flex-shrink: 0
+        input{
+            width:100%;
+            padding:12px 14px;
+            border:1px solid var(--grey);
+            border-radius:8px;
+            background:#faf8f3;
+            font-family:'DM Sans',sans-serif;
         }
 
-        .step-dot.done {
-            background: rgba(40, 160, 100, 0.12);
-            color: #1e7a50;
-            border: 1.5px solid rgba(40, 160, 100, 0.3)
+        input[readonly]{
+            background:#f5f2ea;
         }
 
-        .step-dot.current {
-            background: var(--gold);
-            color: white
+        .section-note{
+            background:var(--cream);
+            border-left:4px solid var(--gold);
+            padding:15px;
+            border-radius:8px;
+            font-size:.88rem;
+            color:var(--muted);
+            margin-bottom:25px;
         }
 
-        .step-dot.todo {
-            background: var(--cream);
-            color: var(--muted);
-            border: 1.5px solid var(--grey)
+        @media(max-width:900px){
+
+            .sidebar{
+                display:none;
+            }
+
+            .main{
+                margin-left:0;
+            }
+
+            .page-content{
+                padding:20px;
+            }
+
+            .form-row{
+                grid-template-columns:1fr;
+            }
+
         }
 
-        .progress-step-label {
-            font-size: 0.83rem
-        }
-
-        .progress-step-label p {
-            color: var(--dark);
-            font-weight: 500;
-            margin-bottom: 1px
-        }
-
-        .progress-step-label span {
-            font-size: 0.73rem;
-            color: var(--muted)
-        }
-
-        .submit-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center
-        }
-
-        .submit-card p {
-            font-size: 0.8rem;
-            color: var(--muted);
-            margin-bottom: 16px;
-            line-height: 1.6
-        }
-
-        .btn-submit {
-            display: block;
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            padding: 14px;
-            border-radius: 10px;
-            border: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: .3s;
-            font-family: 'DM Sans', sans-serif;
-            letter-spacing: 0.3px;
-            margin-bottom: 10px
-        }
-
-        .btn-submit:hover {
-            background: var(--dark)
-        }
-
-        .btn-draft {
-            display: block;
-            width: 100%;
-            background: transparent;
-            border: 1.5px solid var(--grey);
-            color: var(--dark);
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 0.88rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: .2s;
-            font-family: 'DM Sans', sans-serif
-        }
-
-        .btn-draft:hover {
-            border-color: var(--primary);
-            color: var(--primary)
-        }
-
-        .terms-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            font-size: 0.83rem;
-            color: #666;
-            margin-top: 4px;
-            line-height: 1.5
-        }
-
-        .terms-row input[type=checkbox] {
-            width: 15px;
-            height: 15px;
-            margin-top: 2px;
-            flex-shrink: 0;
-            accent-color: var(--primary)
-        }
-
-        .terms-row a {
-            color: var(--primary);
-            text-decoration: none
-        }
-
-        .terms-row a:hover {
-            text-decoration: underline
-        }
-
-        .section-note {
-            font-size: 0.82rem;
-            color: var(--muted);
-            margin-bottom: 20px;
-            line-height: 1.6;
-            padding: 12px 14px;
-            background: var(--cream);
-            border-radius: 8px;
-            border-left: 3px solid var(--gold)
-        }
     </style>
 </head>
 
 <body>
-    <aside class="sidebar">
-        <div class="sidebar-logo">
-            <h2>ELEVATE</h2>
-            <p>Scholarship Portal</p>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }}">
+            {{ message }}
         </div>
-        <div class="sidebar-user">
-            <div class="user-avatar">{{ student_name|first|upper }}</div>
-            <div class="user-info">
-                <p>{{ student_name }}</p><span>Student</span>
-            </div>
+    {% endfor %}
+{% endif %}
+
+
+<!-- Your existing page content starts here -->
+
+
+<aside class="sidebar">
+
+    <div class="sidebar-logo">
+        <h2>ELEVATE</h2>
+        <p>Scholarship Portal</p>
+    </div>
+
+    <div class="sidebar-user">
+
+        <div class="user-avatar">
+            {{ student.name|first }}
         </div>
 
-        <nav class="sidebar-nav">
-            <p class="nav-label">Main</p>
-            <a href="{% url 'student_dashboard' %}" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
-            <a href="{% url 'browse_scholarships' %}" class="nav-item active"><span class="nav-icon">✦</span> Browse
-                Scholarships</a>
-            <a href="{% url 'my_applications' %}" class="nav-item"><span class="nav-icon">◈</span> My
-                Applications</a>
-            <a href="{% url 'disbursements' %}" class="nav-item"><span class="nav-icon">◎</span> My
-                Disbursements</a>
-            <p class="nav-label">Account</p>
-            <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon">○</span> Profile</a>
-        </nav>
-        <div class="sidebar-bottom">
-            <a href="{% url 'logout' %}" class="logout-btn"><span class="nav-icon">→</span> Sign Out</a>
+        <div class="user-info">
+            <p>{{ student.name }}</p>
+            <span>Student</span>
         </div>
-    </aside>
-    <div class="main">
-        <div class="topbar">
-            <div class="topbar-left">
-                <h3>Scholarship Application</h3>
-            </div>
-        </div>
-        <div class="page-content">
-            <a href="{% url 'browse_scholarships' %}" class="back-link">← Back to Browse</a>
-            <div class="form-layout">
-                <div class="form-main">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <!-- Section 1: Scholarship Selection -->
-                        <div class="form-card">
-                            <h2><span>Step 1</span>Scholarship Selection</h2>
-                            <div class="field-group">
-                                <label>Scholarship Type <span>*</span></label>
-                                <select>
-                                    <option value="">— Select a scholarship —</option>
-                                    <option>Merit Scholarship</option>
-                                    <option>Need-Based Scholarship</option>
-                                    <option>Sibling Waiver</option>
-                                    <option>Entrance Scholarship</option>
-                                </select>
-                            </div>
-                            <div class="field-group">
-                                <label>Academic Semester <span>*</span></label>
-                                <select>
-                                    <option value="">— Select semester —</option>
-                                    <option>Spring 2026</option>
-                                    <option>Autumn 2026</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- Section 2: Personal Information -->
-                        <div class="form-card">
-                            <h2><span>Step 2</span>Personal Information</h2>
-                            <div class="form-row">
-                                <div class="field-group">
-                                    <label>Full Name <span>*</span></label>
-                                    <input type="text" name="full_name" placeholder="As per national ID"
-                                        value="{{ student.student_name }}">
-                                </div>
-                                <div class="field-group">
-                                    <label>Student ID <span>*</span></label>
-                                    <input type="text" name="university_id" value="{{ student.university_id }}"
-                                        readonly>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="field-group">
-                                    <label>Date of Birth <span>*</span></label>
-                                    <input type="date">
-                                </div>
-                                <div class="field-group">
-                                    <label>Gender <span>*</span></label>
-                                    <select>
-                                        <option value="">— Select option —</option>
-                                        <option>Female</option>
-                                        <option>Male</option>
-                                        <option>Prefer not to say</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="field-group">
-                                    <label>Email Address <span>*</span></label>
-                                    <input type="email" name="email" value="{{ student.email }}">
-                                </div>
-                                <div class="field-group">
-                                    <label>Phone Number <span>*</span></label>
-                                    <input type="tel" name="phone">
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label>Permanent Address <span>*</span></label>
-                                <input type="text" placeholder="Full permanent address">
-                            </div>
-                            <div class="form-row">
-                                <div class="field-group">
-                                    <label>Emergency Contact Number<span>*</span></label>
-                                    <input type="tel" placeholder="+8801XXXXXXXXX">
-                                </div>
-                                <div class="field-group">
-                                    <label>Programme / Department <span>*</span></label>
-                                    <input type="text" name="department" value="{{ student.department }}" readonly>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Section 3: Academic Information -->
-                        <div class="form-card">
-                            <h2><span>Step 3</span>Academic Information</h2>
-                            <div class="form-row">
-                                <div class="field-group">
-                                    <label>Current CGPA <span>*</span></label>
-                                    <input type="number" step="0.01" name="cgpa">
-                                </div>
-                                <div class="field-group">
-                                    <label>Current Semester / Year <span>*</span></label>
-                                    <select>
-                                        <option value="">— Select semester —</option>
-                                        <option>1st Semester</option>
-                                        <option>2nd Semester</option>
-                                        <option>3rd Semester</option>
-                                        <option>4th Semester</option>
-                                        <option>5th Semester</option>
-                                        <option>6th Semester</option>
-                                        <option>7th Semester</option>
-                                        <option>8th Semester</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="field-group">
-                                    <label>SSC GPA</label>
-                                    <input type="number" step="0.01" min="0" max="5" placeholder="e.g. 5.00">
-                                </div>
-                                <div class="field-group">
-                                    <label>HSC GPA</label>
-                                    <input type="number" step="0.01" min="0" max="5" placeholder="e.g. 5.00">
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label>Academic Achievements / Honours (if any)</label>
-                                <textarea
-                                    placeholder="Dean's List, departmental rank, awards, competitions, etc."></textarea>
-                            </div>
-                        </div>
-                        <!-- Section 4: Financial Information -->
-                        <div class="form-card">
-                            <h2><span>Step 4</span>Financial Information</h2>
-                            <div class="section-note">
-                                This information is confidential and used solely for scholarship assessment purposes.
-                            </div>
-                            <div class="form-row">
-                                <div class="field-group">
-                                    <label>Guardian's Occupation <span>*</span></label>
-                                    <input type="text" placeholder="e.g. Farmer, Service, Business">
-                                </div>
-                                <div class="field-group">
-                                    <label>Annual Family Income (BDT) <span>*</span></label>
-                                    <input type="number" name="family_income">
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label>Currently Receiving Any Other Scholarship or Waiver?</label>
-                                <select>
-                                    <option value="">— Select option —</option>
-                                    <option>No</option>
-                                    <option>Yes — specify below</option>
-                                </select>
-                            </div>
-                            <div class="field-group">
-                                <label>If yes, specify scholarship name and waiver percentage</label>
-                                <input type="text" placeholder="e.g. Government Scholarship — 15%">
-                            </div>
-                        </div>
-                        <!-- Section 5: Statement -->
-                        <div class="form-card">
-                            <h2><span>Step 5</span>Personal Statement</h2>
-                            <div class="field-group">
-                                <label>Why do you deserve this scholarship? <span>*</span></label>
-                                <textarea name="statement" style="min-height:150px"
-                                    placeholder="Describe your academic journey, financial circumstances, and how this scholarship will help you achieve your goals. (300–600 words recommended)"></textarea>
-                            </div>
-                        </div>
-                        <!-- Section 6: Documents -->
-                        <div class="form-card">
-                            <h2><span>Step 6</span>Document Upload</h2>
-                            <div class="form-row">
-                                <div class="field-group">
-                                    <label>Academic Transcript <span>*</span></label>
-                                    <label class="file-upload" for="f1">
-                                        <input type="file" id="f1" name="transcript" accept=".pdf,.jpg,.png">
-                                        <div>📎</div>
-                                        <strong>Click to upload</strong>
-                                        <p>PDF, JPG or PNG</p>
-                                    </label>
-                                </div>
-                                <div class="field-group">
-                                    <label>National ID <span>*</span></label>
-                                    <label class="file-upload" for="f2">
-                                        <input type="file" id="f2" name="nid" accept=".pdf,.jpg,.png">
-                                        <div>📎</div>
-                                        <strong>Click to upload</strong>
-                                        <p>PDF, JPG or PNG</p>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="field-group">
-                                    <label>Income Certificate</label>
-                                    <label class="file-upload" for="f3">
-                                        <input type="file" id="f3" name="income_certificate" accept=".pdf,.jpg,.png">
-                                        <div>📎</div>
-                                        <strong>Click to upload</strong>
-                                        <p>PDF, JPG or PNG</p>
-                                    </label>
-                                </div>
-                                <div class="field-group">
-                                    <label>Additional Document (Optional)</label>
-                                    <label class="file-upload" for="f4">
-                                        <input type="file" id="f4" name="additional_document" accept=".pdf,.jpg,.png">
-                                        <div>📎</div>
-                                        <strong>Click to upload</strong>
-                                        <p>PDF, JPG or PNG</p>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Terms -->
-                        <div class="form-card" style="margin: bottom 24px;">
-                            <h2><span>Step 7</span>Declaration</h2>
-                            <p style="font-size:0.87rem;color:#666;line-height:1.7;margin-bottom:18px;">By submitting
-                                this application, you declare that all information provided herein is accurate and
-                                complete to the best of your knowledge. Any falsification or misrepresentation may
-                                result in immediate disqualification and further disciplinary action.</p>
-                            <div class="terms-row">
-                                <input type="checkbox" id="terms">
-                                <label for="terms">I declare that the information I have provided is accurate. I agree
-                                    to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a> of
-                                    ELEVATE.</label>
-                            </div>
-                        </div>
-                        <div class="submit-card">
-                            <p>Ensure all required fields are filled before submitting. Applications cannot be
-                                edited after
-                                submission.</p>
-                            <button type="submit" class="btn-submit">Submit Application →</button>
-                            <button type="button" class="btn-draft">
-                                Save as Draft
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <!-- Sidebar -->
-                <div class="progress-sidebar">
-                    <div class="progress-card">
-                        <h3>Your Progress</h3>
-                        <div class="progress-step">
-                            <div class="step-dot done">✓</div>
-                            <div class="progress-step-label">
-                                <p>Scholarship Selection</p><span>Completed</span>
-                            </div>
-                        </div>
-                        <div class="progress-step">
-                            <div class="step-dot done">✓</div>
-                            <div class="progress-step-label">
-                                <p>Personal Information</p><span>Completed</span>
-                            </div>
-                        </div>
-                        <div class="progress-step">
-                            <div class="step-dot current">3</div>
-                            <div class="progress-step-label">
-                                <p>Academic Information</p><span>In progress</span>
-                            </div>
-                        </div>
-                        <div class="progress-step">
-                            <div class="step-dot todo">4</div>
-                            <div class="progress-step-label">
-                                <p>Financial Information</p><span>Pending</span>
-                            </div>
-                        </div>
-                        <div class="progress-step">
-                            <div class="step-dot todo">5</div>
-                            <div class="progress-step-label">
-                                <p>Personal Statement</p><span>Pending</span>
-                            </div>
-                        </div>
-                        <div class="progress-step">
-                            <div class="step-dot todo">6</div>
-                            <div class="progress-step-label">
-                                <p>Document Upload</p><span>Pending</span>
-                            </div>
-                        </div>
-                        <div class="progress-step">
-                            <div class="step-dot todo">7</div>
-                            <div class="progress-step-label">
-                                <p>Declaration</p><span>Pending</span>
-                            </div>
-                        </div>
+
+    </div>
+
+    <nav>
+
+        <p class="nav-label">Main</p>
+
+        <a href="{% url 'student_dashboard' %}" class="nav-item">
+            ⊞ Dashboard
+        </a>
+
+        <a href="{% url 'browse_scholarships' %}" class="nav-item active">
+            ✦ Browse Scholarships
+        </a>
+
+        <a href="{% url 'my_applications' %}" class="nav-item">
+            ◈ My Applications
+        </a>
+
+        <a href="{% url 'disbursements' %}" class="nav-item">
+            ◎ My Disbursements
+        </a>
+
+        <p class="nav-label">Account</p>
+
+        <a href="{% url 'profile' %}" class="nav-item">
+            ○ Profile
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <a href="{% url 'logout' %}" class="logout-btn">
+            → Sign Out
+        </a>
+
+    </div>
+
+</aside>
+
+<div class="main">
+
+    <div class="topbar">
+        <h2>Scholarship Application</h2>
+    </div>
+
+    <div class="page-content">
+
+        <a href="{% url 'browse_scholarships' %}" class="back-link">
+            ← Back to Scholarship Details
+        </a>
+        
+        {% if not submitted %}
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+                        <!-- Scholarship Information -->
+
+            <div class="form-card">
+
+                <h2>
+                    <span>Application For</span>
+                    Scholarship Information
+                </h2>
+
+                <div class="form-row">
+
+                    <div class="field-group">
+
+                        <label>Scholarship</label>
+
+                        <input
+                            type="text"
+                            value="{{ scholarship.name }}"
+                            readonly>
+
                     </div>
-                </div>
-                <script>
-                    function handleSubmit() {
-                        const terms = document.getElementById('terms');
-                        if (!terms.checked) {
-                            alert('Please read and accept the declaration before submitting.');
-                            return;
-                        }
-                        if (confirm('Are you sure you want to submit your application? This cannot be undone.')) {
-                            window.location.href = 'my_applications.html';
-                        }
-                    }
-                    // File upload label update
-                    document.querySelectorAll('.file-upload input[type=file]').forEach(input => {
-                        input.addEventListener('change', function () {
-                            const label = this.closest('.file-upload');
-                            const strong = label.querySelector('strong');
-                            if (this.files[0]) strong.textContent = this.files[0].name;
-                        });
-                    });
-                </script>
-</body>
 
+                    <div class="field-group">
+
+                        <label>Academic Term</label>
+
+                        <input
+                            type="text"
+                            value="{{ deadline.academic_term }}"
+                            readonly>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Student Information -->
+
+            <div class="form-card">
+
+                <h2>
+                    <span>Auto-filled</span>
+                    Student Information
+                </h2>
+
+                <div class="section-note">
+
+                    Information is automatically retrieved from your student profile.
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="field-group">
+
+                        <label>Student ID</label>
+
+                        <input
+                            type="text"
+                            value="{{ student.university_id }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        <label>Full Name</label>
+
+                        <input
+                            type="text"
+                            value="{{ student.name }}"
+                            readonly>
+
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="field-group">
+
+                        <label>Department</label>
+
+                        <input
+                            type="text"
+                            value="{{ student.department }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        <label>Current Semester</label>
+
+                        <input
+                            type="text"
+                            value="{{ student.current_semester }}"
+                            readonly>
+
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="field-group">
+
+                        <label>Current CGPA</label>
+
+                        <input
+                            type="text"
+                            value="{{ student.cgpa }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        <label>Email</label>
+
+                        <input
+                            type="email"
+                            value="{{ student.email }}"
+                            readonly>
+
+                    </div>
+
+                </div>
+
+                <div class="field-group">
+
+                    <label>Phone Number</label>
+
+                    <input
+                        type="text"
+                        value="{{ student.phone }}"
+                        readonly>
+
+                </div>
+
+            </div>
+                        <!-- Required Documents -->
+
+            <div class="form-card">
+
+                <h2>
+                    <span>Required</span>
+                    Supporting Documents
+                </h2>
+
+                <div class="section-note">
+
+                    <strong>
+                        Required Documents for {{ scholarship.name }}
+                    </strong>
+
+                    <br><br>
+
+                    Please upload the following document(s) before submitting your application.
+
+                </div>
+
+
+              {% if required_documents %}
+    {% for field_name, document_type in required_documents %}
+        <div class="field-group">
+            <label>
+                {{ document_type }}
+                <span style="color:var(--danger);">*</span>
+            </label>
+
+            <input
+                type="file"
+                name="{{ field_name }}"
+                accept=".pdf,.jpg,.jpeg,.png"
+                required>
+        </div>
+    {% endfor %}
+{% else %}
+    <p style="color:var(--muted); line-height:1.8;">
+        No supporting documents are required for this scholarship.
+    </p>
+{% endif %}
+            </div>
+
+
+
+            <!-- Declaration -->
+
+            <div class="form-card">
+
+                <h2>
+                    <span>Final Step</span>
+                    Declaration
+                </h2>
+
+                <div style="display:flex;align-items:flex-start;gap:12px;">
+
+                    <input
+                        type="checkbox"
+                        id="declaration"
+                        required
+                        style="width:18px;height:18px;margin-top:3px;">
+
+                    <label
+                        for="declaration"
+                        style="line-height:1.8;cursor:pointer;">
+
+                        I declare that all information provided is true and accurate.
+                        I understand that submitting false or misleading information
+                        may result in the rejection of my scholarship application.
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="form-card" style="text-align:right;">
+
+                <button
+                    type="submit"
+                    style="
+                        background:var(--primary);
+                        color:white;
+                        border:none;
+                        padding:14px 30px;
+                        border-radius:10px;
+                        font-size:.95rem;
+                        cursor:pointer;
+                        transition:.2s;
+                    "
+                    onmouseover="this.style.background='#183b3b'"
+                    onmouseout="this.style.background='#2f6f6f'">
+
+                    Submit Application →
+
+                </button>
+
+            </div>
+
+        </form>
+        {% endif %}
+    </div>
+
+</div>
+</body>
 </html>

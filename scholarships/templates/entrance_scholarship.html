@@ -471,39 +471,15 @@
                     </table>
                 </div>
 
-                <div class="info-card">
-                    <h2>Eligibility Criteria</h2>
-                    <ul class="criteria-list">
-                        <li>Newly enrolled student in the current academic year</li>
-                        <ul class="criteria-list">
-                            {% if sch.required_ssc_gpa %}
-                            <li> SSC GPA of {{ sch.required_ssc_gpa }}</li>
-                            {% endif %}
-                            {% if sch.required_hsc_gpa %}
-                            <li>HSC GPA of {{ sch.required_hsc_gpa }}</li>
-                            {% endif %}
-                            {% if sch.min_cgpa %}
-                            <li>Minimum University CGPA {{ sch.min_cgpa }}</li>
-                            {% endif %}
-                            <li>Application must be submitted within the first semester.</li>
-                            <li>Original certificates required for verification.</li>
-
-                        </ul>
-                        <li>Application must be submitted within the first semester</li>
-                        <li>Original mark sheets and certificates must be submitted for verification</li>
-                        <li>The award is non-renewable and applies to the first semester only</li>
-                    </ul>
-                </div>
-
-                <div class="info-card">
-                    <h2>Required Documents</h2>
-                    <ul class="docs-list">
-                        <li>Original SSC mark sheet and certificate</li>
-                        <li>Original HSC mark sheet and certificate</li>
-                        <li>Admission confirmation letter from the institution</li>
-                        <li>Completed ELEVATE application form</li>
-                    </ul>
-                </div>
+       <div class="info-card">
+    <h2>Eligibility Criteria</h2>
+    <ul class="criteria-list">
+        <li>Available only to students in their first semester.</li>
+        <li>SSC GPA must be 5.00 without an optional subject.</li>
+        <li>HSC GPA must be 5.00 without an optional subject.</li>
+        <li>SSC and HSC certificates are verified during application review.</li>
+    </ul>
+</div>
 
                 <div class="info-card">
                     <h2>Application Process</h2>
@@ -575,7 +551,7 @@
                     </a>
 
                     {% elif sch.eligible %}
-                    <a href="{% url 'apply_scholarship' sch.scholarship_id %}" class="btn-apply-large">\Apply Now →\</a>
+                    <a href="{% url 'application_form' sch.scholarship_id %}" class="btn-apply-large">Apply Now →</a>
 
                     {% else %}
                     <span class="btn-apply-large" style="opacity:.5;cursor:not-allowed;">

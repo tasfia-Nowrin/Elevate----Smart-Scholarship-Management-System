@@ -442,7 +442,7 @@
                     <div class="info-card">
                         <h2>Award Structure</h2>
                         <div class="award-grid">
-                            <div class="award-item"><span>Waiver Value</span><strong>{{ scholarship.waiver_percentage
+                            <div class="award-item"><span>Waiver Value</span><strong>{{ sch.waiver_percentage
                                     }}%</strong></div>
                             <div class="award-item"><span>Available Slots</span><strong>Unlimited</strong></div>
                             <div class="award-item"><span>Duration</span><strong>Per Semester</strong></div>
@@ -451,14 +451,11 @@
                     </div>
 
                     <div class="info-card">
-                        <h2>Required Documents</h2>
-                        <ul class="docs-list">
-                            <li>Sibling's current enrolment confirmation (from Registrar's Office)</li>
-                            <li>Birth certificates of both applicant and sibling</li>
-                            <li>Proof of shared permanent address (utility bill or official letter)</li>
-                            <li>Completed ELEVATE application form</li>
-                        </ul>
-                    </div>
+    <h2>Required Documents</h2>
+    <ul class="docs-list">
+        <li>Sibling Verification Form</li>
+    </ul>
+</div>
 
                     <div class="info-card">
                         <h2>Application Process</h2>
@@ -515,7 +512,7 @@
                         <p class="deadline-label">{{ sch.end_date_fmt }}</p>{% if sch.already_applied %}
                         <a href="{% url 'my_applications' %}" class="btn-apply-large">View Application</a>
                         {% elif sch.eligible %}
-                        <a href="{% url 'apply_scholarship' sch.scholarship_id %}" class="btn-apply-large">Apply Now
+                        <a href="{% url 'application_form' sch.scholarship_id %}" class="btn-apply-large">Apply Now
                             →</a>
                         {% else %}
                         <span class="btn-apply-large" style="opacity:0.5;cursor:not-allowed;">Not Eligible</span>

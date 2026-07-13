@@ -445,15 +445,11 @@
                     </div>
 
                     <div class="info-card">
-                        <h2>Required Documents</h2>
-                        <ul class="docs-list">
-                            <li>Family income certificate (issued by local government authority)</li>
-                            <li>Parent or guardian's tax certificate or affidavit of income</li>
-                            <li>Official academic transcript (current semester)</li>
-                            <li>Personal statement of financial hardship (400–600 words)</li>
-                            <li>Completed ELEVATE application form</li>
-                        </ul>
-                    </div>
+    <h2>Required Documents</h2>
+    <ul class="docs-list">
+        <li>Income Certificate</li>
+    </ul>
+</div>
 
                     <div class="info-card">
                         <h2>Application Process</h2>
@@ -505,7 +501,7 @@
                         <p class="deadline-countdown">{% if sch.days_remaining %}{{ sch.days_remaining }} Days{% else %}—{% endif %}</p>
                         <p class="deadline-label">{{ sch.end_date_fmt }}</p>{% if sch.already_applied %}
                         <a href="{% url 'my_applications' %}" class="btn-apply-large">View Application</a>{% elif sch.eligible %}
-                        <a href="{% url 'apply_scholarship' sch.scholarship_id %}" class="btn-apply-large">Apply Now →</a>{% else %}
+                        <a href="{% url 'application_form' sch.scholarship_id %}" class="btn-apply-large">Apply Now →</a>{% else %}
                         <span class="btn-apply-large" style="opacity:0.5;cursor:not-allowed;">Not Eligible</span> {% endif %}
                     </div>
                     <div class="quick-facts">

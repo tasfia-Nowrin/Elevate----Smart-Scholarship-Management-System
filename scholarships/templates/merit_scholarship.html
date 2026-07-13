@@ -423,15 +423,11 @@
                         </div>
                     </div>
                     <div class="info-card">
-                        <h2>Required Documents</h2>
-                        <ul class="docs-list">
-                            <li>Official academic transcript (current semester)</li>
-                            <li> university-issued student card</li>
-                            <li>Faculty recommendation letter (signed and sealed)</li>
-                            <li>Personal statement (500–800 words)</li>
-                            <li>Completed ELEVATE application form</li>
-                        </ul>
-                    </div>
+    <h2>Required Documents</h2>
+    <p style="font-size:0.9rem;color:#666;line-height:1.8;">
+        No supporting documents are required for this scholarship.
+    </p>
+</div>
                     <div class="info-card">
                         <h2>Application Process</h2>
                         <ul class="process-steps">
@@ -468,7 +464,7 @@
                                 <div class="step-num">5</div>
                                 <div class="step-text">
                                     <h4>Receive Decision</h4>
-                                    <p>You will be notified via your registered email and ELEVATE dashboard.</p>
+                                    <p>Track your application status anytime from the My Applications section of your ELEVATE account.</p>
                                 </div>
                             </li>
                         </ul>
@@ -481,7 +477,7 @@
                         <p class="deadline-countdown">{% if sch.days_remaining %}{{ sch.days_remaining }} Days{% else %}—{% endif %}</p>
                         <p class="deadline-label">{{ sch.end_date_fmt }}</p>{% if sch.already_applied %}
                         <a href="{% url 'my_applications' %}" class="btn-apply-large">View Application</a>{% elif sch.eligible %}
-                        <a href="{% url 'apply_scholarship' sch.scholarship_id %}" class="btn-apply-large">Apply Now →</a>{% else %}
+                        <a href="{% url 'application_form' sch.scholarship_id %}" class="btn-apply-large">Apply Now →</a>{% else %}
                         <span class="btn-apply-large" style="opacity:0.5;cursor:not-allowed;">Not Eligible</span> {% endif %}
                     </div>
                     <div class="quick-facts">

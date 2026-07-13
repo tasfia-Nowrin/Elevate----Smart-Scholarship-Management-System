@@ -128,3 +128,5 @@ import os
 STATICFILES_DIRS = [
    BASE_DIR / 'scholarships' / 'static',
 ]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
