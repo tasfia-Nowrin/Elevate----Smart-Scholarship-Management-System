@@ -432,6 +432,52 @@
             color: white;
         }
 
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--grey);
+            padding-bottom: 10px;
+        }
+
+        .title-row h3 {
+            margin: 0;
+            border: none;
+            padding: 0;
+        }
+
+        .deadline-message {
+            background: #fdeaea;
+            color: #b42318;
+            border: 1px solid #f5c2c7;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 0 0 20px 0;
+            font-size: 12px;
+            font-weight: 500;
+
+            animation: fadeOut 5s forwards;
+        }
+
+        .deadline-message.success {
+            background: #eafaf1;
+            color: #146c43;
+            border-color: #badbcc;
+        }
+
+        @keyframes fadeOut {
+
+            0%,
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -496,7 +542,18 @@
             </div>
 
             <div class="form-card">
-                <h3 id="formTitle">Set Scholarship Application Timeline</h3>
+                <div class="title-row">
+                    <h3 id="formTitle">Set Scholarship Application Timeline</h3>
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <span class="deadline-message">
+                        ⚠ {{ message }}
+                    </span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+
                 <form id="deadlineForm" method="POST" action="{% url 'manage_deadlines' %}">
                     {% csrf_token %}
                     <input type="hidden" name="deadline_id" id="editDeadlineId"

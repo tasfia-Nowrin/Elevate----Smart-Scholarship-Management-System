@@ -738,9 +738,29 @@ def manage_deadlines(request):
                     WHERE deadline_id=%s
                 """, [scholarship_id, academic_term, start_date, end_date, deadline_id])
         else:
+    # Check for duplicate academic term
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    INSERT INTO deadline (scholarship_id, academic_term, start_date, end_date)
+                    SELECT COUNT(*)
+                    FROM deadline
+                    WHERE scholarship_id = %s
+                      AND academic_term = %s
+                """, [scholarship_id, academic_term])
+
+                exists = cursor.fetchone()[0]
+                print("Exists =", exists)
+
+            from django.http import HttpResponse
+
+            if exists:
+                messages.error(request, "This academic term already exists for the selected scholarship.")
+                return redirect('manage_deadlines')
+
+    # Insert new deadline
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO deadline
+                    (scholarship_id, academic_term, start_date, end_date)
                     VALUES (%s, %s, %s, %s)
                 """, [scholarship_id, academic_term, start_date, end_date])
 
@@ -849,7 +869,7 @@ def manage_disbursements(request):
             SELECT
                 (SELECT IFNULL(SUM(amount),0) FROM disbursement WHERE payment_status='Paid') AS total_disbursed,
                 (SELECT COUNT(DISTINCT a.student_id) FROM disbursement d JOIN application a ON d.application_id=a.application_id WHERE d.payment_status='Paid') AS total_recipients,
-                (SELECT COUNT(*) FROM application a LEFT JOIN disbursement d ON d.application_id=a.application_id WHERE a.application_status='Approved' AND d.disbursement_id IS NULL) AS pending_payments
+                (SELECT COUNT(*) FROM disbursement WHERE payment_status='Pending') AS pending_payments
         """)
         row = cursor.fetchone()
         stats = {
