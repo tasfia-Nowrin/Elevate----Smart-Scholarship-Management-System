@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,138 +7,12 @@
     <title>Scholarship Application | ELEVATE</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="{% static 'st.css' %}">
     <style>
-
-        :root{
-            --primary:#2f6f6f;
-            --dark:#183b3b;
-            --gold:#c49a45;
-            --cream:#f8f4eb;
-            --grey:#ddd8cc;
-            --muted:#777;
-            --danger:#c0392b;
-        }
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-        }
-
-        body{
-            font-family:'DM Sans',sans-serif;
-            background:#f6f3ec;
-            color:var(--dark);
-        }
-
-        .sidebar{
-            width:260px;
-            height:100vh;
-            position:fixed;
-            top:0;
-            left:0;
-            background:#fff;
-            border-right:1px solid var(--grey);
-            display:flex;
-            flex-direction:column;
-            padding:25px;
-        }
-
-        .sidebar-logo h2{
-            font-family:'Cormorant Garamond',serif;
-            color:var(--primary);
-            font-size:2rem;
-        }
-
-        .sidebar-logo p{
-            color:var(--muted);
-            font-size:.8rem;
-            margin-top:3px;
-        }
-
-        .sidebar-user{
-            display:flex;
-            align-items:center;
-            gap:12px;
-            margin:35px 0;
-        }
-
-        .user-avatar{
-            width:42px;
-            height:42px;
-            border-radius:50%;
-            background:var(--primary);
-            color:#fff;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            font-weight:600;
-        }
-
-        .user-info p{
-            font-weight:600;
-        }
-
-        .user-info span{
-            color:var(--muted);
-            font-size:.8rem;
-        }
-
-        .nav-label{
-            color:#aaa;
-            font-size:.72rem;
-            text-transform:uppercase;
-            letter-spacing:1px;
-            margin:18px 0 10px;
-        }
-
-        .nav-item,
-        .logout-btn{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            text-decoration:none;
-            color:var(--dark);
-            padding:12px;
-            border-radius:8px;
-            margin-bottom:6px;
-            transition:.2s;
-        }
-
-        .nav-item:hover,
-        .nav-item.active{
-            background:var(--cream);
-            color:var(--primary);
-        }
-
-        .sidebar-bottom{
-            margin-top:auto;
-        }
-
-        .main{
-            margin-left:260px;
-            min-height:100vh;
-        }
-
-        .topbar{
-            height:70px;
-            background:#fff;
-            border-bottom:1px solid var(--grey);
-            display:flex;
-            align-items:center;
-            padding:0 35px;
-        }
-
-        .topbar h2{
-            font-family:'Cormorant Garamond',serif;
-            font-size:1.7rem;
-            color:var(--dark);
-        }
-
-        .page-content{
-            padding:35px;
-            max-width:1000px;
+       .page-content{
+        max-width:1200px;
+         margin:0 auto;
+         padding:40px 48px;
         }
 
         .back-link{
@@ -216,10 +91,6 @@
 
         @media(max-width:900px){
 
-            .sidebar{
-                display:none;
-            }
-
             .main{
                 margin-left:0;
             }
@@ -236,9 +107,7 @@
 
     </style>
 </head>
-
 <body>
-
 {% if messages %}
     {% for message in messages %}
         <div class="alert {{ message.tags }}">
@@ -246,251 +115,159 @@
         </div>
     {% endfor %}
 {% endif %}
-
-
 <!-- Your existing page content starts here -->
-
-
 <aside class="sidebar">
-
     <div class="sidebar-logo">
         <h2>ELEVATE</h2>
         <p>Scholarship Portal</p>
     </div>
-
     <div class="sidebar-user">
-
         <div class="user-avatar">
-            {{ student.name|first }}
+            {{ student.name|first|upper }}
         </div>
-
         <div class="user-info">
             <p>{{ student.name }}</p>
             <span>Student</span>
         </div>
-
     </div>
-
-    <nav>
-
+    <nav class="sidebar-nav">
         <p class="nav-label">Main</p>
-
         <a href="{% url 'student_dashboard' %}" class="nav-item">
-            ⊞ Dashboard
+            <span class="nav-icon">⊞</span> Dashboard
         </a>
-
         <a href="{% url 'browse_scholarships' %}" class="nav-item active">
-            ✦ Browse Scholarships
+            <span class="nav-icon">✦</span> Browse Scholarships
         </a>
-
         <a href="{% url 'my_applications' %}" class="nav-item">
-            ◈ My Applications
+            <span class="nav-icon">◈</span> My Applications
         </a>
-
         <a href="{% url 'disbursements' %}" class="nav-item">
-            ◎ My Disbursements
+            <span class="nav-icon">◎</span> My Disbursements
         </a>
-
         <p class="nav-label">Account</p>
-
         <a href="{% url 'profile' %}" class="nav-item">
-            ○ Profile
+           <span class="nav-icon">○</span> Profile
         </a>
-
     </nav>
-
     <div class="sidebar-bottom">
-
         <a href="{% url 'logout' %}" class="logout-btn">
-            → Sign Out
+           <span class="nav-icon">→</span>Sign Out
         </a>
-
     </div>
-
 </aside>
-
 <div class="main">
-
     <div class="topbar">
         <h2>Scholarship Application</h2>
     </div>
-
     <div class="page-content">
-
         <a href="{% url 'browse_scholarships' %}" class="back-link">
             ← Back to Scholarship Details
         </a>
-        
+    
         {% if not submitted %}
         <form method="POST" enctype="multipart/form-data">
-
             {% csrf_token %}
                         <!-- Scholarship Information -->
-
             <div class="form-card">
-
                 <h2>
                     <span>Application For</span>
                     Scholarship Information
                 </h2>
-
                 <div class="form-row">
-
                     <div class="field-group">
-
                         <label>Scholarship</label>
-
                         <input
                             type="text"
                             value="{{ scholarship.name }}"
                             readonly>
-
                     </div>
-
                     <div class="field-group">
-
                         <label>Academic Term</label>
-
                         <input
                             type="text"
                             value="{{ deadline.academic_term }}"
                             readonly>
-
                     </div>
-
                 </div>
-
             </div>
-
-
-
             <!-- Student Information -->
-
             <div class="form-card">
-
                 <h2>
                     <span>Auto-filled</span>
                     Student Information
                 </h2>
-
                 <div class="section-note">
-
                     Information is automatically retrieved from your student profile.
-
                 </div>
-
                 <div class="form-row">
-
                     <div class="field-group">
-
                         <label>Student ID</label>
-
                         <input
                             type="text"
                             value="{{ student.university_id }}"
                             readonly>
-
                     </div>
-
                     <div class="field-group">
-
                         <label>Full Name</label>
-
                         <input
                             type="text"
                             value="{{ student.name }}"
                             readonly>
-
                     </div>
-
                 </div>
-
                 <div class="form-row">
-
                     <div class="field-group">
-
                         <label>Department</label>
-
                         <input
                             type="text"
                             value="{{ student.department }}"
                             readonly>
-
                     </div>
-
                     <div class="field-group">
-
                         <label>Current Semester</label>
-
                         <input
                             type="text"
                             value="{{ student.current_semester }}"
                             readonly>
-
                     </div>
-
                 </div>
-
                 <div class="form-row">
-
                     <div class="field-group">
-
                         <label>Current CGPA</label>
-
                         <input
                             type="text"
                             value="{{ student.cgpa }}"
                             readonly>
-
                     </div>
-
                     <div class="field-group">
-
                         <label>Email</label>
-
                         <input
                             type="email"
                             value="{{ student.email }}"
                             readonly>
-
                     </div>
-
                 </div>
-
                 <div class="field-group">
-
                     <label>Phone Number</label>
-
                     <input
                         type="text"
                         value="{{ student.phone }}"
                         readonly>
-
                 </div>
-
             </div>
                         <!-- Required Documents -->
-
             <div class="form-card">
-
                 <h2>
                     <span>Required</span>
                     Supporting Documents
                 </h2>
-
                 <div class="section-note">
-
                     <strong>
                         Required Documents for {{ scholarship.name }}
                     </strong>
-
                     <br><br>
-
                     Please upload the following document(s) before submitting your application.
-
                 </div>
-
-
               {% if required_documents %}
     {% for field_name, document_type in required_documents %}
         <div class="field-group">
@@ -512,51 +289,37 @@
     </p>
 {% endif %}
             </div>
-
-
-
             <!-- Declaration -->
 
             <div class="form-card">
-
                 <h2>
                     <span>Final Step</span>
                     Declaration
                 </h2>
-
                 <div style="display:flex;align-items:flex-start;gap:12px;">
-
                     <input
                         type="checkbox"
                         id="declaration"
+                        name="declaration"
                         required
                         style="width:18px;height:18px;margin-top:3px;">
-
                     <label
                         for="declaration"
                         style="line-height:1.8;cursor:pointer;">
-
                         I declare that all information provided is true and accurate.
                         I understand that submitting false or misleading information
                         may result in the rejection of my scholarship application.
-
                     </label>
-
                 </div>
-
             </div>
-
-
-
-            <div class="form-card" style="text-align:right;">
-
+            <div class="form-card" style="text-align:center;">
                 <button
                     type="submit"
                     style="
                         background:var(--primary);
                         color:white;
                         border:none;
-                        padding:14px 30px;
+                        padding:16px 30px;
                         border-radius:10px;
                         font-size:.95rem;
                         cursor:pointer;
@@ -564,17 +327,12 @@
                     "
                     onmouseover="this.style.background='#183b3b'"
                     onmouseout="this.style.background='#2f6f6f'">
-
-                    Submit Application →
-
+                    Submit Application 
                 </button>
-
             </div>
-
         </form>
         {% endif %}
     </div>
-
 </div>
 </body>
 </html>

@@ -71,7 +71,7 @@ def get_student_data(student_id):
 
 
 def index(request):
-    return redirect('login')
+    return render(request, 'index.html')
 
 def login_view(request):
     if request.method == 'POST':
@@ -156,7 +156,7 @@ def student_dashboard(request):
             SELECT COUNT(DISTINCT s.scholarship_id)
             FROM scholarship s
             JOIN deadline d ON d.scholarship_id = s.scholarship_id
-            WHERE s.status = 'Active'
+            WHERE s.status = 'Active' AND d.end_date >= CURDATE()
         """)
         available_scholarships = cursor.fetchone()[0]
 
@@ -197,6 +197,7 @@ def student_dashboard(request):
             FROM deadline d
             JOIN scholarship s ON d.scholarship_id = s.scholarship_id
             WHERE s.status = 'Active'
+            AND d.end_date >= CURDATE()
             ORDER BY d.end_date ASC
             LIMIT 4
         """)
@@ -318,7 +319,7 @@ def disbursements(request):
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT sc.name, sc.fee_type, sc.waiver_percentage,
-                   d.amount, d.disbursement_date, d.disbursement_id, d.payment_status
+                   d.amount, d.disbursement_date, d.payment_status
             FROM disbursement d
             JOIN application a ON d.application_id = a.application_id
             JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id

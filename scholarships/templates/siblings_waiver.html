@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -419,12 +418,6 @@
                         <h2>About This Scholarship</h2>
                         <p style="font-size:0.9rem;color:#666;line-height:1.8;margin-bottom:16px;">{{ sch.description }}
                         </p>
-                        <div class="highlight-box">
-                            <strong>Good News</strong>
-                            This waiver is available to an unlimited number of applicants, provided the sibling
-                            enrolment criterion is met. There is no competitive selection — eligibility guarantees the
-                            award.
-                        </div>
                     </div>
 
                     <div class="info-card">
@@ -432,8 +425,6 @@
                         <ul class="criteria-list">
                             <li>Applicant must have a biological sibling currently enrolled at the institution</li>
                             <li>The sibling must be registered as an active, full-time student</li>
-                            <li>Both students must share the same permanent address as listed in official documents</li>
-                            <li>Applicant must be in good academic and financial standing with the institution</li>
                             <li>A sibling relationship must be verifiable through official documentation</li>
                             <li>The waiver applies to tuition fees only, not to other institutional charges</li>
                         </ul>
@@ -442,20 +433,18 @@
                     <div class="info-card">
                         <h2>Award Structure</h2>
                         <div class="award-grid">
-                            <div class="award-item"><span>Waiver Value</span><strong>{{ sch.waiver_percentage
-                                    }}%</strong></div>
+                            <div class="award-item"><span>Waiver Value</span><strong>{{ sch.waiver_percentage }}%</strong></div>
                             <div class="award-item"><span>Available Slots</span><strong>Unlimited</strong></div>
-                            <div class="award-item"><span>Duration</span><strong>Per Semester</strong></div>
-                            <div class="award-item"><span>Renewable</span><strong>Yes (auto)</strong></div>
+                            <div class="award-item"><span>Duration</span><strong>1 Semester</strong></div>
                         </div>
                     </div>
 
                     <div class="info-card">
-    <h2>Required Documents</h2>
-    <ul class="docs-list">
-        <li>Sibling Verification Form</li>
-    </ul>
-</div>
+                         <h2>Required Documents</h2>
+                         <ul class="docs-list">
+                            <li>Sibling Verification Form</li>
+                         </ul>
+                    </div>
 
                     <div class="info-card">
                         <h2>Application Process</h2>
@@ -480,23 +469,15 @@
                                 <div class="step-num">3</div>
                                 <div class="step-text">
                                     <h4>Submit Application</h4>
-                                    <p>Fill and submit the ELEVATE form before the deadline of 30 July 2026.</p>
+                                    <p>Fill and submit the ELEVATE form before the deadline </p>
                                 </div>
                             </li>
                             <li class="process-step">
                                 <div class="step-num">4</div>
                                 <div class="step-text">
-                                    <h4>Administrative Verification</h4>
-                                    <p>The office will verify sibling enrolment directly with the Registrar's records.
+                                    <h4>Receive Decision</h4>
+                                    <p>Track your application status anytime from the My Applications section of your ELEVATE account.
                                     </p>
-                                </div>
-                            </li>
-                            <li class="process-step">
-                                <div class="step-num">5</div>
-                                <div class="step-text">
-                                    <h4>Automatic Renewal</h4>
-                                    <p>Once approved, the waiver is automatically renewed each semester, provided the
-                                        sibling remains enrolled.</p>
                                 </div>
                             </li>
                         </ul>
@@ -520,12 +501,10 @@
                     </div>
                     <div class="quick-facts">
                         <h3>Quick Facts</h3>
-                        <div class="fact-row"><span>Type</span><strong>Sibling Waiver</strong></div>
-                        <div class="fact-row"><span>Award</span><strong>10% Waiver</strong></div>
-                        <div class="fact-row"><span>Deadline</span><strong>30 July 2026</strong></div>
+                        <div class="fact-row"><span>Fee Type</span><strong>>{{ sch.fee_type }}</strong></div>
+                        <div class="fact-row"><span>Award</span><strong>{{ sch.waiver_percentage }}% Waiver</strong></div>
+                        <div class="fact-row"><span>Deadline</span><strong>>{{ sch.end_date_fmt }}</strong></div>
                         <div class="fact-row"><span>Open Slots</span><strong>Unlimited</strong></div>
-                        <div class="fact-row"><span>Decision By</span><strong>10 Aug 2026</strong></div>
-                        <div class="fact-row"><span>Renewable</span><strong>Auto (each sem)</strong></div>
                     </div>
                 </div>
             </div>

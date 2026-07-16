@@ -1,7 +1,7 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,9 +13,7 @@
     <style>
     </style>
 </head>
-
 <body>
-
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-logo">
@@ -24,7 +22,7 @@
         </div>
 
         <div class="sidebar-user">
-            <div class="user-avatar">{{ student.name|first }}</div>
+            <div class="user-avatar">{{ student.name|first|upper }}</div>
             <div class="user-info">
                 <p>{{ student.name }}</p>
                 <span>Student</span>
@@ -56,28 +54,22 @@
             </a>
         </div>
     </aside>
-
-
     <!-- MAIN -->
     <div class="main">
-
         <!-- TOPBAR -->
         <div class="topbar">
             <div class="topbar-left">
                 <h3>Student Dashboard</h3>
             </div>
         </div>
-
         <!-- PAGE CONTENT -->
         <div class="page-content">
-
             <!-- WELCOME BANNER -->
             <div class="welcome-banner">
                 <div class="welcome-text">
                     <p class="eyebrow">Welcome back</p>
                     <h1>Good afternoon, {{ student.name }}.</h1>
-                    <p class="sub">You have {{ upcoming_deadlines|length }} upcoming deadlines this month. Stay on
-                        track.</p>
+                    <p class="sub">You have {{ upcoming_deadlines|length }} upcoming deadlines this month. Stay on track.</p>
                 </div>
                 <div class="welcome-badge">
                     <p class="badge-label">Active Applications</p>
@@ -103,24 +95,22 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">○</div>
+                    <div class="stat-icon">✯</div>
                     <div class="stat-info">
                         <p class="stat-val">{{ next_deadline }}</p>
                         <p class="stat-lbl">Next Deadline</p>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">💰</div>
+                    <div class="stat-icon">✪</div>
                     <div class="stat-info">
-                        <p class="stat-val">৳{{ total_received }}</p>
+                        <p class="stat-val">৳{{ total_received|intcomma }}</p>
                         <p class="stat-lbl">Total Received</p>
                     </div>
                 </div>
             </div>
 
-
             <div class="two-col">
-
                 <!-- LATEST SCHOLARSHIPS -->
                 <div class="section-card">
                     <div class="section-card-header">
@@ -129,13 +119,14 @@
                     </div>
                     <div class="scholarship-list">
                         {% for sch in latest_scholarships %}
-                        <div class="scholarship-item">
+                        <a href="{% url 'scholarship_detail' sch.scholarship_id %}" class="scholarship-item"
+                            style="text-decoration:none;color:inherit;">
                             <div class="sch-info">
                                 <h4>{{ sch.name }}</h4>
                                 <p>{{ sch.description|truncatechars:50 }}</p>
                             </div>
                             <span class="sch-arrow">→</span>
-                        </div>
+                        </a>
                         {% empty %}
                         <p style="color:#7a8a8c;font-size:0.9rem;">No scholarships available</p>
                         {% endfor %}
@@ -154,7 +145,8 @@
                                 <span class="deadline-dot"></span>
                                 <span class="deadline-name">{{ d.scholarship_name }}</span>
                             </div>
-                            <span class="deadline-date {% if d.days_remaining > 0 and d.days_remaining <= 7 %}deadline-urgent{% endif %}">{{ d.end_date }}
+                            <span
+                                class="deadline-date {% if d.days_remaining > 0 and d.days_remaining <= 7 %}deadline-urgent{% endif %}">{{d.end_date }}
                             </span>
                         </div>
                         {% empty %}
@@ -186,24 +178,23 @@
                         <tr>
                             <td>{{ app.scholarship_name }}</td>
                             <td>{{ app.applied_date }}</td>
-                            <td>{% if app.amount %}৳{{ app.amount }}{% else %}—{% endif %}</td>
-                            <td><span class="status-badge {% if app.application_status == 'Approved' %}status-approved
+                            <td>{% if app.amount %}৳{{ app.amount|intcomma }}{% else %}—{% endif %}</td>
+                            <td><span
+                                    class="status-badge {% if app.application_status == 'Approved' %}status-approved
                             {% elif app.application_status == 'Rejected' %}status-rejected{% else %}status-review{% endif %}">
                                     {{ app.application_status }}
                                 </span></td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="4" style="text-align:center;color:#7a8a8c;padding:20px;">No applications yet </td>
+                            <td colspan="4" style="text-align:center;color:#7a8a8c;padding:20px;">No applications yet
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-
-        </div><!-- end page-content -->
-    </div><!-- end main -->
-
+        </div>
+    </div>
 </body>
-
 </html>

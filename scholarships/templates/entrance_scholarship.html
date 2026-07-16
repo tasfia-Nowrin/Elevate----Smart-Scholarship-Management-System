@@ -442,17 +442,15 @@
                     <h2>About This Scholarship</h2>
                     <p style="font-size:0.9rem;color:#666;line-height:1.8;">{{ sch.description }}
                     </p>
-                    <p style="font-size:0.9rem;color:#666;line-height:1.8;">Students must apply within the first
-                        semester of enrolment to be considered for this award.</p>
                 </div>
 
                 <div class="info-card">
-                    <h2>Waiver Structure by Result</h2>
+                    <h2>Waiver Structure</h2>
                     <table class="grade-table">
                         <thead>
                             <tr>
-                                <th>SSC Result</th>
-                                <th>HSC Result</th>
+                                <th>SSC GPA</th>
+                                <th>HSC GPA</th>
                                 <th>Waiver</th>
                             </tr>
                         </thead>
@@ -471,15 +469,27 @@
                     </table>
                 </div>
 
-       <div class="info-card">
-    <h2>Eligibility Criteria</h2>
-    <ul class="criteria-list">
-        <li>Available only to students in their first semester.</li>
-        <li>SSC GPA must be 5.00 without an optional subject.</li>
-        <li>HSC GPA must be 5.00 without an optional subject.</li>
-        <li>SSC and HSC certificates are verified during application review.</li>
-    </ul>
-</div>
+            <div class="info-card">
+                    <h2>Eligibility Criteria</h2>
+                    <ul class="criteria-list">
+                        <ul class="criteria-list">
+                            {% if sch.required_ssc_gpa %}
+                            <li> SSC GPA of {{ sch.required_ssc_gpa }}</li>
+                            {% endif %}
+                            {% if sch.required_hsc_gpa %}
+                            <li>HSC GPA of {{ sch.required_hsc_gpa }}</li>
+                            {% endif %}
+                            <li>Application must be submitted within the first semester.</li>
+                            <li>Original certificates required for verification.</li>
+                </div>
+               <div class="info-card">
+                    <h2>Required Documents</h2>
+                    <ul class="docs-list">
+                        <li>Original SSC mark sheet and certificate</li>
+                        <li>Original HSC mark sheet and certificate</li>
+                    </ul>
+                </div>
+
 
                 <div class="info-card">
                     <h2>Application Process</h2>
@@ -516,8 +526,8 @@
                         <li class="process-step">
                             <div class="step-num">5</div>
                             <div class="step-text">
-                                <h4>Award Notification</h4>
-                                <p>Decisions communicated within 10 working days of the application deadline.</p>
+                                <h4>Receive Decision</h4>
+                                <p>Track your application status anytime from the My Applications section of your ELEVATE account.</p>
                             </div>
                         </li>
                     </ul>
@@ -563,13 +573,13 @@
                 <div class="quick-facts">
                     <h3>Quick Facts</h3>
                     <div class="fact-row">
-                        <span>Type</span>
-                        <strong>{{ sch.type_label }}</strong>
+                        <span> Fee Type</span>
+                        <strong>{{ sch.fee_type }}</strong>
                     </div>
 
                     <div class="fact-row">
                         <span>Award</span>
-                        <strong>Up to {{ sch.waiver_percentage }}% Waiver</strong>
+                        <strong> {{ sch.waiver_percentage }}% Waiver</strong>
                     </div>
 
                     <div class="fact-row">

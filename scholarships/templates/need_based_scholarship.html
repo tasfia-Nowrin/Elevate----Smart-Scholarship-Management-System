@@ -428,7 +428,7 @@
                         <h2>Eligibility Criteria</h2>
                         <ul class="criteria-list">
                             {% if sch.min_cgpa %}<li>Minimum CGPA of {{ sch.min_cgpa }} required</li>{% endif %}
-                            {% if sch.max_cgpa %}<li>Maximum CGPA of {{ sch.max_cgpa }} (need-based cap)</li>{% endif %}
+                            {% if sch.max_cgpa %}<li>Maximum CGPA of {{ sch.max_cgpa }}</li>{% endif %}
                             {% if sch.type == 'sibling' %}<li>Must have a sibling currently studying at this institution </li>{% endif %}
                             {% if sch.fee_type %}<li>Applies to: {{ sch.fee_type }}</li>{% endif %}
                         </ul>
@@ -437,19 +437,17 @@
                     <div class="info-card">
                         <h2>Award Structure</h2>
                         <div class="award-grid">
-                            <div class="award-item"><span>Maximum Waiver</span><strong>75%</strong></div>
-                            <div class="award-item"><span>Available Slots</span><strong>15</strong></div>
+                            <div class="award-item"><span>Maximum Waiver</span><strong>{{ sch.waiver_percentage }}%</strong></div>
                             <div class="award-item"><span>Duration</span><strong>1 Semester</strong></div>
-                            <div class="award-item"><span>Renewable</span><strong>Yes</strong></div>
                         </div>
                     </div>
 
                     <div class="info-card">
-    <h2>Required Documents</h2>
-    <ul class="docs-list">
-        <li>Income Certificate</li>
-    </ul>
-</div>
+                        <h2>Required Documents</h2>
+                       <ul class="docs-list">
+                          <li>Income Certificate</li>
+                        </ul>
+                    </div>
 
                     <div class="info-card">
                         <h2>Application Process</h2>
@@ -473,21 +471,15 @@
                                 <div class="step-num">3</div>
                                 <div class="step-text">
                                     <h4>Submit Before Deadline</h4>
-                                    <p>Deadline is 20 July 2026. Late submissions will not be entertained.</p>
+                                    <p>Applications submitted after the deadline will not be considered under any
+                                        circumstances.</p>
                                 </div>
                             </li>
                             <li class="process-step">
                                 <div class="step-num">4</div>
                                 <div class="step-text">
-                                    <h4>Financial Assessment</h4>
-                                    <p>The committee may request a follow-up interview or additional documentation.</p>
-                                </div>
-                            </li>
-                            <li class="process-step">
-                                <div class="step-num">5</div>
-                                <div class="step-text">
                                     <h4>Receive Decision</h4>
-                                    <p>Results will be communicated within 21 working days of submission.</p>
+                                    <p>Track your application status anytime from the My Applications section of your ELEVATE account.</p>
                                 </div>
                             </li>
                         </ul>
@@ -506,12 +498,9 @@
                     </div>
                     <div class="quick-facts">
                         <h3>Quick Facts</h3>
-                        <div class="fact-row"><span>Type</span><strong>{{ sch.type_label }}</strong></div>
+                        <div class="fact-row"><span>Fee Type</span><strong>{{ sch.fee_type }}</strong></div>
                         <div class="fact-row"><span>Award</span><strong>Up to {{ sch.waiver_percentage }}% Waiver</strong></div>
                         <div class="fact-row"><span>Deadline</span><strong>{{ sch.end_date_fmt }}</strong></div>
-                        <div class="fact-row"><span>Open Slots</span><strong>15 Remaining</strong></div>
-                        <div class="fact-row"><span>Decision By</span><strong>20 Aug 2026</strong></div>
-                        <div class="fact-row"><span>Renewable</span><strong>Yes (per semester)</strong></div>
                     </div>
                 </div>
             </div>

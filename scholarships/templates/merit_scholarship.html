@@ -410,7 +410,7 @@
                         <h2>Eligibility Criteria</h2>
                         <ul class="criteria-list">
                             {% if sch.min_cgpa %}<li>Minimum CGPA of {{ sch.min_cgpa }} required</li>{% endif %}
-                            {% if sch.max_cgpa %}<li>Maximum CGPA of {{ sch.max_cgpa }} (need-based cap)</li>{% endif %}
+                            {% if sch.max_cgpa %}<li>Maximum CGPA of {{ sch.max_cgpa }}</li>{% endif %}
                             {% if sch.type == 'sibling' %}<li>Must have a sibling currently studying at this institution </li>{% endif %}
                             {% if sch.fee_type %}<li>Applies to: {{ sch.fee_type }}</li>{% endif %}
                         </ul>
@@ -419,15 +419,15 @@
                         <h2>Award Structure</h2>
                         <div class="award-grid">
                             <div class="award-item"><span>Maximum Waiver</span><strong>{{ sch.waiver_percentage }}%</strong></div>
-                            <div class="award-item"><span>Fee Type</span><strong>{{ sch.fee_type|default:"N/A"}}</strong></div>
+                            <div class="award-item"><span>Duration</span><strong>1 Semester</strong></div>
                         </div>
                     </div>
                     <div class="info-card">
-    <h2>Required Documents</h2>
-    <p style="font-size:0.9rem;color:#666;line-height:1.8;">
-        No supporting documents are required for this scholarship.
-    </p>
-</div>
+                        <h2>Required Documents</h2>
+                        <p style="font-size:0.9rem;color:#666;line-height:1.8;">
+                         No supporting documents are required for this scholarship.
+                         </p>
+                    </div>
                     <div class="info-card">
                         <h2>Application Process</h2>
                         <ul class="process-steps">
@@ -456,13 +456,6 @@
                             <li class="process-step">
                                 <div class="step-num">4</div>
                                 <div class="step-text">
-                                    <h4>Await Committee Review</h4>
-                                    <p>The scholarship committee reviews all applications within 14 working days.</p>
-                                </div>
-                            </li>
-                            <li class="process-step">
-                                <div class="step-num">5</div>
-                                <div class="step-text">
                                     <h4>Receive Decision</h4>
                                     <p>Track your application status anytime from the My Applications section of your ELEVATE account.</p>
                                 </div>
@@ -482,7 +475,7 @@
                     </div>
                     <div class="quick-facts">
                         <h3>Quick Facts</h3>
-                        <div class="fact-row"><span>Type</span><strong>{{ sch.type_label }}</strong></div>
+                        <div class="fact-row"><span>Fee Type</span><strong>{{ sch.fee_type }}</strong></div>
                         <div class="fact-row"><span>Award</span><strong>Up to {{ sch.waiver_percentage }}% Waiver</strong></div>
                         <div class="fact-row"><span>Deadline</span><strong>{{ sch.end_date_fmt }}</strong></div>
                     </div>

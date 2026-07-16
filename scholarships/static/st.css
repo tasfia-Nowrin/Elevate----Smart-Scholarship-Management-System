@@ -373,10 +373,10 @@ body {
 }
  
 .stat-info p.stat-val {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.8rem;
+    font-family: 'DM Sans',sans-serif;
+    font-size: 1.33rem;
     color: var(--dark);
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1;
     margin-bottom: 2px;
 }
