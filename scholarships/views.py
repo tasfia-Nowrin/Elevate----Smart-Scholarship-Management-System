@@ -483,17 +483,16 @@ def manage_scholarships(request):
 def delete_scholarship(request, scholarship_id):
     if request.session.get('role') != 'admin':
         return redirect('login')
+
     if request.method == 'POST':
         with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM scholarship WHERE scholarship_id=%s", [scholarship_id])
-        # find the current max id and reset auto increment
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT IFNULL(MAX(scholarship_id), 0) FROM scholarship")
-            max_id = cursor.fetchone()[0]
-        with connection.cursor() as cursor:
-            cursor.execute("ALTER TABLE scholarship AUTO_INCREMENT = %s", [max_id + 1])
-    return redirect('manage_scholarships')
+            cursor.execute("""
+                UPDATE scholarship
+                SET status = 'Inactive'
+                WHERE scholarship_id = %s
+            """, [scholarship_id])
 
+    return redirect('manage_scholarships')
 def view_applications(request):
     if request.session.get('role') != 'admin':
         return redirect('login')
