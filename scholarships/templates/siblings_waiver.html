@@ -488,22 +488,20 @@
                     <div class="apply-card">
                         <h3>Apply Now</h3>
                         <p style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">Closes in</p>
-                        <p class="deadline-countdown">{% if sch.days_remaining %}{{ sch.days_remaining }} Days{% else
-                            %}—{% endif %}</p>
+                        <p class="deadline-countdown">{% if sch.days_remaining %}{{ sch.days_remaining }} Days{% else %}—{% endif %}</p>
                         <p class="deadline-label">{{ sch.end_date_fmt }}</p>{% if sch.already_applied %}
                         <a href="{% url 'my_applications' %}" class="btn-apply-large">View Application</a>
                         {% elif sch.eligible %}
-                        <a href="{% url 'application_form' sch.scholarship_id %}" class="btn-apply-large">Apply Now
-                            →</a>
+                        <a href="{% url 'application_form' sch.scholarship_id %}" class="btn-apply-large">Apply Now →</a>
                         {% else %}
                         <span class="btn-apply-large" style="opacity:0.5;cursor:not-allowed;">Not Eligible</span>
                         {% endif %}
                     </div>
                     <div class="quick-facts">
                         <h3>Quick Facts</h3>
-                        <div class="fact-row"><span>Fee Type</span><strong>>{{ sch.fee_type }}</strong></div>
+                        <div class="fact-row"><span>Fee Type</span><strong>{{ sch.fee_type }}</strong></div>
                         <div class="fact-row"><span>Award</span><strong>{{ sch.waiver_percentage }}% Waiver</strong></div>
-                        <div class="fact-row"><span>Deadline</span><strong>>{{ sch.end_date_fmt }}</strong></div>
+                        <div class="fact-row"><span>Deadline</span><strong>{{ sch.end_date_fmt }}</strong></div>
                         <div class="fact-row"><span>Open Slots</span><strong>Unlimited</strong></div>
                     </div>
                 </div>
@@ -511,5 +509,4 @@
         </div>
     </div>
 </body>
-
 </html>

@@ -614,8 +614,8 @@
                             <label for="schType">Scholarship Waiver Type</label>
                             <select id="schType" name="fee_type" class="form-control" required>
                                 <option value="" disabled selected>Select fee coverage type</option>
-                                <option value="Tuition">Tuition Fee Waiver</option>
-                                <option value="Admission">Admission Fee Waiver</option>
+                                <option value="Tuition Fee">Tuition Fee Waiver</option>
+                                <option value="Admission Fee">Admission Fee Waiver</option>
                             </select>
                         </div>
 
@@ -665,8 +665,8 @@
                             <td><span class="sch-name">{{ s.name }}</span></td>
                             <td>
                                 <span
-                                    class="type-badge {% if s.fee_type == 'Tuition' %}tuition{% else %}admission{% endif %}">
-                                    {% if s.fee_type == 'Tuition' %}Tuition Fee{% else %}Admission Fee{% endif %}
+                                    class="type-badge {% if s.fee_type == 'Tuition Fee' %}tuition{% else %}admission{% endif %}">
+                                    {% if s.fee_type == 'Tuition Fee' %}Tuition Fee{% else %}Admission Fee{% endif %}
                                 </span>
                             </td>
                             <td>

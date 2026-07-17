@@ -594,7 +594,7 @@ def application_details(request, app_id):
         'phone':              row[11] or 'N/A',
         'department':         row[12] or 'N/A',
         'current_semester':   row[13] or 'N/A',
-        'cgpa':               str(row[14]) + ' / 4.00' if row[14] else 'N/A',
+        'cgpa':               str(row[14]) if row[14] else 'N/A',
         'sibling':            'Yes' if row[15] else 'No',
     }
     with connection.cursor() as cursor:
@@ -632,15 +632,7 @@ def application_decide(request, app_id):
                 waiver = float(row[2]) if row[2] else 0
 
             # merit scholarship tiered waiver logic
-            if 'Merit' in scholarship_name:
-                if 3.70 <= cgpa <= 3.79:
-                    waiver = 21
-                elif 3.80 <= cgpa <= 3.89:
-                    waiver = 35
-                elif 3.90 <= cgpa <= 4.00:
-                    waiver = 50
-                else:
-                    waiver = 0
+            waiver = float(row[2] or 0)
 
             with connection.cursor() as cursor:
                 cursor.execute("""
