@@ -504,10 +504,11 @@ def view_applications(request):
 
     query = """
         SELECT a.application_id, st.name, st.university_id,
-               sc.name AS scholarship_name, a.applied_date, a.application_status
+               sc.name AS scholarship_name, a.applied_date, a.application_status,dis.payment_status
         FROM application a
         JOIN student     st ON a.student_id     = st.student_id
         JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
+        LEFT JOIN disbursement dis ON dis.application_id = a.application_id
         WHERE 1=1
     """
     params = []
@@ -524,7 +525,7 @@ def view_applications(request):
         query += " AND a.application_status = %s"
         params.append(status_filter)
 
-    query += " ORDER BY a.applied_date DESC"
+    query += " ORDER BY a.applied_date DESC, a.application_id DESC"
 
     with connection.cursor() as cursor:
         cursor.execute(query, params)
@@ -596,8 +597,16 @@ def application_details(request, app_id):
         'cgpa':               str(row[14]) + ' / 4.00' if row[14] else 'N/A',
         'sibling':            'Yes' if row[15] else 'No',
     }
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT document_id, document_type, file_path, uploaded_at, is_verified
+            FROM document
+            WHERE application_id = %s
+        """, [app_id])
+        cols = [col[0] for col in cursor.description]
+        documents = [dict(zip(cols, row)) for row in cursor.fetchall()]
 
-    return render(request, 'application_details.html', {'app': app})
+    return render(request, 'application_details.html', {'app': app, 'documents': documents,})
 
 
 def application_decide(request, app_id):
@@ -799,7 +808,8 @@ def admin_dashboard(request):
             FROM application a
             JOIN student     st ON a.student_id     = st.student_id
             JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
-            ORDER BY a.applied_date DESC
+            ORDER BY a.applied_date DESC,
+            a.application_id DESC
             LIMIT 5
         """)
         cols = [col[0] for col in cursor.description]
@@ -838,7 +848,10 @@ def manage_disbursements(request):
             JOIN application a  ON d.application_id = a.application_id
             JOIN student     st ON a.student_id      = st.student_id
             JOIN scholarship sc ON a.scholarship_id  = sc.scholarship_id
-            ORDER BY d.disbursement_date DESC
+            ORDER BY 
+            CASE WHEN d.payment_status = 'Pending' THEN 0 ELSE 1 END,
+            d.disbursement_date DESC,
+            d.disbursement_id DESC
         """)
         cols = [col[0] for col in cursor.description]
         disbursements = [dict(zip(cols, row)) for row in cursor.fetchall()]
@@ -852,13 +865,14 @@ def manage_disbursements(request):
 def update_disbursement(request):
     if request.method == 'POST':
         disbursement_id = request.POST.get('disbursement_id')
-        payment_status = request.POST.get('payment_status')
+
         with connection.cursor() as cursor:
             cursor.execute("""
                 UPDATE disbursement
-                SET payment_status = %s
+                SET payment_status = 'Paid',disbursement_date = CURDATE()
                 WHERE disbursement_id = %s
-            """, [payment_status, disbursement_id])
+                AND payment_status = 'Pending'
+            """, [ disbursement_id])
     return redirect('manage_disbursements')
 
 

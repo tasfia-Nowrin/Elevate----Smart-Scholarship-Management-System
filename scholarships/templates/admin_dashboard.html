@@ -1,3 +1,4 @@
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -246,12 +247,12 @@
         }
 
         .stat-info p.stat-val {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.8rem;
+            font-family: 'DM', serif;
+            font-size: 1.36rem;
             color: var(--dark);
-            font-weight: 600;
+            font-weight: 549;
             line-height: 1;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         .stat-info p.stat-lbl {
@@ -437,7 +438,7 @@
             <div class="stat-card">
             <div class="stat-icon">💰</div>
                 <div class="stat-info">
-                <p class="stat-val">৳{{ total_disbursed }}</p>
+                <p class="stat-val">৳{{ total_disbursed|intcomma }}</p>
                 <p class="stat-lbl">Total Disbursed</p>
                </div>
             </div>
