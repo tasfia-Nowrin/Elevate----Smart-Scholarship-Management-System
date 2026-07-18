@@ -614,24 +614,22 @@
                             <label for="schType">Scholarship Waiver Type</label>
                             <select id="schType" name="fee_type" class="form-control" required>
                                 <option value="" disabled selected>Select fee coverage type</option>
-                                <option value="Tuition">Tuition Fee Waiver</option>
-                                <option value="Admission">Admission Fee Waiver</option>
+                                <option value="Tuition Fee">Tuition Fee Waiver</option>
+                                <option value="Admission Fee">Admission Fee Waiver</option>
                             </select>
                         </div>
 
                         <div class="form-group full">
                             <div class="slabs-label-row">
-                                <label>CGPA Criteria Range &amp; Waiver Percentage (Slabs)</label>
+                                <label>CGPA Criteria Range &amp; Waiver Percentage</label>
                             </div>
-
                             <div id="slabsContainer">
                             </div>
                         </div>
-
                         <div class="form-group full">
-                            <label for="schDesc">Scholarship Description / Guidelines</label>
+                            <label for="schDesc">Scholarship Description</label>
                             <textarea id="schDesc" name="description" class="form-control" rows="4"
-                                placeholder="Enter frequency, baseline eligibility requirements, terms and conditions..."
+                                placeholder="Enter a detailed description of the scholarship."
                                 required></textarea>
                         </div>
                     </div>
@@ -667,8 +665,8 @@
                             <td><span class="sch-name">{{ s.name }}</span></td>
                             <td>
                                 <span
-                                    class="type-badge {% if s.fee_type == 'Tuition' %}tuition{% else %}admission{% endif %}">
-                                    {% if s.fee_type == 'Tuition' %}Tuition Fee{% else %}Admission Fee{% endif %}
+                                    class="type-badge {% if s.fee_type == 'Tuition Fee' %}tuition{% else %}admission{% endif %}">
+                                    {% if s.fee_type == 'Tuition Fee' %}Tuition Fee{% else %}Admission Fee{% endif %}
                                 </span>
                             </td>
                             <td>

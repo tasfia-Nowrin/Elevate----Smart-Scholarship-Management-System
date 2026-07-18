@@ -1,26 +1,77 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.db import connection
+from django.db import connection, transaction
 from datetime import date
 from .models import Student, Scholarship, SavedScholarship
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils import timezone
+import os
+from django.core.files.storage import default_storage
+from django.utils.text import get_valid_filename
+def get_scholarship_type(scholarship_name):
+    name = scholarship_name.lower()
 
-def save_scholarship(request, scholarship_id):
-    student = Student.objects.get(user=request.user)
+    if "merit" in name:
+        return "merit"
+    elif "need" in name:
+        return "need"
+    elif "entrance" in name:
+        return "entrance"
+    elif "sibling" in name:
+        return "sibling"
 
-    scholarship = get_object_or_404(
-        Scholarship,
-        pk=scholarship_id
-    )
+    return "other"
+def required_documents_for(scholarship_type):
+    documents = {
+        "merit": [],
+        "need": [("income_certificate", "Income Certificate")],
+        "entrance": [
+            ("ssc_certificate", "SSC Certificate"),
+            ("hsc_certificate", "HSC Certificate"),
+        ],
+        "sibling": [
+            ("sibling_verification_form", "Sibling Verification Form"),
+        ],
+    }
+    return documents.get(scholarship_type, [])
 
-    SavedScholarship.objects.get_or_create(
-        student=student,
-        scholarship=scholarship
-    )
 
-    return redirect(request.META.get('HTTP_REFERER'))
+def is_eligible(student, scholarship):
+    scholarship_type = get_scholarship_type(scholarship["name"])
+
+    if scholarship_type in ("merit", "need"):
+        return (student["cgpa"] or 0) >= (scholarship["min_cgpa"] or 0)
+
+    if scholarship_type == "entrance":
+        semester = str(student["current_semester"] or "").strip().lower()
+        return semester in ("1", "1st", "1st semester", "semester 1")
+
+    if scholarship_type == "sibling":
+        return bool(student["sibling_studies_here"])
+
+    return False
+
+
+def get_student_data(student_id):
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT s.student_id, s.university_id, s.name, s.phone,
+                   s.department, s.current_semester, s.cgpa,
+                   s.sibling_studies_here, u.email
+            FROM student s
+            JOIN user u ON u.user_id = s.student_id
+            WHERE s.student_id = %s
+        """, [student_id])
+
+        columns = [column[0] for column in cursor.description]
+        row = cursor.fetchone()
+
+    return dict(zip(columns, row)) if row else None
+
 
 def index(request):
-    return redirect('login')
+    return render(request, 'index.html')
 
 def login_view(request):
     if request.method == 'POST':
@@ -105,7 +156,7 @@ def student_dashboard(request):
             SELECT COUNT(DISTINCT s.scholarship_id)
             FROM scholarship s
             JOIN deadline d ON d.scholarship_id = s.scholarship_id
-            WHERE s.status = 'Active'
+            WHERE s.status = 'Active' AND d.end_date >= CURDATE()
         """)
         available_scholarships = cursor.fetchone()[0]
 
@@ -146,6 +197,7 @@ def student_dashboard(request):
             FROM deadline d
             JOIN scholarship s ON d.scholarship_id = s.scholarship_id
             WHERE s.status = 'Active'
+            AND d.end_date >= CURDATE()
             ORDER BY d.end_date ASC
             LIMIT 4
         """)
@@ -194,156 +246,47 @@ def student_dashboard(request):
         'my_applications': my_applications,
         'total_received': total_received,
     })
-
 def browse_scholarships(request):
-    if request.session.get('role') != 'student':
-        return redirect('login')
+    if request.session.get("role") != "student":
+        return redirect("login")
 
-    student_id = request.session.get('user_id')
+    student_id = request.session.get("user_id")
+    student = get_student_data(student_id)
 
-    # get student info for eligibility check
+    if not student:
+        messages.error(request, "Student profile not found.")
+        return redirect("login")
+
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT cgpa, sibling_studies_here
-            FROM student WHERE student_id = %s
-        """, [student_id])
-        row = cursor.fetchone()
-        student_cgpa = row[0] or 0
-        has_sibling = row[1]
-
-
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT name FROM student WHERE student_id = %s", [student_id])
-        student_name = cursor.fetchone()[0]
-
-
-    # get all active scholarships with deadlines
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT s.scholarship_id, s.name, s.description, s.waiver_percentage,
-                   s.min_cgpa, s.max_cgpa, s.fee_type,
-                   s.required_ssc_gpa, s.required_hsc_gpa,
-                   d.end_date,
-                   a.application_id, a.application_status
+            SELECT s.scholarship_id, s.name, s.description,
+                   s.waiver_percentage, s.min_cgpa, s.max_cgpa,
+                   s.fee_type, d.end_date, a.application_id
             FROM scholarship s
-            JOIN deadline d ON d.scholarship_id = s.scholarship_id
-            LEFT JOIN application a ON a.scholarship_id = s.scholarship_id
+            LEFT JOIN deadline d ON d.scholarship_id = s.scholarship_id
+            LEFT JOIN application a
+                ON a.scholarship_id = s.scholarship_id
                 AND a.student_id = %s
             WHERE s.status = 'Active'
             ORDER BY d.end_date ASC
         """, [student_id])
-        cols = [col[0] for col in cursor.description]
-        rows = cursor.fetchall()
 
-    scholarships = []
-    for row in rows:
-        s = dict(zip(cols, row))
+        columns = [column[0] for column in cursor.description]
+        scholarships = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-        # determine type for filter
-        name_lower = s['name'].lower()
-        if 'merit' in name_lower:
-            s['type'] = 'merit'
-        elif 'need' in name_lower:
-            s['type'] = 'need'
-        elif 'sibling' in name_lower:
-            s['type'] = 'sibling'
-        elif 'entrance' in name_lower:
-            s['type'] = 'entrance'
-        else:
-            s['type'] = 'other'
+    for scholarship in scholarships:
+        scholarship["type"] = get_scholarship_type(scholarship["name"])
+        scholarship["eligible"] = is_eligible(student, scholarship)
+        scholarship["already_applied"] = scholarship["application_id"] is not None
+        scholarship["end_date_fmt"] = (
+            scholarship["end_date"].strftime("%d %b %Y")
+            if scholarship["end_date"] else "N/A"
+        )
 
-        # eligibility check
-        eligible = False
-        if s['type'] == 'merit':
-            eligible = student_cgpa >= (s['min_cgpa'] or 0)
-        elif s['type'] == 'need':
-            eligible = True  # needs manual review, mark eligible by default
-        elif s['type'] == 'sibling':
-            eligible = bool(has_sibling)
-        elif s['type'] == 'entrance':
-            eligible = True  # based on SSC/HSC, mark eligible by default
-
-        s['eligible'] = eligible
-        s['already_applied'] = s['application_id'] is not None
-        s['end_date_fmt'] = s['end_date'].strftime('%d %b %Y') if s['end_date'] else 'N/A'
-
-        scholarships.append(s)
-
-    return render(request, 'browse_scholarships.html', {
-    'scholarships': scholarships,
-    'student_cgpa': student_cgpa,
-    'student_name': student_name,
-})
-
-def apply_scholarship(request, scholarship_id):
-    if request.session.get('role') != 'student':
-        return redirect('login')
-
-    student_id = request.session.get('user_id')
-
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT name
-            FROM scholarship
-            WHERE scholarship_id = %s
-        """, [scholarship_id])
-        scholarship_name = cursor.fetchone()[0]
-
-    if scholarship_name == "Entrance Scholarship":
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT current_semester
-                FROM student
-                WHERE student_id = %s
-            """, [student_id])
-            current_semester = cursor.fetchone()[0]
-
-        if current_semester != "1st":
-            messages.error(
-                request,
-                "Only 1st semester students can apply for the Entrance Scholarship."
-            )
-            return redirect('browse_scholarships')
-
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT application_id FROM application
-                WHERE student_id = %s AND scholarship_id = %s
-            """, [student_id, scholarship_id])
-            existing = cursor.fetchone()
-
-        if existing:
-            messages.info(request, 'You have already applied to this scholarship.')
-            return redirect('browse_scholarships')
-
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                INSERT INTO application (student_id, scholarship_id, applied_date, application_status)
-                VALUES (%s, %s, CURDATE(), 'Pending')
-            """, [student_id, scholarship_id])
-
-        messages.success(request, 'Application submitted successfully!')
-        return redirect('my_applications')
-
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT application_id FROM application
-            WHERE student_id = %s AND scholarship_id = %s
-        """, [student_id, scholarship_id])
-        existing = cursor.fetchone()
-
-    if existing:
-        messages.info(request, 'You have already applied to this scholarship.')
-        return redirect('browse_scholarships')
-
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            INSERT INTO application (student_id, scholarship_id, applied_date, application_status)
-            VALUES (%s, %s, CURDATE(), 'Pending')
-        """, [student_id, scholarship_id])
-
-    messages.success(request, 'Application submitted successfully!')
-    return redirect('my_applications')
+    return render(request, "browse_scholarships.html", {
+        "scholarships": scholarships,
+        "student_name": student["name"],
+    })
 
 
 def disbursements(request):
@@ -376,7 +319,7 @@ def disbursements(request):
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT sc.name, sc.fee_type, sc.waiver_percentage,
-                   d.amount, d.disbursement_date, d.disbursement_id, d.payment_status
+                   d.amount, d.disbursement_date, d.payment_status
             FROM disbursement d
             JOIN application a ON d.application_id = a.application_id
             JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
@@ -540,17 +483,16 @@ def manage_scholarships(request):
 def delete_scholarship(request, scholarship_id):
     if request.session.get('role') != 'admin':
         return redirect('login')
+
     if request.method == 'POST':
         with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM scholarship WHERE scholarship_id=%s", [scholarship_id])
-        # find the current max id and reset auto increment
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT IFNULL(MAX(scholarship_id), 0) FROM scholarship")
-            max_id = cursor.fetchone()[0]
-        with connection.cursor() as cursor:
-            cursor.execute("ALTER TABLE scholarship AUTO_INCREMENT = %s", [max_id + 1])
-    return redirect('manage_scholarships')
+            cursor.execute("""
+                UPDATE scholarship
+                SET status = 'Inactive'
+                WHERE scholarship_id = %s
+            """, [scholarship_id])
 
+    return redirect('manage_scholarships')
 def view_applications(request):
     if request.session.get('role') != 'admin':
         return redirect('login')
@@ -561,10 +503,11 @@ def view_applications(request):
 
     query = """
         SELECT a.application_id, st.name, st.university_id,
-               sc.name AS scholarship_name, a.applied_date, a.application_status
+               sc.name AS scholarship_name, a.applied_date, a.application_status,dis.payment_status
         FROM application a
         JOIN student     st ON a.student_id     = st.student_id
         JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
+        LEFT JOIN disbursement dis ON dis.application_id = a.application_id
         WHERE 1=1
     """
     params = []
@@ -581,7 +524,7 @@ def view_applications(request):
         query += " AND a.application_status = %s"
         params.append(status_filter)
 
-    query += " ORDER BY a.applied_date DESC"
+    query += " ORDER BY a.applied_date DESC, a.application_id DESC"
 
     with connection.cursor() as cursor:
         cursor.execute(query, params)
@@ -650,11 +593,19 @@ def application_details(request, app_id):
         'phone':              row[11] or 'N/A',
         'department':         row[12] or 'N/A',
         'current_semester':   row[13] or 'N/A',
-        'cgpa':               str(row[14]) + ' / 4.00' if row[14] else 'N/A',
+        'cgpa':               str(row[14]) if row[14] else 'N/A',
         'sibling':            'Yes' if row[15] else 'No',
     }
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT document_id, document_type, file_path, uploaded_at, is_verified
+            FROM document
+            WHERE application_id = %s
+        """, [app_id])
+        cols = [col[0] for col in cursor.description]
+        documents = [dict(zip(cols, row)) for row in cursor.fetchall()]
 
-    return render(request, 'application_details.html', {'app': app})
+    return render(request, 'application_details.html', {'app': app, 'documents': documents,})
 
 
 def application_decide(request, app_id):
@@ -680,15 +631,7 @@ def application_decide(request, app_id):
                 waiver = float(row[2]) if row[2] else 0
 
             # merit scholarship tiered waiver logic
-            if 'Merit' in scholarship_name:
-                if 3.70 <= cgpa <= 3.79:
-                    waiver = 21
-                elif 3.80 <= cgpa <= 3.89:
-                    waiver = 35
-                elif 3.90 <= cgpa <= 4.00:
-                    waiver = 50
-                else:
-                    waiver = 0
+            waiver = float(row[2] or 0)
 
             with connection.cursor() as cursor:
                 cursor.execute("""
@@ -856,7 +799,8 @@ def admin_dashboard(request):
             FROM application a
             JOIN student     st ON a.student_id     = st.student_id
             JOIN scholarship sc ON a.scholarship_id = sc.scholarship_id
-            ORDER BY a.applied_date DESC
+            ORDER BY a.applied_date DESC,
+            a.application_id DESC
             LIMIT 5
         """)
         cols = [col[0] for col in cursor.description]
@@ -895,7 +839,10 @@ def manage_disbursements(request):
             JOIN application a  ON d.application_id = a.application_id
             JOIN student     st ON a.student_id      = st.student_id
             JOIN scholarship sc ON a.scholarship_id  = sc.scholarship_id
-            ORDER BY d.disbursement_date DESC
+            ORDER BY 
+            CASE WHEN d.payment_status = 'Pending' THEN 0 ELSE 1 END,
+            d.disbursement_date DESC,
+            d.disbursement_id DESC
         """)
         cols = [col[0] for col in cursor.description]
         disbursements = [dict(zip(cols, row)) for row in cursor.fetchall()]
@@ -909,13 +856,14 @@ def manage_disbursements(request):
 def update_disbursement(request):
     if request.method == 'POST':
         disbursement_id = request.POST.get('disbursement_id')
-        payment_status = request.POST.get('payment_status')
+
         with connection.cursor() as cursor:
             cursor.execute("""
                 UPDATE disbursement
-                SET payment_status = %s
+                SET payment_status = 'Paid',disbursement_date = CURDATE()
                 WHERE disbursement_id = %s
-            """, [payment_status, disbursement_id])
+                AND payment_status = 'Pending'
+            """, [ disbursement_id])
     return redirect('manage_disbursements')
 
 
@@ -980,92 +928,63 @@ def my_applications(request):
 
 
 def scholarship_detail(request, scholarship_id):
-    if request.session.get('role') != 'student':
-        return redirect('login')
+    if request.session.get("role") != "student":
+        return redirect("login")
 
-    student_id = request.session.get('user_id')
-
-    with connection.cursor() as cursor:
-        cursor.execute("""SELECT name FROM student WHERE student_id = %s""", [student_id])
-
-        row = cursor.fetchone()
-        student_name = row[0] if row else "Student"
+    student_id = request.session.get("user_id")
+    student = get_student_data(student_id)
 
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT s.scholarship_id, s.name, s.description, s.waiver_percentage,
-                   s.min_cgpa, s.max_cgpa, s.fee_type,
-                   s.required_ssc_gpa, s.required_hsc_gpa,
-                   d.end_date,
-                   a.application_id, a.application_status
+            SELECT s.scholarship_id, s.name, s.description,
+                   s.waiver_percentage, s.min_cgpa, s.max_cgpa,
+                   s.fee_type, s.required_ssc_gpa, s.required_hsc_gpa,
+                   d.end_date, a.application_id
             FROM scholarship s
-            
-            JOIN deadline d ON d.scholarship_id = s.scholarship_id
-            LEFT JOIN application a ON a.scholarship_id = s.scholarship_id
+            LEFT JOIN deadline d ON d.scholarship_id = s.scholarship_id
+            LEFT JOIN application a
+                ON a.scholarship_id = s.scholarship_id
                 AND a.student_id = %s
-            WHERE s.scholarship_id = %s
+            WHERE s.scholarship_id = %s AND s.status = 'Active'
         """, [student_id, scholarship_id])
-        cols = [col[0] for col in cursor.description]
+
+        columns = [column[0] for column in cursor.description]
         row = cursor.fetchone()
 
     if not row:
-        messages.error(request, 'Scholarship not found.')
-        return redirect('browse_scholarships')
+        messages.error(request, "Scholarship not found.")
+        return redirect("browse_scholarships")
 
-    sch = dict(zip(cols, row))
+    sch = dict(zip(columns, row))
+    sch["type"] = get_scholarship_type(sch["name"])
+    sch["type_label"] = {
+        "merit": "Merit-Based",
+        "need": "Need-Based",
+        "entrance": "Entrance",
+        "sibling": "Sibling Waiver",
+    }.get(sch["type"], sch["name"])
 
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT cgpa, sibling_studies_here FROM student WHERE student_id = %s
-        """, [student_id])
-        srow = cursor.fetchone()
-        student_cgpa = srow[0] or 0
-        has_sibling = srow[1]
+    sch["eligible"] = is_eligible(student, sch)
+    sch["already_applied"] = sch["application_id"] is not None
+    sch["end_date_fmt"] = (
+        sch["end_date"].strftime("%d %B %Y")
+        if sch["end_date"] else "N/A"
+    )
+    sch["days_remaining"] = (
+        max((sch["end_date"] - date.today()).days, 0)
+        if sch["end_date"] else None
+    )
 
-    name_lower = sch['name'].lower()
-    if 'merit' in name_lower:
-        sch['type'], sch['type_label'] = 'merit', 'Merit-Based'
-    elif 'need' in name_lower:
-        sch['type'], sch['type_label'] = 'need', 'Need-Based'
-    elif 'sibling' in name_lower:
-        sch['type'], sch['type_label'] = 'sibling', 'Sibling Waiver'
-    elif 'entrance' in name_lower:
-        sch['type'], sch['type_label'] = 'entrance', 'Entrance'
-    else:
-        sch['type'], sch['type_label'] = 'other', sch['name']
+    template_map = {
+        "merit": "merit_scholarship.html",
+        "need": "need_based_scholarship.html",
+        "entrance": "entrance_scholarship.html",
+        "sibling": "siblings_waiver.html",
+    }
 
-    if sch['type'] == 'merit':
-        eligible = student_cgpa >= (sch['min_cgpa'] or 0)
-    elif sch['type'] == 'sibling':
-        eligible = bool(has_sibling)
-    else:
-        eligible = True  # need / entrance: manual review, eligible by default
-
-    sch['eligible'] = eligible
-    sch['already_applied'] = sch['application_id'] is not None
-
-    if sch['end_date']:
-        days = (sch['end_date'] - date.today()).days
-        sch['days_remaining'] = max(days, 0)
-        sch['end_date_fmt'] = sch['end_date'].strftime('%d %B %Y')
-    else:
-        sch['days_remaining'] = None
-        sch['end_date_fmt'] = 'N/A'
-
-    if sch['type'] == 'merit':
-        template = 'merit_scholarship.html'
-    elif sch['type'] == 'need':
-        template = 'need_based_scholarship.html'
-    elif sch['type'] == 'sibling':
-        template = 'siblings_waiver.html'
-    elif sch['type'] == 'entrance':
-        template = 'entrance_scholarship.html'
-    else:
-        template = 'scholarship_detail.html'   # fallback
-
-    return render(request, template, {
-        'student_name': student_name,
-        'sch': sch,
+    return render(request, template_map.get(sch["type"], "scholarship_detail.html"), {
+        "student_name": student["name"],
+        "sch": sch,
     })
 
 
@@ -1165,59 +1084,105 @@ def save_scholarship(request, scholarship_id):
     return redirect(request.META.get('HTTP_REFERER',
                                      'browse_scholarships'))
 
-
 def application_form(request, scholarship_id):
+    if request.session.get("role") != "student":
+        return redirect("login")
 
-    cursor = connection.cursor()
+    student_id = request.session.get("user_id")
+    student = get_student_data(student_id)
 
-    cursor.execute("""
-        SELECT *
-        FROM scholarship
-        WHERE scholarship_id=%s
-    """, [scholarship_id])
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT scholarship_id, name, min_cgpa
+            FROM scholarship
+            WHERE scholarship_id = %s AND status = 'Active'
+        """, [scholarship_id])
+        columns = [column[0] for column in cursor.description]
+        row = cursor.fetchone()
 
-    scholarship = cursor.fetchone()
+    if not row:
+        messages.error(request, "Scholarship not found.")
+        return redirect("browse_scholarships")
 
-    # Get logged in student
-    student = Student.objects.get(student_id=request.session["user_id"])
+    scholarship = dict(zip(columns, row))
+    scholarship_type = get_scholarship_type(scholarship["name"])
+    required_documents = required_documents_for(scholarship_type)
+
+    if not is_eligible(student, scholarship):
+        messages.error(request, "You are not eligible for this scholarship.")
+        return redirect("browse_scholarships")
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT application_id FROM application
+            WHERE student_id = %s AND scholarship_id = %s
+        """, [student_id, scholarship_id])
+
+        if cursor.fetchone():
+            messages.error(request, "You have already applied for this scholarship.")
+            return redirect("my_applications")
 
     if request.method == "POST":
+        if not request.POST.get("declaration"):
+            messages.error(request, "Please accept the declaration before submitting.")
+            return redirect(request.path)
 
-        full_name = request.POST.get("full_name")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        cgpa = request.POST.get("cgpa")
-        income = request.POST.get("family_income")
-        statement = request.POST.get("statement")
+        for field_name, document_type in required_documents:
+            if not request.FILES.get(field_name):
+                messages.error(request, f"{document_type} is required.")
+                return redirect(request.path)
 
-        transcript = request.FILES.get("transcript")
-        nid = request.FILES.get("nid")
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO application (
+                        application_status, eligibility_result,
+                        applied_date, student_id, scholarship_id
+                    )
+                    VALUES ('Pending', 'Pending', CURDATE(), %s, %s)
+                """, [student_id, scholarship_id])
 
-        cursor.execute("""
-            INSERT INTO application
-            (
-                application_status,
-                eligibility_result,
-                applied_date,
-                student_id,
-                scholarship_id
-            )
-            VALUES
-            (
-                'Pending',
-                'Under Review',
-                CURDATE(),
-                %s,
-                %s
-            )
-        """, [student.student_id, scholarship_id])
+                application_id = cursor.lastrowid
 
+                for field_name, document_type in required_documents:
+                    uploaded_file = request.FILES[field_name]
+                    filename = get_valid_filename(
+                        f"{application_id}_{uploaded_file.name}"
+                    )
+                    saved_path = default_storage.save(
+                        f"documents/{filename}",
+                        uploaded_file
+                    )
+
+                    cursor.execute("""
+                        INSERT INTO document (
+                            document_type, file_path, uploaded_at,
+                            is_verified, application_id
+                        )
+                        VALUES (%s, %s, NOW(), 0, %s)
+                    """, [document_type, saved_path, application_id])
+
+        messages.success(
+            request,
+            "Application submitted successfully! "
+            "You can track your application status anytime from the "
+            "My Applications section of your ELEVATE account."
+        )
         return redirect("my_applications")
 
-    # ← THIS MUST BE OUTSIDE THE if BLOCK
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT academic_term FROM deadline
+            WHERE scholarship_id = %s
+        """, [scholarship_id])
+        deadline_row = cursor.fetchone()
+
     return render(request, "application_form.html", {
-    "scholarship": scholarship,
-    "student": student,
-    "student_name": student.name,
-})
-                                   
+        "scholarship": scholarship,
+        "student": student,
+        "deadline": {
+            "academic_term": deadline_row[0] if deadline_row else "Not Available"
+        },
+        "required_documents": required_documents,
+    })
+

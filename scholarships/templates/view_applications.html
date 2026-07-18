@@ -483,7 +483,15 @@
                                 <span class="status-badge status-rejected">Rejected</span>
                                 {% endif %}
                             </td>
-                            <td>N/A</td>
+                            <td>
+    {% if a.payment_status == 'Paid' %}
+    <span class="status-badge status-approved">Paid</span>
+    {% elif a.payment_status == 'Pending' %}
+    <span class="status-badge status-pending">Pending</span>
+    {% else %}
+    <span style="color:var(--muted);font-size:0.85rem;">—</span>
+    {% endif %}
+</td>
                             <td style="text-align:right;">
                                 {% if a.application_status == 'Pending' %}
                                 <a href="{% url 'admin_application_details' a.application_id %}"

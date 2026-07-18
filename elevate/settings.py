@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'scholarships',    
 ]
 
@@ -79,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'elevate',      
         'USER': 'root',
-        'PASSWORD': '1234/12',        
+        'PASSWORD': '@Mysql1+',        
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -128,3 +129,5 @@ import os
 STATICFILES_DIRS = [
    BASE_DIR / 'scholarships' / 'static',
 ]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

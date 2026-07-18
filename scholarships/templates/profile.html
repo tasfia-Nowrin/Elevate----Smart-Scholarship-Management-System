@@ -1,5 +1,5 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -99,10 +99,10 @@
         }
 
         .p-stat-val {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
+            font-family: 'DM', serif;
+            font-size: 1.3rem;
             color: var(--dark);
-            font-weight: 600;
+            font-weight: 500;
             line-height: 1
         }
 
@@ -248,10 +248,10 @@
         }
 
         .academic-card strong {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
+            font-family: 'DM', serif;
+            font-size: 1.2rem;
             color: var(--dark);
-            font-weight: 600
+            font-weight: 500
         }
 
         .badge-grid {
@@ -359,45 +359,6 @@
 
         .toggle input:checked+.toggle-slider::before {
             transform: translateX(18px)
-        }
-
-        .danger-zone {
-            background: rgba(200, 60, 60, 0.04);
-            border: 1px solid rgba(200, 60, 60, 0.15);
-            border-radius: 12px;
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center
-        }
-
-        .danger-zone div h4 {
-            font-size: 0.9rem;
-            color: #a03030;
-            font-weight: 600;
-            margin-bottom: 3px
-        }
-
-        .danger-zone div p {
-            font-size: 0.8rem;
-            color: var(--muted)
-        }
-
-        .btn-danger {
-            background: rgba(200, 60, 60, 0.08);
-            border: 1.5px solid rgba(200, 60, 60, 0.25);
-            color: #a03030;
-            padding: 9px 18px;
-            border-radius: 8px;
-            font-size: 0.83rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: .2s;
-            font-family: 'DM Sans', sans-serif
-        }
-
-        .btn-danger:hover {
-            background: rgba(200, 60, 60, 0.15)
         }
 
         .save-bar {
@@ -534,10 +495,8 @@
                         style="background:rgba(40,160,100,0.08);border:1px solid rgba(40,160,100,0.25);color:#1e7a50;padding:10px 14px;border-radius:8px;font-size:0.85rem;margin-bottom:14px;">{{ message }}</p>
                     {% endfor %}
                     {% endif %}
-
                     <form method="post" action="{% url 'profile' %}" id="profileForm">
                         {% csrf_token %}
-
                         <!-- Personal Info -->
                         <div class="info-card personal-info">
                             <div class="info-card-header">
@@ -644,5 +603,4 @@
         }
     </script>
 </body>
-
 </html>

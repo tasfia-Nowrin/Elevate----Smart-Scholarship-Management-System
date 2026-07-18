@@ -73,16 +73,14 @@
             align-items: center;
             gap: 14px
         }
-
         .app-stat-val {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.7rem;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 1.4rem;
             color: var(--dark);
-            font-weight: 600;
+            font-weight: 500;
             line-height: 1;
             margin-bottom: 2px
         }
-
         .app-stat-lbl {
             font-size: 0.72rem;
             color: var(--muted);
@@ -285,9 +283,18 @@
         .empty-state a:hover {
             background: var(--dark)
         }
+        .alert-message {
+         background: var(--cream);
+         border-left: 4px solid var(--primary);
+         padding: 14px 18px;
+         border-radius: 8px;
+         margin-bottom: 20px;
+         color: var(--dark);
+        font-size: 0.9rem;
+        }
+        .alert-message.error { border-left-color: var(--danger); }
     </style>
 </head>
-
 <body>
     <aside class="sidebar">
         <div class="sidebar-logo">
@@ -323,7 +330,11 @@
             </div>
         </div>
         <div class="page-content">
-
+             {% if messages %}
+        {% for message in messages %}
+            <div class="alert-message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
             <div class="page-hero">
                 <p class="eyebrow">Application Tracker</p>
                 <h1>My Applications</h1>
@@ -332,24 +343,28 @@
 
             <div class="app-stats">
                 <div class="app-stat-card">
+                    <div class="stat-icon">✦</div>
                     <div>
                         <p class="app-stat-val">{{ stats.total }}</p>
                         <p class="app-stat-lbl">Total Submitted</p>
                     </div>
                 </div>
                 <div class="app-stat-card" style="border-color:rgba(194,168,120,0.4)">
+                    <div class="stat-icon">✯</div>
                     <div>
                         <p class="app-stat-val">{{ stats.pending }}</p>
                         <p class="app-stat-lbl">Pending</p>
                     </div>
                 </div>
                 <div class="app-stat-card" style="border-color:rgba(40,160,100,0.4)">
+                     <div class="stat-icon">◈</div>
                     <div>
                         <p class="app-stat-val">{{ stats.approved }}</p>
                         <p class="app-stat-lbl">Approved</p>
                     </div>
                 </div>
                 <div class="app-stat-card" style="border-color:rgba(200,60,60,0.4)">
+                   <div class="stat-icon">✸</div>
                     <div>
                         <p class="app-stat-val">{{ stats.rejected }}</p>
                         <p class="app-stat-lbl">Rejected</p>
@@ -377,7 +392,7 @@
                         </div>
                     </div>
                     <span class="status-badge status-{{ app.status_lower }}">{{ app.application_status }}</span>
-                    
+
                 </div>
                 {% empty %}
                 <div class="empty-state">
@@ -401,5 +416,4 @@
         }
     </script>
 </body>
-
 </html>

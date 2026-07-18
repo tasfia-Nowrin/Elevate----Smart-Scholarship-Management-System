@@ -303,16 +303,12 @@
 
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px 20px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px 20px;
         }
 
         .info-grid.cols-4 {
             grid-template-columns: repeat(4, 1fr);
-        }
-
-        .info-block.full {
-            grid-column: 1 / -1;
         }
 
         .info-label {
@@ -329,23 +325,9 @@
             color: var(--dark);
             font-weight: 500;
         }
-
-        .info-value.lg {
-            font-size: 1.05rem;
-            font-weight: 600;
+        .info-section-card {
+            padding: 26px 32px;
         }
-
-        .statement-box {
-            font-size: 0.94rem;
-            text-align: justify;
-            background: var(--cream);
-            border-left: 4px solid var(--primary);
-            padding: 22px;
-            border-radius: 8px;
-            color: var(--dark);
-            line-height: 1.7;
-        }
-
         .review-actions {
             margin-top: 12px;
             padding-top: 24px;
@@ -457,123 +439,104 @@
 
             <div class="details-card">
 
-                <div class="info-section-card">
-                    <div class="section-title">Scholarship</div>
-                    <div class="info-grid">
-                        <div class="info-block">
-                            <div class="info-label">Scholarship Type</div>
-                            <div class="info-value">{{ app.scholarship_name }}</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Academic Semester</div>
-                            <div class="info-value">{{ app.academic_term }}</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Student ID</div>
-                            <div class="info-value">{{ app.university_id }}</div>
-                        </div>
-                        <div class="info-block full">
-                            <div class="info-label">Student Name</div>
-                            <div class="info-value lg">{{ app.student_name }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="info-section-card">
-                    <div class="section-title">Personal Information</div>
-                    <div class="info-grid">
-                        <div class="info-block">
-                            <div class="info-label">Date of Birth</div>
-                            <div class="info-value">{{ app.date_of_birth }}</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Gender</div>
-                            <div class="info-value">{{ app.gender }}</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">National ID Number (NID)</div>
-                            <div class="info-value">N/A</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Email Address</div>
-                            <div class="info-value">{{ app.email }}</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Phone Number</div>
-                            <div class="info-value">{{ app.phone }}</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Programme / Department</div>
-                            <div class="info-value">{{ app.department }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="info-section-card">
-                    <div class="section-title">Academic Information</div>
-                    <div class="info-grid cols-4">
-                        <div class="info-block">
-                            <div class="info-label">Current CGPA</div>
-                            <div class="info-value">{{ app.cgpa }}</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Current Semester / Year</div>
-                            <div class="info-value">{{ app.current_semester }}</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">SSC GPA</div>
-                            <div class="info-value">N/A</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">HSC GPA</div>
-                            <div class="info-value">N/A</div>
-                        </div>
-                        <div class="info-block full">
-                            <div class="info-label">Academic Achievements / Honours</div>
-                            <div class="info-value">N/A</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="info-section-card">
-                    <div class="section-title">Financial Information</div>
-                    <div class="info-grid">
-                        <div class="info-block">
-                            <div class="info-label">Guardian's Occupation</div>
-                            <div class="info-value">N/A</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Annual Family Income</div>
-                            <div class="info-value">N/A</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Receiving Other Scholarship?</div>
-                            <div class="info-value">N/A</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="info-section-card">
-                    <div class="section-title">Personal Statement</div>
-                    <div class="statement-box">N/A</div>
-                </div>
-
-                <div class="review-actions">
-                    {% if app.application_status == 'Pending' %}
-                    <form method="POST" action="{% url 'application_decide' app.application_id %}">
-                        {% csrf_token %}
-                        <button class="btn-action reject" name="decision" value="Rejected">Reject Application</button>
-                        <button class="btn-action approve" name="decision" value="Approved">Approve Application</button>
-                    </form>
-                    {% else %}
-                    <p style="color: var(--muted); font-size: 0.9rem;">
-                        Decision already recorded: <strong>{{ app.application_status }}</strong>
-                    </p>
-                    {% endif %}
-                </div>
-
+    <div class="info-section-card">
+        <div class="section-title">Scholarship</div>
+        <div class="info-grid">
+            <div class="info-block">
+                <div class="info-label">Scholarship Type</div>
+                <div class="info-value">{{ app.scholarship_name }}</div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Academic Semester</div>
+                <div class="info-value">{{ app.academic_term }}</div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Student ID</div>
+                <div class="info-value">{{ app.university_id }}</div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Student Name</div>
+                <div class="info-value">{{ app.student_name }}</div>
             </div>
         </div>
+    </div>
+
+    <div class="info-section-card">
+        <div class="section-title">Personal Information</div>
+        <div class="info-grid">
+            <div class="info-block">
+                <div class="info-label">Date of Birth</div>
+                <div class="info-value">{{ app.date_of_birth }}</div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Gender</div>
+                <div class="info-value">{{ app.gender }}</div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Email Address</div>
+                <div class="info-value">{{ app.email }}</div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Phone Number</div>
+                <div class="info-value">{{ app.phone }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-section-card">
+         <div class="section-title">Academic Information</div>
+        <div class="info-grid">
+            <div class="info-block">
+              <div class="info-label">Current CGPA</div>
+              <div class="info-value">{{ app.cgpa }}</div>
+            </div>
+        <div class="info-block">
+            <div class="info-label">Current Semester / Year</div>
+            <div class="info-value">{{ app.current_semester }}</div>
+        </div>
+        <div class="info-block">
+            <div class="info-label">Programme / Department</div>
+            <div class="info-value">{{ app.department }}</div>
+        </div>
+    </div>
+    </div>    
+    <div class="info-section-card">
+        <div class="section-title">Submitted Documents</div>
+        {% if documents %}
+            {% for doc in documents %}
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--grey);">
+                <div>
+                    <p style="font-weight:600;font-size:0.9rem;">{{ doc.document_type }}</p>
+                    <p style="font-size:0.78rem;color:var(--muted);">Uploaded: {{ doc.uploaded_at|date:"d M Y, h:i A" }}</p>
+                </div>
+                <a href="/media/{{ doc.file_path }}" target="_blank" style="text-decoration:none;padding:7px 16px;border-radius:20px;border:1px solid var(--grey);color:var(--dark);font-size:0.85rem;">
+                    View Document
+                </a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color:var(--muted);font-size:0.9rem;">No documents were required or submitted for this application.</p>
+        {% endif %}
+    </div>
+
+    <div class="info-section-card" style="border-left-color: var(--primary); display:flex; justify-content:space-between; align-items:center; padding:24px 32px;">
+    <div class="section-title" style="border-bottom:none;padding-bottom:0;margin-bottom:0;">Decision</div>
+    <div>
+        {% if app.application_status == 'Pending' %}
+        <form method="POST" action="{% url 'application_decide' app.application_id %}" style="display:flex; gap:12px; margin:0;">
+            {% csrf_token %}
+            <button class="btn-action reject" name="decision" value="Rejected">Reject Application</button>
+            <button class="btn-action approve" name="decision" value="Approved">Approve Application</button>
+        </form>
+        {% else %}
+        <p style="color: var(--muted); font-size: 0.9rem; margin:0;">
+            Decision already recorded: <strong>{{ app.application_status }}</strong>
+        </p>
+        {% endif %}
+       </div>
+        </div>
+        </div>
+      </div>
     </div>
 </body>
 

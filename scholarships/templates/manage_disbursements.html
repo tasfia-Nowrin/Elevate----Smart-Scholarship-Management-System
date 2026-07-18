@@ -1,3 +1,4 @@
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -250,10 +251,10 @@
         }
 
         .stat-info p.stat-val {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.8rem;
+            font-family: 'DM', serif;
+            font-size: 1.5rem;
             color: var(--dark);
-            font-weight: 600;
+            font-weight: 540;
             line-height: 1;
             margin-bottom: 2px;
         }
@@ -269,22 +270,22 @@
         .section-card {
             background: white;
             border-radius: 16px;
-            padding: 28px;
-            margin-bottom: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
         .section-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
         .section-card-header h2 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             color: var(--dark);
-            font-weight: 600;
+            font-weight: 650;
         }
 
         .view-all-btn {
@@ -378,6 +379,25 @@
         .action-btn:hover {
             background: var(--dark);
         }
+      .filter-tabs .tab {
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1.5px solid var(--grey);
+        background: transparent;
+        color: var(--muted);
+        transition: .2s;
+       font-family: 'DM Sans', sans-serif;
+      }
+
+    .filter-tabs .tab:hover,
+    .filter-tabs .tab.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
     </style>
 </head>
 
@@ -438,7 +458,7 @@
                 <div class="stat-card">
                     <div class="stat-icon">💰</div>
                     <div class="stat-info">
-                        <p class="stat-val">৳{{ total_disbursed }}</p>
+                        <p class="stat-val">৳{{ total_disbursed|intcomma }}</p>
                         <p class="stat-lbl">Total Disbursed</p>
                     </div>
                 </div>
@@ -467,6 +487,12 @@
                     <h2>Disbursement Records</h2>
                 </div>
 
+               <div class="filter-tabs" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+                  <button class="tab active" onclick="filterDisb('all',this)">All</button>
+                 <button class="tab" onclick="filterDisb('paid',this)">Paid</button>
+                 <button class="tab" onclick="filterDisb('pending',this)">Pending</button>
+              </div>
+
                 <table class="app-table">
 
                     <thead>
@@ -480,16 +506,13 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-
                     <tbody>
-
-                    <tbody>
-                        {% for d in disbursements %}
-                        <tr>
+                         {% for d in disbursements %}
+                        <tr data-status="{{ d.payment_status|lower }}">
                             <td>{{ d.university_id }}</td>
                             <td>{{ d.student_name }}</td>
                             <td>{{ d.scholarship_name }}</td>
-                            <td>৳{{ d.amount }}</td>
+                            <td>৳{{ d.amount|intcomma }}</td>
                             <td>{{ d.disbursement_date|default:"N/A" }}</td>
                             <td>
                                 {% if d.payment_status == 'Paid' %}
@@ -498,17 +521,19 @@
                                 <span class="status-badge status-pending">Pending</span>
                                 {% endif %}
                             </td>
-                            <td>
-                                <form method="POST" action="{% url 'update_disbursement' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="disbursement_id" value="{{ d.disbursement_id }}">
-                                    <input type="hidden" name="payment_status"
-                                        value="{% if d.payment_status == 'Paid' %}Pending{% else %}Paid{% endif %}">
-                                    <button type="submit" class="action-btn">
-                                        {% if d.payment_status == 'Paid' %}Mark Pending{% else %}Mark Paid{% endif %}
-                                    </button>
-                                </form>
-                            </td>
+                          <td>
+    {% if d.payment_status == "Pending" %}
+    <form method="POST" action="{% url 'update_disbursement' %}">
+        {% csrf_token %}
+        <input type="hidden" name="disbursement_id" value="{{ d.disbursement_id }}">
+        <button type="submit" class="action-btn">
+            Mark Paid
+        </button>
+    </form>
+    {% else %}
+        <span style="color:#888;font-size:.82rem;">Completed</span>
+    {% endif %}
+</td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -518,9 +543,19 @@
                         {% endfor %}
                     </tbody>
                 </table>
+             </div>
             </div>
         </div>
     </div>
+    <script>
+    function filterDisb(status, btn) {
+        document.querySelectorAll('.filter-tabs .tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.app-table tbody tr').forEach(row => {
+            if (!row.dataset.status) return; // skip the empty-state row
+            row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+        });
+    }
+</script>
 </body>
-
 </html>

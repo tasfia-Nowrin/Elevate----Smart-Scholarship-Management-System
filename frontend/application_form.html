@@ -3,363 +3,615 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Form | ELEVATE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="st.css">
+    <title>Scholarship Application | ELEVATE</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <style>
-        .back-link{display:inline-flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-size:0.85rem;margin-bottom:24px;transition:.2s}
-        .back-link:hover{color:var(--primary)}
-        .form-layout{display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:start}
-        .form-card{background:white;border-radius:16px;padding:32px;margin-bottom:24px}
-        .form-card h2{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--dark);font-weight:600;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--grey)}
-        .form-card h2 span{font-family:'DM Sans',sans-serif;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:4px;font-weight:500}
-        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-        .field-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
-        .field-group label{font-size:0.8rem;color:var(--dark);font-weight:500;opacity:0.8;letter-spacing:0.2px}
-        .field-group label span{color:#c06060;margin-left:2px}
-        .field-group input,
-        .field-group select,
-        .field-group textarea{
-            padding:12px 14px;
-            border:1.5px solid var(--grey);
-            border-radius:8px;
-            font-size:0.9rem;
-            background:white;
-            color:var(--dark);
+
+        :root{
+            --primary:#2f6f6f;
+            --dark:#183b3b;
+            --gold:#c49a45;
+            --cream:#f8f4eb;
+            --grey:#ddd8cc;
+            --muted:#777;
+            --danger:#c0392b;
+        }
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
             font-family:'DM Sans',sans-serif;
+            background:#f6f3ec;
+            color:var(--dark);
+        }
+
+        .sidebar{
+            width:260px;
+            height:100vh;
+            position:fixed;
+            top:0;
+            left:0;
+            background:#fff;
+            border-right:1px solid var(--grey);
+            display:flex;
+            flex-direction:column;
+            padding:25px;
+        }
+
+        .sidebar-logo h2{
+            font-family:'Cormorant Garamond',serif;
+            color:var(--primary);
+            font-size:2rem;
+        }
+
+        .sidebar-logo p{
+            color:var(--muted);
+            font-size:.8rem;
+            margin-top:3px;
+        }
+
+        .sidebar-user{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            margin:35px 0;
+        }
+
+        .user-avatar{
+            width:42px;
+            height:42px;
+            border-radius:50%;
+            background:var(--primary);
+            color:#fff;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-weight:600;
+        }
+
+        .user-info p{
+            font-weight:600;
+        }
+
+        .user-info span{
+            color:var(--muted);
+            font-size:.8rem;
+        }
+
+        .nav-label{
+            color:#aaa;
+            font-size:.72rem;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            margin:18px 0 10px;
+        }
+
+        .nav-item,
+        .logout-btn{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            text-decoration:none;
+            color:var(--dark);
+            padding:12px;
+            border-radius:8px;
+            margin-bottom:6px;
             transition:.2s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active{
+            background:var(--cream);
+            color:var(--primary);
+        }
+
+        .sidebar-bottom{
+            margin-top:auto;
+        }
+
+        .main{
+            margin-left:260px;
+            min-height:100vh;
+        }
+
+        .topbar{
+            height:70px;
+            background:#fff;
+            border-bottom:1px solid var(--grey);
+            display:flex;
+            align-items:center;
+            padding:0 35px;
+        }
+
+        .topbar h2{
+            font-family:'Cormorant Garamond',serif;
+            font-size:1.7rem;
+            color:var(--dark);
+        }
+
+        .page-content{
+            padding:35px;
+            max-width:1000px;
+        }
+
+        .back-link{
+            display:inline-block;
+            text-decoration:none;
+            color:var(--muted);
+            margin-bottom:25px;
+            font-size:.9rem;
+        }
+
+        .form-card{
+            background:#fff;
+            border-radius:16px;
+            padding:30px;
+            margin-bottom:25px;
+        }
+
+        .form-card h2{
+            font-family:'Cormorant Garamond',serif;
+            font-size:1.5rem;
+            border-bottom:1px solid var(--grey);
+            padding-bottom:12px;
+            margin-bottom:25px;
+        }
+
+        .form-card h2 span{
+            display:block;
+            font-family:'DM Sans',sans-serif;
+            color:var(--gold);
+            font-size:.72rem;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            margin-bottom:4px;
+        }
+
+        .form-row{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:18px;
+        }
+
+        .field-group{
+            display:flex;
+            flex-direction:column;
+            margin-bottom:18px;
+        }
+
+        .field-group label{
+            font-size:.85rem;
+            font-weight:600;
+            margin-bottom:7px;
+        }
+
+        input{
             width:100%;
+            padding:12px 14px;
+            border:1px solid var(--grey);
+            border-radius:8px;
+            background:#faf8f3;
+            font-family:'DM Sans',sans-serif;
         }
-        .field-group input:focus,
-        .field-group select:focus,
-        .field-group textarea:focus{
-            outline:none;
-            border-color:var(--primary);
-            box-shadow:0 0 0 3px rgba(47,111,111,0.1);
+
+        input[readonly]{
+            background:#f5f2ea;
         }
-        .field-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23aaa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
-        .field-group textarea{resize:vertical;min-height:110px;line-height:1.6}
-        .field-group input::placeholder,
-        .field-group textarea::placeholder{color:#bbb;font-weight:300}
-        .file-upload{border:2px dashed var(--grey);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:.2s;background:var(--cream)}
-        .file-upload:hover{border-color:var(--primary);background:rgba(47,111,111,0.03)}
-        .file-upload p{font-size:0.85rem;color:var(--muted);margin-top:8px}
-        .file-upload strong{font-size:0.9rem;color:var(--dark)}
-        .file-upload input[type=file]{display:none}
-        .progress-sidebar{position:sticky;top:88px;display:flex;flex-direction:column;gap:20px}
-        .progress-card{background:white;border-radius:16px;padding:24px}
-        .progress-card h3{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--dark);font-weight:600;margin-bottom:18px}
-        .progress-step{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--grey)}
-        .progress-step:last-child{border-bottom:none}
-        .step-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;flex-shrink:0}
-        .step-dot.done{background:rgba(40,160,100,0.12);color:#1e7a50;border:1.5px solid rgba(40,160,100,0.3)}
-        .step-dot.current{background:var(--gold);color:white}
-        .step-dot.todo{background:var(--cream);color:var(--muted);border:1.5px solid var(--grey)}
-        .progress-step-label{font-size:0.83rem}
-        .progress-step-label p{color:var(--dark);font-weight:500;margin-bottom:1px}
-        .progress-step-label span{font-size:0.73rem;color:var(--muted)}
-        .submit-card{background:white;border-radius:16px;padding:24px;text-align:center}
-        .submit-card p{font-size:0.8rem;color:var(--muted);margin-bottom:16px;line-height:1.6}
-        .btn-submit{display:block;width:100%;background:var(--primary);color:white;padding:14px;border-radius:10px;border:none;font-size:0.95rem;font-weight:500;cursor:pointer;transition:.3s;font-family:'DM Sans',sans-serif;letter-spacing:0.3px;margin-bottom:10px}
-        .btn-submit:hover{background:var(--dark)}
-        .btn-draft{display:block;width:100%;background:transparent;border:1.5px solid var(--grey);color:var(--dark);padding:12px;border-radius:10px;font-size:0.88rem;font-weight:500;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
-        .btn-draft:hover{border-color:var(--primary);color:var(--primary)}
-        .terms-row{display:flex;align-items:flex-start;gap:10px;font-size:0.83rem;color:#666;margin-top:4px;line-height:1.5}
-        .terms-row input[type=checkbox]{width:15px;height:15px;margin-top:2px;flex-shrink:0;accent-color:var(--primary)}
-        .terms-row a{color:var(--primary);text-decoration:none}
-        .terms-row a:hover{text-decoration:underline}
-        .section-note{font-size:0.82rem;color:var(--muted);margin-bottom:20px;line-height:1.6;padding:12px 14px;background:var(--cream);border-radius:8px;border-left:3px solid var(--gold)}
+
+        .section-note{
+            background:var(--cream);
+            border-left:4px solid var(--gold);
+            padding:15px;
+            border-radius:8px;
+            font-size:.88rem;
+            color:var(--muted);
+            margin-bottom:25px;
+        }
+
+        @media(max-width:900px){
+
+            .sidebar{
+                display:none;
+            }
+
+            .main{
+                margin-left:0;
+            }
+
+            .page-content{
+                padding:20px;
+            }
+
+            .form-row{
+                grid-template-columns:1fr;
+            }
+
+        }
+
     </style>
 </head>
+
 <body>
+
 <aside class="sidebar">
-    <div class="sidebar-logo"><h2>ELEVATE</h2><p>Scholarship Portal</p></div>
+
+    <div class="sidebar-logo">
+        <h2>ELEVATE</h2>
+        <p>Scholarship Portal</p>
+    </div>
+
     <div class="sidebar-user">
-        <div class="user-avatar">M</div>
-        <div class="user-info"><p>Mahisa</p><span>Student</span></div>
-    </div>
-    <nav class="sidebar-nav">
-        <p class="nav-label">Main</p>
-        <a href="student_dashboard.html" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
-        <a href="browse_scholarships.html" class="nav-item active"><span class="nav-icon">✦</span> Browse Scholarships</a>
-        <a href="my_applications.html" class="nav-item"><span class="nav-icon">◈</span> My Applications</a>
-        <a href="disbursements.html" class="nav-item active"><span class="nav-icon">◎</span> My Disbursements</a>
-        <p class="nav-label">Account</p>
-        <a href="profile.html" class="nav-item"><span class="nav-icon">○</span> Profile</a>
-    </nav>
-    <div class="sidebar-bottom">
-        <a href="login.html" class="logout-btn"><span class="nav-icon">→</span> Sign Out</a>
-    </div>
-</aside>
-<div class="main">
-    <div class="topbar">
-        <div class="topbar-left"><h3>Scholarship Application</h3></div>
-    </div>
-    <div class="page-content">
-        <a href="browse_scholarships.html" class="back-link">← Back to Browse</a>
-        <div class="form-layout">
-            <div class="form-main">
-                <!-- Section 1: Scholarship Selection -->
-                <div class="form-card">
-                    <h2><span>Step 1</span>Scholarship Selection</h2>
-                    <div class="field-group">
-                        <label>Scholarship Type <span>*</span></label>
-                        <select>
-                            <option value="">— Select a scholarship —</option>
-                            <option>Merit Scholarship</option>
-                            <option>Need-Based Scholarship</option>
-                            <option>Sibling Waiver</option>
-                            <option>Entrance Scholarship</option>
-                        </select>
-                    </div>
-                    <div class="field-group">
-                        <label>Academic Semester <span>*</span></label>
-                        <select>
-                            <option value="">— Select semester —</option>
-                            <option>Spring 2026</option>
-                            <option>Autumn 2026</option>
-                    </div>
-                </div> 
-                <!-- Section 2: Personal Information -->
-                <div class="form-card">
-                    <h2><span>Step 2</span>Personal Information</h2>
-                    <div class="form-row">
-                        <div class="field-group">
-                            <label>Full Name <span>*</span></label>
-                            <input type="text" placeholder="As per national ID" value="Mahisa Rahman">
-                        </div>
-                        <div class="field-group">
-                            <label>Student ID <span>*</span></label>
-                            <input type="text" placeholder="e.g. C243496" value="C243496">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="field-group">
-                            <label>Date of Birth <span>*</span></label>
-                            <input type="date">
-                        </div>
-                        <div class="field-group">
-                            <label>Gender <span>*</span></label>
-                            <select>
-                                <option>Female</option>
-                                <option>Male</option>
-                                <option>Prefer not to say</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="field-group">
-                            <label>Email Address <span>*</span></label>
-                            <input type="email" placeholder="your@email.com" value="mahisa@email.com">
-                        </div>
-                        <div class="field-group">
-                            <label>Phone Number <span>*</span></label>
-                            <input type="tel" placeholder="+880 1X XX XXX XXX">
-                        </div>
-                    </div>
-                    <div class="field-group">
-                        <label>Permanent Address <span>*</span></label>
-                        <input type="text" placeholder="Full permanent address">
-                    </div>
-                    <div class="form-row">
-                        <div class="field-group">
-                            <label>National ID Number <span>*</span></label>
-                            <input type="text" placeholder="NID number">
-                        </div>
-                        <div class="field-group">
-                            <label>Programme / Department <span>*</span></label>
-                            <input type="text" placeholder="e.g. B.Sc. in CSE" value="B.Sc. in CSE">
-                        </div>
-                    </div>
-                </div>
-                <!-- Section 3: Academic Information -->
-                <div class="form-card">
-                    <h2><span>Step 3</span>Academic Information</h2>
-                    <div class="form-row">
-                        <div class="field-group">
-                            <label>Current CGPA <span>*</span></label>
-                            <input type="number" step="0.01" min="0" max="4" placeholder="e.g. 3.85">
-                        </div>
-                        <div class="field-group">
-                            <label>Current Semester / Year <span>*</span></label>
-                            <select>
-                                <option>1st Semester</option>
-                                <option>2nd Semester</option>
-                                <option>3rd Semester</option>
-                                <option>4th Semester</option>
-                                <option>5th Semester</option>
-                                <option>6th Semester</option>
-                                <option>7th Semester</option>
-                                <option>8th Semester</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="field-group">
-                            <label>SSC GPA</label>
-                            <input type="number" step="0.01" min="0" max="5" placeholder="e.g. 5.00">
-                        </div>
-                        <div class="field-group">
-                            <label>HSC GPA</label>
-                            <input type="number" step="0.01" min="0" max="5" placeholder="e.g. 5.00">
-                        </div>
-                    </div>
-                    <div class="field-group">
-                        <label>Academic Achievements / Honours (if any)</label>
-                        <textarea placeholder="Dean's List, departmental rank, awards, competitions, etc."></textarea>
-                    </div>
-                </div>
-                <!-- Section 4: Financial Information -->
-                <div class="form-card">
-                    <h2><span>Step 4</span>Financial Information</h2>
-                    <div class="section-note">
-                        This information is confidential and used solely for scholarship assessment purposes.
-                    </div>
-                    <div class="form-row">
-                        <div class="field-group">
-                            <label>Guardian's Occupation <span>*</span></label>
-                            <input type="text" placeholder="e.g. Farmer, Service, Business">
-                        </div>
-                        <div class="field-group">
-                            <label>Annual Family Income (BDT) <span>*</span></label>
-                            <input type="number" placeholder="e.g. 250000">
-                        </div>
-                    </div>
-                    <div class="field-group">
-                        <label>Currently Receiving Any Other Scholarship or Waiver?</label>
-                        <select>
-                            <option>No</option>
-                            <option>Yes — specify below</option>
-                        </select>
-                    </div>
-                    <div class="field-group">
-                        <label>If yes, specify scholarship name and waiver percentage</label>
-                        <input type="text" placeholder="e.g. Government Scholarship — 15%">
-                    </div>
-                </div>
-                <!-- Section 5: Statement -->
-                <div class="form-card">
-                    <h2><span>Step 5</span>Personal Statement</h2>
-                    <div class="field-group">
-                        <label>Why do you deserve this scholarship? <span>*</span></label>
-                        <textarea style="min-height:150px" placeholder="Describe your academic journey, financial circumstances, and how this scholarship will help you achieve your goals. (300–600 words recommended)"></textarea>
-                    </div>
-                </div>
-                <!-- Section 6: Documents -->
-                <div class="form-card">
-                    <h2><span>Step 6</span>Document Upload</h2>
-                    <div class="form-row">
-                        <div class="field-group">
-                            <label>Academic Transcript <span>*</span></label>
-                            <label class="file-upload" for="f1">
-                                <input type="file" id="f1" accept=".pdf,.jpg,.png">
-                                <div>📎</div>
-                                <strong>Click to upload</strong>
-                                <p>PDF, JPG or PNG · Max 5MB</p>
-                            </label>
-                        </div>
-                        <div class="field-group">
-                            <label>National ID <span>*</span></label>
-                            <label class="file-upload" for="f2">
-                                <input type="file" id="f2" accept=".pdf,.jpg,.png">
-                                <div>📎</div>
-                                <strong>Click to upload</strong>
-                                <p>PDF, JPG or PNG · Max 5MB</p>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="field-group">
-                            <label>Income Certificate</label>
-                            <label class="file-upload" for="f3">
-                                <input type="file" id="f3" accept=".pdf,.jpg,.png">
-                                <div>📎</div>
-                                <strong>Click to upload</strong>
-                                <p>PDF, JPG or PNG · Max 5MB</p>
-                            </label>
-                        </div>
-                        <div class="field-group">
-                            <label>Additional Document (Optional)</label>
-                            <label class="file-upload" for="f4">
-                                <input type="file" id="f4" accept=".pdf,.jpg,.png">
-                                <div>📎</div>
-                                <strong>Click to upload</strong>
-                                <p>PDF, JPG or PNG · Max 5MB</p>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <!-- Terms -->
-                <div class="form-card" style="margin-bottom:0">
-                    <h2><span>Step 7</span>Declaration</h2>
-                    <p style="font-size:0.87rem;color:#666;line-height:1.7;margin-bottom:18px;">By submitting this application, you declare that all information provided herein is accurate and complete to the best of your knowledge. Any falsification or misrepresentation may result in immediate disqualification and further disciplinary action.</p>
-                    <div class="terms-row">
-                        <input type="checkbox" id="terms">
-                        <label for="terms">I declare that the information I have provided is accurate. I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a> of ELEVATE.</label>
-                    </div>
-                </div>
-            </div>
-            <!-- Sidebar -->
-            <div class="progress-sidebar">
-                <div class="progress-card">
-                    <h3>Your Progress</h3>
-                    <div class="progress-step">
-                        <div class="step-dot done">✓</div>
-                        <div class="progress-step-label"><p>Scholarship Selection</p><span>Completed</span></div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-dot done">✓</div>
-                        <div class="progress-step-label"><p>Personal Information</p><span>Completed</span></div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-dot current">3</div>
-                        <div class="progress-step-label"><p>Academic Information</p><span>In progress</span></div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-dot todo">4</div>
-                        <div class="progress-step-label"><p>Financial Information</p><span>Pending</span></div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-dot todo">5</div>
-                        <div class="progress-step-label"><p>Personal Statement</p><span>Pending</span></div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-dot todo">6</div>
-                        <div class="progress-step-label"><p>Document Upload</p><span>Pending</span></div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-dot todo">7</div>
-                        <div class="progress-step-label"><p>Declaration</p><span>Pending</span></div>
-                    </div>
-                </div>
-                <div class="submit-card">
-                    <p>Ensure all required fields are filled before submitting. Applications cannot be edited after submission.</p>
-                    <button class="btn-submit" onclick="handleSubmit()">Submit Application →</button>
-                    <button class="btn-draft">Save as Draft</button>
-                </div>
-            </div>
+
+        <div class="user-avatar">
+            {{ student.name|first }}
         </div>
+
+        <div class="user-info">
+            <p>{{ student.name }}</p>
+            <span>Student</span>
+        </div>
+
     </div>
+
+    <nav>
+
+        <p class="nav-label">Main</p>
+
+        <a href="{% url 'student_dashboard' %}" class="nav-item">
+            ⊞ Dashboard
+        </a>
+
+        <a href="{% url 'browse_scholarships' %}" class="nav-item active">
+            ✦ Browse Scholarships
+        </a>
+
+        <a href="{% url 'my_applications' %}" class="nav-item">
+            ◈ My Applications
+        </a>
+
+        <a href="{% url 'disbursements' %}" class="nav-item">
+            ◎ My Disbursements
+        </a>
+
+        <p class="nav-label">Account</p>
+
+        <a href="{% url 'profile' %}" class="nav-item">
+            ○ Profile
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <a href="{% url 'logout' %}" class="logout-btn">
+            → Sign Out
+        </a>
+
+    </div>
+
+</aside>
+
+<div class="main">
+
+    <div class="topbar">
+        <h2>Scholarship Application</h2>
+    </div>
+
+    <div class="page-content">
+
+        <a href="{% url 'browse_scholarships' %}" class="back-link">
+            ← Back to Scholarship Details
+        </a>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+                        <!-- Scholarship Information -->
+
+            <div class="form-card">
+
+                <h2>
+                    <span>Application For</span>
+                    Scholarship Information
+                </h2>
+
+                <div class="form-row">
+
+                    <div class="field-group">
+
+                        <label>Scholarship</label>
+
+                        <input
+                            type="text"
+                            value="{{ scholarship.name }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        <label>Academic Term</label>
+
+                        <input
+                            type="text"
+                            value="{{ deadline.academic_term }}"
+                            readonly>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Student Information -->
+
+            <div class="form-card">
+
+                <h2>
+                    <span>Auto-filled</span>
+                    Student Information
+                </h2>
+
+                <div class="section-note">
+
+                    Information is automatically retrieved from your student profile.
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="field-group">
+
+                        <label>Student ID</label>
+
+                        <input
+                            type="text"
+                            value="{{ student.university_id }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        <label>Full Name</label>
+
+                        <input
+                            type="text"
+                            value="{{ student.name }}"
+                            readonly>
+
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="field-group">
+
+                        <label>Department</label>
+
+                        <input
+                            type="text"
+                            value="{{ student.department }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        <label>Current Semester</label>
+
+                        <input
+                            type="text"
+                            value="{{ student.current_semester }}"
+                            readonly>
+
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="field-group">
+
+                        <label>Current CGPA</label>
+
+                        <input
+                            type="text"
+                            value="{{ student.cgpa }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        <label>Email</label>
+
+                        <input
+                            type="email"
+                            value="{{ student.student.email }}"
+                            readonly>
+
+                    </div>
+
+                </div>
+
+                <div class="field-group">
+
+                    <label>Phone Number</label>
+
+                    <input
+                        type="text"
+                        value="{{ student.phone }}"
+                        readonly>
+
+                </div>
+
+            </div>
+                        <!-- Required Documents -->
+
+            <div class="form-card">
+
+                <h2>
+                    <span>Required</span>
+                    Supporting Documents
+                </h2>
+
+                <div class="section-note">
+
+                    <strong>
+                        Required Documents for {{ scholarship.name }}
+                    </strong>
+
+                    <br><br>
+
+                    Please upload the following document(s) before submitting your application.
+
+                </div>
+
+
+                {% if scholarship.name == "Merit Scholarship" %}
+
+                    <p style="color:var(--muted); line-height:1.8;">
+                        No supporting documents are required for this scholarship.
+                    </p>
+
+                {% elif scholarship.name == "Need-Based Scholarship" %}
+
+                    <div class="field-group">
+
+                        <label>
+                            Income Certificate <span style="color:var(--danger);">*</span>
+                        </label>
+
+                        <input
+                            type="file"
+                            name="income_certificate"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            required>
+
+                    </div>
+
+                {% elif scholarship.name == "Entrance Scholarship" %}
+
+                    <div class="field-group">
+
+                        <label>
+                            SSC Certificate <span style="color:var(--danger);">*</span>
+                        </label>
+
+                        <input
+                            type="file"
+                            name="ssc_certificate"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            required>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        <label>
+                            HSC Certificate <span style="color:var(--danger);">*</span>
+                        </label>
+
+                        <input
+                            type="file"
+                            name="hsc_certificate"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            required>
+
+                    </div>
+
+                {% elif scholarship.name == "Sibling Waiver" %}
+
+                    <div class="field-group">
+
+                        <label>
+                            Sibling Verification Form <span style="color:var(--danger);">*</span>
+                        </label>
+
+                        <input
+                            type="file"
+                            name="sibling_verification_form"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            required>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- Declaration -->
+
+            <div class="form-card">
+
+                <h2>
+                    <span>Final Step</span>
+                    Declaration
+                </h2>
+
+                <div style="display:flex;align-items:flex-start;gap:12px;">
+
+                    <input
+                        type="checkbox"
+                        id="declaration"
+                        required
+                        style="width:18px;height:18px;margin-top:3px;">
+
+                    <label
+                        for="declaration"
+                        style="line-height:1.8;cursor:pointer;">
+
+                        I declare that all information provided is true and accurate.
+                        I understand that submitting false or misleading information
+                        may result in the rejection of my scholarship application.
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="form-card" style="text-align:right;">
+
+                <button
+                    type="submit"
+                    style="
+                        background:var(--primary);
+                        color:white;
+                        border:none;
+                        padding:14px 30px;
+                        border-radius:10px;
+                        font-size:.95rem;
+                        cursor:pointer;
+                        transition:.2s;
+                    "
+                    onmouseover="this.style.background='#183b3b'"
+                    onmouseout="this.style.background='#2f6f6f'">
+
+                    Submit Application →
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
 </div>
-<script>
-function handleSubmit() {
-    const terms = document.getElementById('terms');
-    if (!terms.checked) {
-        alert('Please read and accept the declaration before submitting.');
-        return;
-    }
-    if (confirm('Are you sure you want to submit your application? This cannot be undone.')) {
-        window.location.href = 'my_applications.html';
-    }
-}
-// File upload label update
-document.querySelectorAll('.file-upload input[type=file]').forEach(input => {
-    input.addEventListener('change', function() {
-        const label = this.closest('.file-upload');
-        const strong = label.querySelector('strong');
-        if (this.files[0]) strong.textContent = this.files[0].name;
-    });
-});
-</script>
 </body>
 </html>
