@@ -397,9 +397,9 @@
             <p>Scholarship Portal</p>
         </div>
         <div class="sidebar-user">
-            <div class="user-avatar">M</div>
+            <div class="user-avatar">{{ student_name|first|upper }}</div>
             <div class="user-info">
-                <p>Mahisa</p><span>Student</span>
+                <p>{{ student_name }}</p><span>Student</span>
             </div>
         </div>
         <nav class="sidebar-nav">
@@ -480,13 +480,13 @@
                             <li>HSC GPA of {{ sch.required_hsc_gpa }}</li>
                             {% endif %}
                             <li>Application must be submitted within the first semester.</li>
-                            <li>Original certificates required for verification.</li>
+                            <li>Original marksheets required for verification.</li>
                 </div>
                <div class="info-card">
                     <h2>Required Documents</h2>
                     <ul class="docs-list">
-                        <li>Original SSC mark sheet and certificate</li>
-                        <li>Original HSC mark sheet and certificate</li>
+                        <li>Original SSC mark sheet</li>
+                        <li>Original HSC mark sheet</li>
                     </ul>
                 </div>
 
@@ -505,7 +505,7 @@
                             <div class="step-num">2</div>
                             <div class="step-text">
                                 <h4>Gather Certificates</h4>
-                                <p>Collect original mark sheets, certificates, and other required documents.</p>
+                                <p>Collect original mark sheets, and other required documents.</p>
                             </div>
                         </li>
                         <li class="process-step">
