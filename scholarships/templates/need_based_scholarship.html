@@ -428,7 +428,6 @@
                         <h2>Eligibility Criteria</h2>
                         <ul class="criteria-list">
                             {% if sch.min_cgpa %}<li>Minimum CGPA of {{ sch.min_cgpa }} required</li>{% endif %}
-                            {% if sch.max_cgpa %}<li>Maximum CGPA of {{ sch.max_cgpa }}</li>{% endif %}
                             {% if sch.type == 'sibling' %}<li>Must have a sibling currently studying at this institution </li>{% endif %}
                             {% if sch.fee_type %}<li>Applies to: {{ sch.fee_type }}</li>{% endif %}
                         </ul>

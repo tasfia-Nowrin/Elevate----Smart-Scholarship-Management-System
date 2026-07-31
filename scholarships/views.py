@@ -29,8 +29,8 @@ def required_documents_for(scholarship_type):
         "merit": [],
         "need": [("income_certificate", "Income Certificate")],
         "entrance": [
-            ("ssc_certificate", "SSC Certificate"),
-            ("hsc_certificate", "HSC Certificate"),
+            ("ssc_marksheet", "SSC Marksheet"),
+            ("hsc_marksheet", "HSC Marksheet"),
         ],
         "sibling": [
             ("sibling_verification_form", "Sibling Verification Form"),
