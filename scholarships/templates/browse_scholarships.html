@@ -303,6 +303,33 @@
             padding: 4px 10px;
             border-radius: 20px;
         }
+        .messages {
+    margin-bottom: 24px;
+}
+
+.alert {
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-left: 4px solid;
+    box-shadow: 0 8px 18px rgba(222, 21, 21, 0.05);
+    animation: fadeIn .25s ease;
+}
+.alert.error {
+    background: #fdeeee;
+    color: #b42318;
+    border-color: #d92d20;
+}
+
+.alert.warning {
+    background: #fff7e6;
+    color: #9a6700;
+    border-color: #f5a623;
+}
+
     </style>
 </head>
 
@@ -351,6 +378,13 @@
             </div>
         </div>
         <div class="page-content">
+              {% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
             <div class="page-hero">
                 <p class="eyebrow">Opportunities</p>
                 <h1>Find Your Scholarship</h1>
