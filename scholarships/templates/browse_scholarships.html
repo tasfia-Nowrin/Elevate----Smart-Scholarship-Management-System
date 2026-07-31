@@ -371,11 +371,12 @@
             <div class="sch-grid" id="schGrid">
                 {% for s in scholarships %}
                 <div class="sch-card" data-type="{{ s.type }}">
-                    {% if s.eligible and not s.already_applied %}
-                    <span class="eligible-tag">✓ Eligible</span>
-                    {% endif %}
                     {% if s.already_applied %}
                     <span class="eligible-tag" style="background:rgba(40,100,200,0.1);color:#2860a0;">✓ Applied</span>
+                    {% elif s.is_expired %}
+                    <span class="eligible-tag" style="background:rgba(198,40,40,0.1);color:#C62828;">Deadline Passed</span>
+                    {% elif s.eligible %}
+                    <span class="eligible-tag">✓ Eligible</span>
                     {% endif %}
 
                     <span class="sch-badge badge-{{ s.type }}">
@@ -409,10 +410,12 @@
                         <a href="{% url 'scholarship_detail' s.scholarship_id %}" class="btn-detail">Details</a>
                         {% if s.already_applied %}
                         <span class="btn-apply" style="opacity:0.5;cursor:not-allowed;background:var(--muted);">✓ Applied</span>
-                        {% elif s.eligible %}
-                        <a href="{% url 'application_form' s.scholarship_id %}" class="btn-apply">Apply Now</a>
-                        {% else %}
+                        {% elif s.is_expired %}
+                        <span class="btn-apply" style="opacity:0.4;cursor:not-allowed;background:#C62828;">Deadline Passed</span>
+                        {% elif not s.eligible %}
                         <span class="btn-apply" style="opacity:0.4;cursor:not-allowed;">Not Eligible</span>
+                        {% else %}
+                        <a href="{% url 'application_form' s.scholarship_id %}" class="btn-apply">Apply Now</a>
                         {% endif %}
                     </div>
                 </div>

@@ -1,14 +1,16 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from django.db import connection, transaction
+import os
 from datetime import date
 from .models import Student, Scholarship, SavedScholarship
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db import connection, transaction
+from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
-import os
 from django.core.files.storage import default_storage
 from django.utils.text import get_valid_filename
+
+
 def get_scholarship_type(scholarship_name):
     name = scholarship_name.lower()
 
@@ -281,6 +283,15 @@ def browse_scholarships(request):
         scholarship["end_date_fmt"] = (
             scholarship["end_date"].strftime("%d %b %Y")
             if scholarship["end_date"] else "N/A"
+        )
+        scholarship["is_expired"] = (
+            scholarship["end_date"] is not None
+            and scholarship["end_date"] < date.today()
+        )
+        scholarship["can_apply"] = (
+            scholarship["eligible"]
+            and not scholarship["already_applied"]
+            and not scholarship["is_expired"]
         )
 
     return render(request, "browse_scholarships.html", {
@@ -1084,6 +1095,7 @@ def save_scholarship(request, scholarship_id):
     return redirect(request.META.get('HTTP_REFERER',
                                      'browse_scholarships'))
 
+
 def application_form(request, scholarship_id):
     if request.session.get("role") != "student":
         return redirect("login")
@@ -1105,13 +1117,24 @@ def application_form(request, scholarship_id):
         return redirect("browse_scholarships")
 
     scholarship = dict(zip(columns, row))
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT academic_term, end_date FROM deadline
+            WHERE scholarship_id = %s
+        """, [scholarship_id])
+        deadline_row = cursor.fetchone()
+
+    if deadline_row and deadline_row[1] and deadline_row[1] < date.today():
+        messages.error(request, "The application deadline for this scholarship has passed.")
+        return redirect("browse_scholarships")
+
     scholarship_type = get_scholarship_type(scholarship["name"])
     required_documents = required_documents_for(scholarship_type)
 
     if not is_eligible(student, scholarship):
         messages.error(request, "You are not eligible for this scholarship.")
         return redirect("browse_scholarships")
-
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT application_id FROM application
@@ -1169,13 +1192,6 @@ def application_form(request, scholarship_id):
             "My Applications section of your ELEVATE account."
         )
         return redirect("my_applications")
-
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT academic_term FROM deadline
-            WHERE scholarship_id = %s
-        """, [scholarship_id])
-        deadline_row = cursor.fetchone()
 
     return render(request, "application_form.html", {
         "scholarship": scholarship,
