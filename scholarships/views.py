@@ -679,7 +679,7 @@ def application_decide(request, app_id):
                           )
                     """, [app_id])
 
-    return redirect('admin_application_details', app_id=app_id)
+    return redirect('view_applications')
 
 def manage_deadlines(request):
     if request.session.get('role') != 'admin':
@@ -1201,4 +1201,3 @@ def application_form(request, scholarship_id):
         },
         "required_documents": required_documents,
     })
-
