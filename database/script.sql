@@ -1,4 +1,3 @@
-CREATE DATABASE elevate;
 USE elevate;
 
 -- 1. user first 
