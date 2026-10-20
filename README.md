@@ -8,7 +8,7 @@ ELEVATE is a Django-based web application that streamlines scholarship applicati
 
 🔗 [**Visit Live Website**](https://elevate-smart-scholarship-management.onrender.com)
 
-💻 **[View Source Code](https://github.com/tasfia-Nowrin/Elevate----Smart-Scholarship-Management-System)**
+💻 [**View Source Code**](https://github.com/tasfia-Nowrin/Elevate----Smart-Scholarship-Management-System)
 
 ---
 
