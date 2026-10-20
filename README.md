@@ -26,16 +26,20 @@ ELEVATE/
 │   └── script.sql               # Full DB schema (run this to set up tables)
 │
 ├── elevate/                     # Django project config
+│   ├── _pycache_/
 │   ├── settings.py
 │   ├── urls.py
+|   ├──_init_.py
 │   ├── asgi.py
 │   └── wsgi.py
 │
 ├── scholarships/                # Main Django app
+│   ├── _pycache_/
 │   ├── migrations/
 │   ├── static/
 │   ├── templates/
 │   ├── models.py
+│   ├── tests.py
 │   ├── views.py
 │   ├── urls.py
 │   ├── admin.py
@@ -109,7 +113,7 @@ USER ──ISA──┬── STUDENT ──submits──▶ APPLICATION ──A
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/mahiila/Elevate.git
+git clone https://github.com/tasfia-Nowrin/Elevate----Smart-Scholarship-Management-System.git
 cd Elevate
 ```
 
@@ -139,7 +143,7 @@ Open `elevate/settings.py` and update the `DATABASES` block:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'elevate_db',
+        'NAME': 'elevate',
         'USER': 'your_mysql_username',
         'PASSWORD': 'your_mysql_password',
         'HOST': 'localhost',
@@ -151,8 +155,8 @@ DATABASES = {
 ### 5. Create the database and run the schema
 
 ```bash
-mysql -u root -p -e "CREATE DATABASE elevate_db;"
-mysql -u root -p elevate_db < database/script.sql
+mysql -u root -p -e "CREATE DATABASE elevate;"
+mysql -u root -p elevate < database/script.sql
 ```
 
 ### 6. Run Django's internal migrations (sessions only)
