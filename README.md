@@ -4,16 +4,23 @@
 
 ELEVATE is a Django-based web application that streamlines scholarship applications, document verification, and disbursement processing for university students and administrators.
 
+## 🌐 Live Demo
+
+🔗 [**Visit Live Website**](https://elevate-smart-scholarship-management.onrender.com)
+
+💻 **[View Source Code](https://github.com/tasfia-Nowrin/Elevate----Smart-Scholarship-Management-System)**
+
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Backend | Python 3.x, Django |
+| Layer    | Technology                                |
+| -------- | ----------------------------------------- |
+| Backend  | Python 3.x, Django                        |
 | Database | MySQL (raw SQL via `connection.cursor()`) |
-| Frontend | HTML5, CSS3, Django Templates |
-| Auth | Django session-based (custom role system) |
+| Frontend | HTML5, CSS3, Django Templates             |
+| Auth     | Django session-based (custom role system) |
+
 
 ---
 
